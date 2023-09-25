@@ -58,22 +58,26 @@ export function Home() {
 	return (
 		<div>
 			<header>
-				<h1>Reinforcement Learning With Human Feedback</h1>
+				<h1 className="center paddingBottom">
+					Reinforcement Learning With Human Feedback
+				</h1>
 			</header>
-			<main role="main">
+			<main role="main" className="flex">
 				<div>
 					<NextSentence setNextOriginalText={setNextOriginalText} />
 				</div>
-			<div>
-				<OriginalSentence text={randomText} />
-
-			</div>
-				<div><h3>Suggestions :</h3>{suggestions}</div>
+				<div className="center paddingBottom">
+					<OriginalSentence text={randomText} />
+				</div>
+				<div className="paddingBottom">
+					<h3>Suggestions :</h3>
+					<div className="grid">{suggestions}</div>
+				</div>
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
 			</main>
-			</div>
+		</div>
 	);
 }
 

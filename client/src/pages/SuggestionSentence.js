@@ -16,6 +16,7 @@ const innerText = diff(props.randomText, props.suggestionText);
 	return (
 		<div>
 			<button
+				className="displayBlock width"
 				onClick={() => {
 					let randomNumber = Math.random() * 1000;
 					props.setNextOriginalText(randomNumber);
