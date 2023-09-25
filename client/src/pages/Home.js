@@ -8,27 +8,28 @@ import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 
 export function Home() {
+	const [randomText, setRandomText] = useState("Loading...");
+//
+	const getRandomIndex = (length) => {
+		return Math.floor(Math.random() * length);
+	};
 
+	//
 	useEffect(() => {
-		fetch("/api")
-			.then((res) => {
-				if (!res.ok) {
-					throw new Error(res.statusText);
-				}
-				return res.json();
-			})
-			.then((body) => {
-				setMessage(body.message);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}, []);
+		const loadRandomSentenceFromFile = async () => {
+			const response = await fetch("/api");
+			const allText = await response.json();
 
+			setRandomText(allText[getRandomIndex(allText.length)]);
+		};
+		loadRandomSentenceFromFile();
+	}, []);
+	
 	return (
 		<main role="main">
 			<div>
-				
+				<OriginalSentence text={randomText} />
+
 			</div>
 		</main>
 	);
