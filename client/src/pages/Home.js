@@ -14,6 +14,7 @@ export function Home() {
 		"Loading...",
 		"Loading...",
 	]);
+	const [nextOriginalText, setNextOriginalText] = useState(1);
 //
 	const getRandomIndex = (length) => {
 		return Math.floor(Math.random() * length);
@@ -28,7 +29,7 @@ export function Home() {
 			setRandomText(allText[getRandomIndex(allText.length)]);
 		};
 		loadRandomSentenceFromFile();
-	}, []);
+	}, [nextOriginalText]);
 	//
 	useEffect(() => {
 		const getSuggestionsFromApi = async (text) => {
@@ -41,13 +42,26 @@ export function Home() {
 		getSuggestionsFromApi(randomText);
 	}, [randomText]);
 
-	
+	//
+	const suggestions = suggestionsText.map((text, i) => {
+		return (
+			<SuggestionSentence
+				key={i}
+				suggestionText={text}
+				randomText={randomText}
+				number={i + 1}
+				setNextOriginalText={setNextOriginalText}
+			/>
+		);
+	});
+	//
 	return (
 		<main role="main">
 			<div>
 				<OriginalSentence text={randomText} />
 
 			</div>
+			<div><h3>Suggestions :</h3>{suggestions}</div>
 		</main>
 	);
 }
