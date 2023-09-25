@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import "./Home.css";
+import OriginalSentence from "./OriginalSentence";
+import SuggestionSentence from "./SuggestionSentence";
+import NextSentence from "./NextSentence";
+import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 
 export function Home() {
 
