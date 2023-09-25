@@ -56,7 +56,7 @@ export function Home() {
 	});
 	//
 	return (
-		<div>
+		<div className="margin">
 			<header>
 				<h1 className="center paddingBottom">
 					Reinforcement Learning With Human Feedback

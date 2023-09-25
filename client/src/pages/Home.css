@@ -2,7 +2,7 @@
 	text-align: center;
 }
 .margin {
-	margin: 1em 20em;
+	margin: 1em 12em;
 }
 .grid {
 	display: grid;
@@ -33,6 +33,7 @@ button {
 	padding: 1em;
 	border-radius: .5em;
 	background-color: whitesmoke;
+	cursor: pointer;
 }
 .Next {
 	background-color: gray;
