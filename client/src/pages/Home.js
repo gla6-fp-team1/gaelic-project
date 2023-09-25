@@ -56,13 +56,24 @@ export function Home() {
 	});
 	//
 	return (
-		<main role="main">
+		<div>
+			<header>
+				<h1>Reinforcement Learning With Human Feedback</h1>
+			</header>
+			<main role="main">
+				<div>
+					<NextSentence setNextOriginalText={setNextOriginalText} />
+				</div>
 			<div>
 				<OriginalSentence text={randomText} />
 
 			</div>
-			<div><h3>Suggestions :</h3>{suggestions}</div>
-		</main>
+				<div><h3>Suggestions :</h3>{suggestions}</div>
+				<div>
+					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+				</div>
+			</main>
+			</div>
 	);
 }
 
