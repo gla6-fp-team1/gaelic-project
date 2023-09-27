@@ -10,7 +10,8 @@ import {
 	logErrors,
 } from "./utils/middleware";
 
-const apiRoot = "/api";
+const apiRoot = "/";//I changed from /api to /
+
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use("/health", (_, res) => res.sendStatus(200));
 app.use(clientRouter(apiRoot));
 
 app.use(logErrors());
+
 
 export default app;
