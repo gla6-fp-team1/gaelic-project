@@ -1,6 +1,6 @@
 import express from "express";
 
-
+import bodyParser from "body-parser";
 import apiRouter from "./api";
 import config from "./utils/config";
 import {
@@ -15,7 +15,7 @@ const apiRoot = "/api";
 
 const app = express();
 
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(configuredHelmet());
 app.use(configuredMorgan());
