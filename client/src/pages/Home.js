@@ -16,17 +16,13 @@ export function Home() {
 	]);
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 //
-	const getRandomIndex = (length) => {
-		return Math.floor(Math.random() * length);
-	};
-
 	//
 	useEffect(() => {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
-			const allText = await response.json();
+			const text = await response.json();
 
-			setRandomText(allText[getRandomIndex(allText.length)]);
+			setRandomText(text);
 		};
 		loadRandomSentenceFromFile();
 	}, [nextOriginalText]);
