@@ -19,7 +19,10 @@ router.get("/", (_, res) => {
 		"agus bha coltas air gun deànadh am bòcan an gróthach air.",
 		"Cha robh buille a bhuaileadh e air nach robh e a' smaoineach' gur h- ann air póca cloìmh leis cho bog 's a bha a' bhuille is cha robh i a' dèanadh feum.",
 	];
-	res.json(text);
+	const getRandomIndex = (length) => {
+		return Math.floor(Math.random() * length);
+	};
+	res.json(text[getRandomIndex(text.length)]);
 });
 
 export default router;
