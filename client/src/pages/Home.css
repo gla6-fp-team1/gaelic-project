@@ -1,11 +1,46 @@
-.logo {
-	width: 100px;
+.center {
+	text-align: center;
+}
+.margin {
+	margin: 1em 12em;
+}
+.grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	gap: 2em;
+}
+button.displayBlock:hover {
+	background-color: lightgrey;
+}
+.flex {
+	display: flex;
+	flex-direction: column;
+}
+.displayBlock {
+	display: block;
 }
 
-.message {
-	color: blue;
+.paddingBottom {
+	padding-bottom: 1em;
 }
 
-.message:hover {
-	background-color: yellow;
+.width {
+	width: 100%;
+}
+button {
+	border: none;
+	padding: 1em;
+	border-radius: .5em;
+	background-color: whitesmoke;
+	cursor: pointer;
+}
+.Next {
+	background-color: gray;
+	color: white;
+}
+.NoneSuggestions {
+	border: 1px solid red;
+	color: red;
+	background-color: white;
 }
