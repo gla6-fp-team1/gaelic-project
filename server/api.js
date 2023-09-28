@@ -45,6 +45,11 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
+			// Insert selected suggestion to user_interactions table
+			await db.query(
+				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
+				[sentenceId, selectedSuggestion]
+			);
 
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {
