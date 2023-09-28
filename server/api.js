@@ -52,16 +52,5 @@ router.post("/save-suggestions", async (req, res) => {
 			.json({ message: "An error occurred while saving suggestions" });
 	}
 });
-router.post("/suggestions", (req, res) => {
-	logger.debug("Welcoming everyone...");
-	if (
-		req.body.originalText &&
-		req.body.suggestionTexts &&
-		req.body.clickedSuggestionNumber
-	) {
-		res.sendStatus(200);
-	}else {
-		res.sendStatus(422);
-	}
-});
+
 export default router;
