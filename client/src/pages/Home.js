@@ -1,43 +1,79 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import "./Home.css";
-import logo from "./logo.svg";
+import OriginalSentence from "./OriginalSentence";
+import SuggestionSentence from "./SuggestionSentence";
+import NextSentence from "./NextSentence";
+import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 
 export function Home() {
-	const [message, setMessage] = useState("Loading...");
-
+	const [randomText, setRandomText] = useState("Loading...");
+	const [suggestionsText, setSuggestionsText] = useState([
+		"Loading...",
+		"Loading...",
+		"Loading...",
+	]);
+	const [nextOriginalText, setNextOriginalText] = useState(1);
+//
+	//
 	useEffect(() => {
-		fetch("/api")
-			.then((res) => {
-				if (!res.ok) {
-					throw new Error(res.statusText);
-				}
-				return res.json();
-			})
-			.then((body) => {
-				setMessage(body.message);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}, []);
+		const loadRandomSentenceFromFile = async () => {
+			const response = await fetch("/api");
+			const text = await response.json();
 
+			setRandomText(text);
+		};
+		loadRandomSentenceFromFile();
+	}, [nextOriginalText]);
+	//
+	useEffect(() => {
+		const getSuggestionsFromApi = async (text) => {
+			const response = await fetch(
+				`https://angocair.garg.ed.ac.uk/best/?text=${encodeURIComponent(text)}`
+			);
+			const data = await response.json();
+			setSuggestionsText(data.data);
+		};
+		getSuggestionsFromApi(randomText);
+	}, [randomText]);
+
+	//
+	const suggestions = suggestionsText.map((text, i) => {
+		return (
+			<SuggestionSentence
+				key={i}
+				suggestionText={text}
+				randomText={randomText}
+				number={i + 1}
+				setNextOriginalText={setNextOriginalText}
+			/>
+		);
+	});
+	//
 	return (
-		<main role="main">
-			<div>
-				<img
-					className="logo"
-					data-qa="logo"
-					src={logo}
-					alt="Just the React logo"
-				/>
-				<h1 className="message" data-qa="message">
-					{message}
+		<div className="margin">
+			<header>
+				<h1 className="center paddingBottom">
+					Reinforcement Learning With Human Feedback
 				</h1>
-				<Link to="/about/this/site">About</Link>
-			</div>
-		</main>
+			</header>
+			<main role="main" className="flex">
+				<div>
+					<NextSentence setNextOriginalText={setNextOriginalText} />
+				</div>
+				<div className="center paddingBottom">
+					<OriginalSentence text={randomText} />
+				</div>
+				<div className="paddingBottom">
+					<h3>Suggestions :</h3>
+					<div className="grid">{suggestions}</div>
+				</div>
+				<div>
+					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+				</div>
+			</main>
+		</div>
 	);
 }
 
