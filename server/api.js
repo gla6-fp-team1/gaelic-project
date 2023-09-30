@@ -26,25 +26,35 @@ router.get("/", (_, res) => {
 });
 
 router.post("/save-suggestions", async (req, res) => {
-	const { sentence, suggestions } = req.body;
+	const { sentence, suggestions, selectedSuggestion } = req.body;
 
 	try {
-		// Insert the sentence into the sentences table
-		const sentenceResult = await db.query(
-			"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
-			[sentence]
-		);
-		const sentenceId = sentenceResult.rows[0].id;
-
-		// Insert the suggestions into the suggestions table
-		for (const suggestion of suggestions) {
-			await db.query(
-				"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
-				[sentenceId, suggestion]
+		// Check if all data exist in req.body
+		if (sentence && suggestions && selectedSuggestion) {
+			// Insert the sentence into the sentences table
+			const sentenceResult = await db.query(
+				"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+				[sentence]
 			);
-		}
+			const sentenceId = sentenceResult.rows[0].id;
 
-		res.status(201).json({ message: "Suggestions saved successfully" });
+			// Insert the suggestions into the suggestions table
+			for (const suggestion of suggestions) {
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
+					[sentenceId, suggestion]
+				);
+			}
+			// Insert selected suggestion to user_interactions table
+			await db.query(
+				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
+				[sentenceId, selectedSuggestion]
+			);
+
+			res.status(201).json({ message: "Suggestions saved successfully" });
+		} else {
+			res.sendStatus(422);
+		}
 	} catch (error) {
 		logger.error("%O", error);
 		res
