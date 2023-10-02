@@ -21,6 +21,10 @@ button.displayBlock:hover {
 	display: block;
 }
 
+.blue-background:focus{
+	background-color: blue;
+color: white;
+}
 .paddingBottom {
 	padding-bottom: 1em;
 }

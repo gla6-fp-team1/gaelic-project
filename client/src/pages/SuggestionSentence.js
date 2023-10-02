@@ -16,10 +16,11 @@ const innerText = diff(props.randomText, props.suggestionText);
 	return (
 		<div>
 			<button
-				className="displayBlock width"
-				onClick={() => {
-					let randomNumber = Math.random() * 1000;
-					props.setNextOriginalText(randomNumber);
+				className="displayBlock width blue-bacground"
+				onClick={(e) => {
+					const text = e.target.children[2].innerHTML.replace(/<u>/g, "");
+					const finalText = text.replace(/<[/]u>/g, "");
+					props.setSelectedSuggestion(finalText);
 				}}
 			>
 				<b>Suggestion {props.number}:</b>
