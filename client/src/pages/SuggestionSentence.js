@@ -16,7 +16,7 @@ const innerText = diff(props.randomText, props.suggestionText);
 	return (
 		<div>
 			<button
-				className="displayBlock width blue-bacground"
+				className="displayBlock width blue-background"
 				onClick={(e) => {
 					const text = e.target.children[2].innerHTML.replace(/<u>/g, "");
 					const finalText = text.replace(/<[/]u>/g, "");
