@@ -71,7 +71,12 @@ export function Home() {
 					<h3>Suggestions :</h3>
 					<div className="grid">
 						{suggestions}
-						<SubmitSuggestion selectedSuggestion={selectedSuggestion} />
+						<SubmitSuggestion
+							randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText}
+						/>
 					</div>
 				</div>
 				<div>
