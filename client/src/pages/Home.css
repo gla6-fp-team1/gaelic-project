@@ -35,6 +35,19 @@ button {
 	background-color: whitesmoke;
 	cursor: pointer;
 }
+.submit {
+	background-color: blue;
+	color: white;
+	margin-left: 25%;
+	width: 50%;
+	font-weight: bold;
+	
+}
+
+.flex-end {
+	align-self: flex-end;
+}
+
 .Next {
 	background-color: gray;
 	color: white;
