@@ -16,8 +16,10 @@ const SubmitSuggestion = (props) => {
 						.then((res) => res.json())
 						.then((data) => {
 							console.log(data.message);
-						});
-				}}
+                        });
+                    let randomNumber = Math.random() * 1000;
+					props.setNextOriginalText(randomNumber);
+                }}
 			>
 				Submit Suggestion
 			</button>
