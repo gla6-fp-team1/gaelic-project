@@ -15,6 +15,7 @@ export function Home() {
 		"Loading...",
 		"Loading...",
 	]);
+	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 //
 	//
@@ -47,7 +48,7 @@ export function Home() {
 				suggestionText={text}
 				randomText={randomText}
 				number={i + 1}
-				setNextOriginalText={setNextOriginalText}
+				setSelectedSuggestion={setSelectedSuggestion}
 			/>
 		);
 	});
@@ -70,7 +71,7 @@ export function Home() {
 					<h3>Suggestions :</h3>
 					<div className="grid">
 						{suggestions}
-						<SubmitSuggestion />
+						<SubmitSuggestion selectedSuggestion={selectedSuggestion} />
 					</div>
 				</div>
 				<div>
