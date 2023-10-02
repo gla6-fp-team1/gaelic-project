@@ -1,4 +1,11 @@
 const SuggestionSentence = (props) => {
+	// getting sentence from the button and saving it in the const vaiable
+	const getClickedSuggestionText = (e) => {
+		e.preventDefault();
+		const suggestionText= e.target.innerText.slice(13, -1);
+		return suggestionText;
+	};
+
     const diff = (original, corrected) => {
         const originalWords = original.split(" ");
         const correctedWords = corrected.split(" ");
@@ -17,9 +24,10 @@ const innerText = diff(props.randomText, props.suggestionText);
 		<div>
 			<button
 				className="displayBlock width"
-				onClick={() => {
+				onClick={(e) => {
 					let randomNumber = Math.random() * 1000;
 					props.setNextOriginalText(randomNumber);
+					getClickedSuggestionText(e);
 				}}
 			>
 				<b>Suggestion {props.number}:</b>
