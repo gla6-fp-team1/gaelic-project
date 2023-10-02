@@ -53,7 +53,7 @@ router.post("/save-suggestions", async (req, res) => {
 
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {
-			res.sendStatus(422);
+			res.status(422).json({ message: "Unprocessable Entry" });
 		}
 	} catch (error) {
 		logger.error("%O", error);
