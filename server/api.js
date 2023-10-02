@@ -1,7 +1,7 @@
 import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
-
+const fs = require("fs/promises");
 const router = Router();
 
 router.get("/", (_, res) => {
@@ -63,4 +63,31 @@ router.post("/save-suggestions", async (req, res) => {
 	}
 });
 
-export default router;
+router.get("/exportGaelicData", async (_, res) => {
+	try {
+	const querySuggestions = "SELECT * FROM suggestions";
+	const querySentences = "SELECT * FROM sentences";
+	const queryUser_interactions = "SELECT * FROM user_interactions";
+	const data = {};
+	const gaelicSentences = await db.query(querySentences);
+	const gaelicSuggestions = await db.query(querySuggestions);
+	const gaelicUser_interactions = await db.query(queryUser_interactions);
+	data.Sentences = gaelicSentences.rows;
+	data.Suggestions = gaelicSuggestions.rows;
+	data.User_interactions = gaelicUser_interactions.rows;
+	const jsonData = JSON.stringify(data, null, 2);
+
+	// Write JSON data to a file (exportData.json)
+	await fs.writeFile("exportData.json", jsonData);
+
+	// Send the file as a response for download
+	res.download("exportData.json", "exportData.json", () => {
+	// Cleanup: Delete the temporary JSON file after serving
+	fs.unlinkSync("exportData.json");
+
+	});
+} catch(error) {
+	res.status(500).send("Internal server error");
+}
+  });
+   export default router;

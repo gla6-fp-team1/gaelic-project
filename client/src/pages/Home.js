@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 import "./Home.css";
 import OriginalSentence from "./OriginalSentence";
@@ -21,11 +21,11 @@ export function Home() {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-
-			setRandomText(text);
+            setRandomText(text);
 		};
 		loadRandomSentenceFromFile();
 	}, [nextOriginalText]);
+
 	//
 	useEffect(() => {
 		const getSuggestionsFromApi = async (text) => {
@@ -36,7 +36,7 @@ export function Home() {
 			setSuggestionsText(data.data);
 		};
 		getSuggestionsFromApi(randomText);
-	}, [randomText]);
+			}, [randomText]);
 
 	//
 	const suggestions = suggestionsText.map((text, i) => {
