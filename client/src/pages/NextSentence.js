@@ -24,7 +24,7 @@ setTimeout(() => {
 const NextSentence = (props) => {
 	const handleExportGaelicData = async () => {
 	try {
- const response = await fetch("/exportGaelicData");
+ const response = await fetch("/api/exportGaelicData");
  const data = await response.json();
  console.log(data);
 exportGaelicData(data);

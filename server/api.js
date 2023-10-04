@@ -1,7 +1,9 @@
 import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
+
 const fs = require("fs/promises");
+
 const router = Router();
 
 router.get("/", (_, res) => {
@@ -65,8 +67,8 @@ router.post("/save-suggestions", async (req, res) => {
 
 router.get("/exportGaelicData", async (_, res) => {
 	try {
-	const querySuggestions = "SELECT * FROM suggestions";
-	const querySentences = "SELECT * FROM sentences";
+		const querySentences = "SELECT * FROM sentences";
+		const querySuggestions = "SELECT * FROM suggestions";
 	const queryUser_interactions = "SELECT * FROM user_interactions";
 	const data = {};
 	const gaelicSentences = await db.query(querySentences);
