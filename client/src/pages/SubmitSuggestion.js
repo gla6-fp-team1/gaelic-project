@@ -9,13 +9,15 @@ const SubmitSuggestion = (props) => {
 					data.append("suggestions", props.suggestionsText);
 					data.append("selectedSuggestion", props.selectedSuggestion);
 
-					console.log(props.randomText);
-					console.log(props.suggestionsText);
-					console.log(props.selectedSuggestion);
 
-					fetch("http://localhost:3000/api/save-suggestions", {
+					fetch("https://gaelic-project.onrender.com/api/save-suggestions", {
+
+					
 						method: "POST",
 						body: data,
+						headers: {
+							"Access-Control-Allow-Origin" : "*",
+						},
 					})
 						.then((res) => res.json())
 						.then((data) => {
