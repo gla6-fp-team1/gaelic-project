@@ -9,10 +9,7 @@ const SubmitSuggestion = (props) => {
 					data.append("suggestions", props.suggestionsText);
 					data.append("selectedSuggestion", props.selectedSuggestion);
 
-
-					fetch("https://gaelic-project.onrender.com/api/save-suggestions", {
-
-					
+					fetch("/api/save-suggestions", {
 						method: "POST",
 						body: data,
 						headers: {
