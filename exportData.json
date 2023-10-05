@@ -1,0 +1,17 @@
+{
+  "Sentences": [
+    {
+      "id": 1,
+      "sentence": "Bhiodh iad a' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn."
+    }
+  ],
+  "Suggestions": [],
+  "User_interactions": [
+    {
+      "id": 1,
+      "sentence_id": 1,
+      "selected_suggestion": "Bhiodh iad a' dèanamh mòran uisge-bheatha bho chionn fhada ro na latha againn.",
+      "user_provided_suggestion": null
+    }
+  ]
+}

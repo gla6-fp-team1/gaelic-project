@@ -61,3 +61,15 @@ button {
 	color: red;
 	background-color: white;
 }
+.nextExportButton{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	
+	
+
+}
+.nextExportButton button{
+	background-color: gray;
+	color: white;
+}
