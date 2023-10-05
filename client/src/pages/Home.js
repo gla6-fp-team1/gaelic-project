@@ -58,7 +58,7 @@ export function Home() {
 	//
 
 	const [user, setUser] = useState([]);
-	const [profile, setProfile] = useState([]);
+	const [profile, setProfile] = useState(null);
 
 	const login = useGoogleLogin({
 		onSuccess: (codeResponse) => setUser(codeResponse),
