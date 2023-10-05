@@ -1,7 +1,9 @@
+import PopUpAlert from "../components/PopUpAlert";
+
 const SubmitSuggestion = (props) => {
 	return (
 		<div className="flex-end">
-			<button
+			<PopUpAlert text={"Submit Suggestion"}
 				className="width submit"
 				onClick={() => {
 					const data = new URLSearchParams();
@@ -23,9 +25,7 @@ const SubmitSuggestion = (props) => {
 					let randomNumber = Math.random() * 1000;
 					props.setNextOriginalText(randomNumber);
 				}}
-			>
-				Submit Suggestion
-			</button>
+			/>
 		</div>
 	);
 };
