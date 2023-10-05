@@ -9,7 +9,10 @@ const SubmitSuggestion = (props) => {
 					data.append("suggestions", props.suggestionsText);
 					data.append("selectedSuggestion", props.selectedSuggestion);
 
+
 					fetch("https://gaelic-project.onrender.com/api/save-suggestions", {
+
+					
 						method: "POST",
 						body: data,
 						headers: {
@@ -19,10 +22,10 @@ const SubmitSuggestion = (props) => {
 						.then((res) => res.json())
 						.then((data) => {
 							console.log(data.message);
-                        });
-                    let randomNumber = Math.random() * 1000;
+						});
+					let randomNumber = Math.random() * 1000;
 					props.setNextOriginalText(randomNumber);
-                }}
+				}}
 			>
 				Submit Suggestion
 			</button>

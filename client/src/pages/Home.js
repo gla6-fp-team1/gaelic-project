@@ -17,13 +17,13 @@ export function Home() {
 	]);
 	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
-//
+	//
 	//
 	useEffect(() => {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-            setRandomText(text);
+			setRandomText(text);
 		};
 		loadRandomSentenceFromFile();
 	}, [nextOriginalText]);
@@ -38,7 +38,7 @@ export function Home() {
 			setSuggestionsText(data.data);
 		};
 		getSuggestionsFromApi(randomText);
-			}, [randomText]);
+	}, [randomText]);
 
 	//
 	const suggestions = suggestionsText.map((text, i) => {
