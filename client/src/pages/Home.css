@@ -21,9 +21,9 @@ button.displayBlock:hover {
 	display: block;
 }
 
-.blue-background:focus{
+.blue-background:focus {
 	background-color: blue;
-color: white;
+	color: white;
 }
 .paddingBottom {
 	padding-bottom: 1em;
@@ -35,7 +35,7 @@ color: white;
 button {
 	border: none;
 	padding: 1em;
-	border-radius: .5em;
+	border-radius: 0.5em;
 	background-color: whitesmoke;
 	cursor: pointer;
 }
@@ -45,7 +45,6 @@ button {
 	margin-left: 25%;
 	width: 50%;
 	font-weight: bold;
-	
 }
 
 .flex-end {
@@ -61,15 +60,26 @@ button {
 	color: red;
 	background-color: white;
 }
-.nextExportButton{
+.nextExportButton {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	
-	
-
 }
-.nextExportButton button{
+.nextExportButton button {
 	background-color: gray;
 	color: white;
+}
+
+.userbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+	background-color: whitesmoke;
+}
+
+.avatar {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
 }

@@ -7,6 +7,9 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import Button from "@mui/material/Button";
 
 export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -53,8 +56,52 @@ export function Home() {
 		);
 	});
 	//
+
+	const [user, setUser] = useState([]);
+	const [profile, setProfile] = useState([]);
+
+	const login = useGoogleLogin({
+		onSuccess: (codeResponse) => setUser(codeResponse),
+		onError: (error) => console.log("Login Failed:", error),
+	});
+
+	useEffect(() => {
+		if (user) {
+			axios
+				.get(
+					`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+					{
+						headers: {
+							Authorization: `Bearer ${user.access_token}`,
+							Accept: "application/json",
+						},
+					}
+				)
+				.then((res) => {
+					setProfile(res.data);
+				})
+				.catch((err) => console.log(err));
+		}
+	}, [user]);
+
+	const logOut = () => {
+		googleLogout();
+		setProfile(null);
+	};
 	return (
 		<div className="margin">
+			{profile ? (
+				<nav className="userbar">
+					<img className="avatar" src={profile.picture} alt="user" />
+					<div className="user-details">
+						<p>Name: {profile.name}</p>
+						<p>Email Address: {profile.email}</p>
+					</div>
+					<Button onClick={logOut}>Log out</Button>
+				</nav>
+			) : (
+				<Button onClick={() => login()}>Sign in with Google</Button>
+			)}
 			<header>
 				<h1 className="center paddingBottom">
 					Reinforcement Learning With Human Feedback
