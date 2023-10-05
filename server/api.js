@@ -43,7 +43,7 @@ router.post("/save-suggestions", async (req, res) => {
 			// Insert the suggestions into the suggestions table
 			await db.query(
 				"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
-				[sentenceId, suggestion]
+				[sentenceId, suggestions]
 			);
 			// for (const suggestion of suggestions) {
 			// }
