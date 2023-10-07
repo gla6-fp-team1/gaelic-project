@@ -11,6 +11,8 @@ import {
 } from "./utils/middleware";
 import cookieSession from "cookie-session";
 import passport from "passport";
+import passportSetup from "./auth/passport";
+import authRoute from "./auth/routes/auth";
 import cors from "cors";
 
 
@@ -27,7 +29,7 @@ app.use(configuredMorgan());
 app.use(cookieSession({
 	name: "session",
 	keys:["key1", "key2"],
-	maxAge: 24 * 60 * 60 * 1000, // 24 hours
+	maxAge: 24 * 60 * 60 * 1000,
 }));
 
 app.use(passport.initialize());
@@ -38,6 +40,8 @@ app.use(cors({
 	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true,
 }));
+
+app.use("/auth", authRoute);
 
 
 if (config.production) {
