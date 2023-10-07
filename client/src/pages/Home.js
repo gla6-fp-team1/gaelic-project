@@ -7,6 +7,7 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+import Navbar from "../components/Navbar";
 
 export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -54,36 +55,39 @@ export function Home() {
 	});
 	//
 	return (
-		<div className="margin">
-			<header>
-				<h1 className="center paddingBottom">
-					Reinforcement Learning With Human Feedback
-				</h1>
-			</header>
-			<main role="main" className="flex">
-				<div>
-					<NextSentence setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="center paddingBottom">
-					<OriginalSentence text={randomText} />
-				</div>
-				<div className="paddingBottom">
-					<h3>Suggestions :</h3>
-					<div className="grid">
-						{suggestions}
-						<SubmitSuggestion
-							randomText={randomText}
-							suggestionsText={suggestionsText}
-							selectedSuggestion={selectedSuggestion}
-							setNextOriginalText={setNextOriginalText}
-						/>
+		<>
+			<Navbar  />
+			<div className="margin">
+				<header>
+					<h1 className="center paddingBottom">
+						Reinforcement Learning With Human Feedback
+					</h1>
+				</header>
+				<main role="main" className="flex">
+					<div>
+						<NextSentence setNextOriginalText={setNextOriginalText} />
 					</div>
-				</div>
-				<div>
-					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-				</div>
-			</main>
-		</div>
+					<div className="center paddingBottom">
+						<OriginalSentence text={randomText} />
+					</div>
+					<div className="paddingBottom">
+						<h3>Suggestions :</h3>
+						<div className="grid">
+							{suggestions}
+							<SubmitSuggestion
+								randomText={randomText}
+								suggestionsText={suggestionsText}
+								selectedSuggestion={selectedSuggestion}
+								setNextOriginalText={setNextOriginalText}
+							/>
+						</div>
+					</div>
+					<div>
+						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }
 

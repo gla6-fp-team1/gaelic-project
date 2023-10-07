@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 
 const App = () => {
-	const user = false;
+	const user = true;
 	return (
 		<Routes>
 			<Route path="/" element={!user ? <Navigate to="/login" /> : <Home /> } />
