@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+*{
+	font-family: 'Roboto', sans-serif;
+}
 .center {
 	text-align: center;
 }
@@ -127,4 +131,12 @@ button {
 	width: 2.5em;
 	height: 2.5em;
 	border-radius: 50%;
+}
+
+.controls{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
 }

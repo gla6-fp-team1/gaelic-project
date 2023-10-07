@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 const Navbar = ({ user }) => {
 	return (
@@ -25,7 +26,9 @@ const Navbar = ({ user }) => {
 						<Link to="/about/this/site">About</Link>
 					</li>
                     <li>
+                        <Button variant="contained" color="primary">
 						<Link to="/">Logout</Link>
+                        </Button>
 					</li>
 				</ul>
                 </>
