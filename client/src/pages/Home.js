@@ -9,7 +9,7 @@ import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
 import Navbar from "../components/Navbar";
 
-export function Home() {
+export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
@@ -56,7 +56,7 @@ export function Home() {
 	//
 	return (
 		<>
-			<Navbar  />
+			<Navbar user={user} />
 			<div className="margin">
 				<header>
 					<h1 className="center paddingBottom">

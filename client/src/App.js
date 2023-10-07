@@ -8,7 +8,7 @@ const App = () => {
 	const user = true;
 	return (
 		<Routes>
-			<Route path="/" element={!user ? <Navigate to="/login" /> : <Home /> } />
+			<Route path="/" element={!user ? <Navigate to="/login" /> : <Home user={user} /> } />
 			<Route path="/about/this/site" element={<About />} />
 			<Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
 		</Routes>

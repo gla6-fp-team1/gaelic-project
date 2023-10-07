@@ -74,6 +74,7 @@ button {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	align-items: center;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -84,7 +85,7 @@ button {
 .navbar ul {
 	list-style-type: none;
 	margin: 0;
-	padding: 1.3em 1em;
+	padding: 0 1em;
 	overflow: hidden;
 }
 
@@ -95,7 +96,7 @@ button {
 .navbar a {
 	display: block;
 	text-align: center;
-	padding: 0.1em 0.7em;
+	padding: 0 0.7em;
 	text-decoration: none;
 	color: white;
 }
@@ -112,4 +113,18 @@ button {
 	font-weight: bold;
 	margin: 0;
 	color: white;
+}
+
+.user-info{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
+}
+
+.avatar > img{
+	width: 2.5em;
+	height: 2.5em;
+	border-radius: 50%;
 }
