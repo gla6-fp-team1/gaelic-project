@@ -39,17 +39,17 @@ app.use(cors({
 	credentials: true,
 }));
 
-app.use("/auth", authRouter);
 
 
 if (config.production) {
 	app.enable("trust proxy");
 	app.use(httpsOnly());
 }
+app.use("/auth", authRouter);
 
 app.use(apiRoot, apiRouter);
 app.use("/health", (_, res) => res.sendStatus(200));
-app.use(clientRouter(apiRoot));
+// app.use(clientRouter(apiRoot));
 
 app.use(logErrors());
 

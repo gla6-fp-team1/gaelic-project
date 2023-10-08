@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import axios from "axios";
 
 const App = () => {
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
-		const getUser = async () => {
-			axios.get("http://localhost:3100/auth/login/success", {
+		const getUser = () => {
+			fetch("http://localhost:3100/auth/login/success", {
+				method: "GET",
 				credentials: "include",
 				headers: {
 					Accept: "application/json",
@@ -33,7 +33,6 @@ const App = () => {
 		};
 		getUser();
 	}, []);
-	console.log(user);
 
 	return (
 		<Routes>

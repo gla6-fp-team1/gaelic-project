@@ -2,19 +2,16 @@ require("dotenv");
 const router = require("express").Router();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const GithubStrategy = require("passport-github2").Strategy;
 
 const CLIENT_URL = "http://localhost:3000/";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 passport.use(
 	new GoogleStrategy(
 		{
-			clientID: GOOGLE_CLIENT_ID,
-			clientSecret: GOOGLE_CLIENT_SECRET,
+			clientID: process.env.GOOGLE_CLIENT_ID,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 			callbackURL: "/auth/google/callback",
-			scope: ["profile"],
-			state: true,
 		},
 		function (accessToken, refreshToken, profile, cb) {
 			return cb(null, profile);
@@ -24,6 +21,19 @@ passport.use(
       return cb(err, user);
     });
     */
+		}
+	)
+);
+
+passport.use(
+	new GithubStrategy(
+		{
+			clientID: process.env.GITHUB_CLIENT_ID,
+			clientSecret: process.env.GITHUB_CLIENT_SECRET,
+			callbackURL: "/auth/github/callback",
+		},
+		function (accessToken, refreshToken, profile, cb) {
+			return cb(null, profile);
 		}
 	)
 );
@@ -58,16 +68,24 @@ router.get("/logout", (req, res) => {
 	req.logout();
 	res.redirect(CLIENT_URL);
 });
-router.get("/login/google", passport.authenticate("google"));
+router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
 
 router.get(
-	"/auth/google/callback",
+	"/google/callback",
 	passport.authenticate("google", {
 		failureRedirect: "/login/failed",
+		successRedirect: CLIENT_URL,
 	}),
-	function (req, res) {
-		res.redirect(CLIENT_URL);
-	}
+);
+
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+
+router.get(
+	"/github/callback",
+	passport.authenticate("github", {
+		failureRedirect: "/login/failed",
+		successRedirect: CLIENT_URL,
+	}),
 );
 
 module.exports = router;

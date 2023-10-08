@@ -5,7 +5,10 @@ import "./Login.css";
 
 const Login = () => {
 	const google = () => {
-		window.open("http://localhost:3100/auth/login/google", "_self");
+		window.open("http://localhost:3100/auth/google", "_self");
+	};
+	const github = () => {
+		window.open("http://localhost:3100/auth/github", "_self");
 	};
 
 	return (
@@ -16,7 +19,7 @@ const Login = () => {
 					<Button color="error" endIcon={<GoogleIcon />} onClick={google}>Sign in with Google</Button>
 				</div>
 				<div className="logginbutton">
-					<Button endIcon={<GitHubIcon />}>Sign in with Github</Button>
+					<Button endIcon={<GitHubIcon />} onClick={github}>Sign in with Github</Button>
 				</div>
 			</div>
         </div>
