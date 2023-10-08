@@ -35,7 +35,7 @@ app.use(passport.session());
 
 app.use(cors({
 	origin: "http://localhost:3000",
-	// methods: ["GET", "POST", "PUT", "DELETE"],
+	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true,
 }));
 
@@ -49,7 +49,7 @@ app.use("/auth", authRouter);
 
 app.use(apiRoot, apiRouter);
 app.use("/health", (_, res) => res.sendStatus(200));
-// app.use(clientRouter(apiRoot));
+app.use(clientRouter(apiRoot));
 
 app.use(logErrors());
 
