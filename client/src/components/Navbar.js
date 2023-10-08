@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 
 const Navbar = ({ user }) => {
+	const logout = () => {
+		window.open("http://localhost:3100/auth/logout", "_self");
+	};
+
 	return (
 		<nav className="navbar">
 			<span className="logo">
@@ -14,9 +18,9 @@ const Navbar = ({ user }) => {
                 <>
                 <ul className="user-info">
                     <li className="avatar">
-                        <img src="https://via.placeholder.com/50" alt="avatar" />
+                        <img src={user.photos[0].value} alt="avatar" />
                     </li>
-                    <li className="username">John Doe</li>
+                    <li className="username">{user.displayName}</li>
                 </ul>
 				<ul className="controls">
 					<li>
@@ -26,7 +30,7 @@ const Navbar = ({ user }) => {
 						<Link to="/about/this/site">About</Link>
 					</li>
                     <li>
-                        <Button variant="contained" color="primary">
+                        <Button variant="contained" color="primary" onClick={logout}>
 						<Link to="/">Logout</Link>
                         </Button>
 					</li>
