@@ -12,10 +12,12 @@ passport.use(
 		{
 			clientID: GOOGLE_CLIENT_ID,
 			clientSecret: GOOGLE_CLIENT_SECRET,
-			callbackURL: "http://www.localhost:3000/auth/google/callback",
+			callbackURL: "/auth/google/callback",
+			scope: ["profile"],
+			state: true,
 		},
-		function (accessToken, refreshToken, profile, done) {
-			done(null, profile);
+		function (accessToken, refreshToken, profile, cb) {
+			return cb(null, profile);
 
 			/* Find or create user in database
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
@@ -25,8 +27,6 @@ passport.use(
 		}
 	)
 );
-
-
 
 passport.serializeUser((user, done) => {
 	done(null, user);
@@ -49,7 +49,7 @@ router.get("/login/success", (req, res) => {
 			success: true,
 			message: "User has been successfully authenticated.",
 			user: req.user,
-			cookies: req.cookies,
+			// cookies: req.cookies,
 		});
 	}
 });
@@ -58,14 +58,16 @@ router.get("/logout", (req, res) => {
 	req.logout();
 	res.redirect(CLIENT_URL);
 });
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get("/login/google", passport.authenticate("google"));
 
 router.get(
-	"/google/callback",
+	"/auth/google/callback",
 	passport.authenticate("google", {
-		successRedirect: CLIENT_URL,
 		failureRedirect: "/login/failed",
-	})
+	}),
+	function (req, res) {
+		res.redirect(CLIENT_URL);
+	}
 );
 
 module.exports = router;
