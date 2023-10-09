@@ -28,6 +28,10 @@ export function Home() {
 			setRandomText(text);
 		};
 		loadRandomSentenceFromFile();
+		setLoading(1);
+		setTimeout(() => {
+			setLoading(0);
+		}, 3000);
 	}, [nextOriginalText]);
 
 	//
