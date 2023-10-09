@@ -1,7 +1,7 @@
 import PopUpAlert from "../components/PopUpAlert";
 import { useState } from "react";
 const SubmitSuggestion = (props) => {
-	const [messageAfterPost, setmessageAfterPost] = useState();
+	const [messageAfterPost, setMessageAfterPost] = useState("");
 	const submitButton = () => {
 		const data = new URLSearchParams();
 		data.append("sentence", props.randomText);
@@ -17,6 +17,7 @@ const SubmitSuggestion = (props) => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
+				setMessageAfterPost(data.message);
 				console.log(data.message);
 			});
 		let randomNumber = Math.random() * 1000;
@@ -27,6 +28,7 @@ const SubmitSuggestion = (props) => {
 			<PopUpAlert text={"Submit Suggestion"}
 				className="width submit"
 				submitButton={submitButton}
+				message = {messageAfterPost}
 			/>
 		</div>
 	);
