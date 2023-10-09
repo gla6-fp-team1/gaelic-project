@@ -1,6 +1,7 @@
 import PopUpAlert from "../components/PopUpAlert";
-
+import { useState } from "react";
 const SubmitSuggestion = (props) => {
+	const [messageAfterPost, setmessageAfterPost] = useState();
 	const submitButton = () => {
 		const data = new URLSearchParams();
 		data.append("sentence", props.randomText);
