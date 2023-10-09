@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import logger from "./utils/logger";
 import db from "./db";
 
@@ -79,14 +79,11 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.User_interactions = gaelicUser_interactions.rows;
 		const jsonData = JSON.stringify(data, null, 2);
 
-		// Write JSON data to a file (exportData.json)
-		await fs.writeFile("exportData.json", jsonData);
-
-		// Send the file as a response for download
-		res.download("exportData.json", "exportData.json", () => {
-			// Cleanup: Delete the temporary JSON file after serving
-			fs.unlinkSync("exportData.json");
+		res.set({
+			"Content-Type": "application/json","Content-Disposition":'attachment; filename="exportData.json"',
 		});
+		// Send the file as a response for download
+		res.send(jsonData);
 	} catch (error) {
 		res.status(500).send("Internal server error");
 	}
