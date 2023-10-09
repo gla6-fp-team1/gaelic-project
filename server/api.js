@@ -1,8 +1,8 @@
-import { Router, json } from "express";
+import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
 
-const fs = require("fs/promises");
+
 
 const router = Router();
 
