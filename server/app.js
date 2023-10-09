@@ -34,7 +34,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-	origin: "http://localhost:3000",
+	origin: "https://gaelic-project-pr-28.onrender.com/",  // For previewing on Render
 	methods: ["GET", "POST", "PUT", "DELETE"],
 	credentials: true,
 }));

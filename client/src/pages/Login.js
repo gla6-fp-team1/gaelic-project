@@ -5,10 +5,10 @@ import "./Login.css";
 
 const Login = () => {
 	const google = () => {
-		window.open("http://localhost:3100/auth/google", "_self");
+		window.open("https://gaelic-project-pr-28.onrender.com/auth/google", "_self");
 	};
 	const github = () => {
-		window.open("http://localhost:3100/auth/github", "_self");
+		window.open("https://gaelic-project-pr-28.onrender.com/auth/github", "_self");
 	};
 
 	return (

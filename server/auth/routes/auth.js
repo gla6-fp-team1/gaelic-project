@@ -4,7 +4,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
 
-const CLIENT_URL = "http://localhost:3000/";
+const CLIENT_URL = "https://gaelic-project-pr-28.onrender.com/";
 
 passport.use(
 	new GoogleStrategy(

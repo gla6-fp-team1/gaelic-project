@@ -9,7 +9,7 @@ const App = () => {
 
 	useEffect(() => {
 		const getUser = () => {
-			fetch("http://localhost:3100/auth/login/success", {
+			fetch("https://gaelic-project-pr-28.onrender.com/auth/login/success", {
 				method: "GET",
 				credentials: "include",
 				headers: {
