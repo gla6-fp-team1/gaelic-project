@@ -33,7 +33,7 @@ export default function PopUpAlert(props) {
       </Button>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Suggestion saved successfully.
+          {props.message === "Suggestions saved successfully" ? props.message : "Unprocessable Entry"}
         </Alert>
       </Snackbar>
     </Stack>
