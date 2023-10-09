@@ -7,6 +7,7 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+import LoadingSuggestions from "./LoadingSuggestions";
 
 export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -75,15 +76,19 @@ export function Home() {
 				</div>
 				<div className="paddingBottom">
 					<h3>Suggestions :</h3>
-					<div className="grid">
-						{suggestions}
-						<SubmitSuggestion
-							randomText={randomText}
-							suggestionsText={suggestionsText}
-							selectedSuggestion={selectedSuggestion}
-							setNextOriginalText={setNextOriginalText}
-						/>
-					</div>
+					{loading ? (
+						<LoadingSuggestions />
+					) : (
+						<div className="grid">
+							{suggestions}
+							<SubmitSuggestion
+								randomText={randomText}
+								suggestionsText={suggestionsText}
+								selectedSuggestion={selectedSuggestion}
+								setNextOriginalText={setNextOriginalText}
+							/>
+						</div>
+					)}
 				</div>
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
