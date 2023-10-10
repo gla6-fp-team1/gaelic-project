@@ -52,6 +52,36 @@ router.post("/save-suggestions", async (req, res) => {
 				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
 				[sentenceId, selectedSuggestion]
 			);
+			res.status(201).json({ message: "Suggestions saved successfully" });
+		} else {
+			res.status(422).json({ message: "Unprocessable Entry" });
+		}
+	} catch (error) {
+		logger.error("%O", error);
+		res
+			.status(500)
+			.json({ message: "An error occurred while saving suggestions" });
+	}
+});
+
+router.post("/save-correction", async (req, res) => {
+	const { sentence, user_provided_suggestion }= req.body;
+
+	try {
+		// Check if all data exist in req.body
+		if (sentence && user_provided_suggestion) {
+			// Insert the sentence into the sentences table
+			const sentenceResult = await db.query(
+				"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+				[sentence]
+			);
+			const sentenceId = sentenceResult.rows[0].id;
+
+			//Insert user provided suggestion to user_interactions table
+			await db.query(
+				"INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
+				[sentenceId, user_provided_suggestion]
+			);
 
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {
@@ -64,6 +94,8 @@ router.post("/save-suggestions", async (req, res) => {
 			.json({ message: "An error occurred while saving suggestions" });
 	}
 });
+
+
 
 router.get("/exportGaelicData", async (_, res) => {
 	try {
@@ -91,4 +123,5 @@ router.get("/exportGaelicData", async (_, res) => {
 		res.status(500).send("Internal server error");
 	}
 });
+
 export default router;
