@@ -9,36 +9,38 @@ import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
 
 export function Home() {
-	const [randomText, setRandomText] = useState("Loading...");
-	const [suggestionsText, setSuggestionsText] = useState([
-		"Loading...",
-		"Loading...",
-		"Loading...",
-	]);
-	const [selectedSuggestion, setSelectedSuggestion] = useState("");
-	const [nextOriginalText, setNextOriginalText] = useState(1);
-	//
-	//
-	useEffect(() => {
-		const loadRandomSentenceFromFile = async () => {
-			const response = await fetch("/api");
-			const text = await response.json();
-			setRandomText(text);
-		};
-		loadRandomSentenceFromFile();
-	}, [nextOriginalText]);
+    const [randomText, setRandomText] = useState("Loading...");
+    const [suggestionsText, setSuggestionsText] = useState([
+        "Loading...",
+        "Loading...",
+        "Loading...",
+    ]);
+    const [selectedSuggestion, setSelectedSuggestion] = useState("");
+    const [nextOriginalText, setNextOriginalText] = useState(1);
 
-	//
-	useEffect(() => {
-		const getSuggestionsFromApi = async (text) => {
-			const response = await fetch(
-				`https://angocair.garg.ed.ac.uk/best/?text=${encodeURIComponent(text)}`
-			);
-			const data = await response.json();
-			setSuggestionsText(data.data);
-		};
-		getSuggestionsFromApi(randomText);
-	}, [randomText]);
+    const getSuggestionsFromApi = async (text) => {
+        const response = await fetch(
+            `https://angocair.garg.ed.ac.uk/best/?text=${encodeURIComponent(text)}`
+        );
+        const data = await response.json();
+        setSuggestionsText(data.data);
+        setRandomText(text);
+    };
+
+    useEffect(() => {
+        const loadRandomSentenceFromFile = async () => {
+            const response = await fetch("/api");
+            const text = await response.json();
+            getSuggestionsFromApi(text);
+        };
+        loadRandomSentenceFromFile();
+    }, [nextOriginalText]);
+
+    useEffect(() => {
+        if (randomText !== "Loading...") {
+            getSuggestionsFromApi(randomText);
+        }
+    }, [randomText]);
 
 	//
 	const suggestions = suggestionsText.map((text, i) => {
