@@ -1,7 +1,13 @@
+import Loading from "../images/loading.png";
 const LoadingSuggestions = () => {
 	return (
 		<div>
-			<img src="../favicon.ico" alt="logo" className="loading" />
+			<img
+				src={Loading}
+				alt="loading page"
+				className="loading"
+
+			/>
 		</div>
 	);
 };

@@ -18,7 +18,7 @@ export function Home() {
 	]);
 	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
-		const [loading, setLoading] = useState(1);
+	const [loading, setLoading] = useState(1);
 
 	//
 	//
