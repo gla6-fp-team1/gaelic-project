@@ -7,7 +7,10 @@ const UserSuggestion = (probs) => {
         if (userProvidedCorrection.trim() === "") {
           return alert("Users correction cannot be empty.");
         }
-        const formData = { sentence: probs.randomText, user_provided_suggestion:userProvidedCorrection };
+        const sentence=probs.randomText;
+        const suggestions= probs.suggestionsText;
+        const userSuggestion = userProvidedCorrection;
+        const formData = { sentence, suggestions,userSuggestion };
 
         console.log(formData);
         try {
@@ -16,7 +19,7 @@ const UserSuggestion = (probs) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(formData),
+            body: JSON.stringify(formData),
             });
             if (response.ok) {
               console.log("Form data submitted successfully");
