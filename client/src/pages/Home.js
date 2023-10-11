@@ -27,12 +27,9 @@ export function Home() {
 			const response = await fetch("/api");
 			const text = await response.json();
 			setRandomText(text);
+			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
-		setLoading(1);
-		setTimeout(() => {
-			setLoading(0);
-		}, 3000);
 	}, [nextOriginalText]);
 
 	//
@@ -43,6 +40,11 @@ export function Home() {
 			);
 			const data = await response.json();
 			setSuggestionsText(data.data);
+			if (text !== "Loading...") {
+				setLoading(0);
+			} else {
+				setLoading(1);
+			}
 		};
 		getSuggestionsFromApi(randomText);
 	}, [randomText]);
