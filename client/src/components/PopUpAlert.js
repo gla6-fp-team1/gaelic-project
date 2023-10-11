@@ -24,18 +24,36 @@ export default function PopUpAlert(props) {
   };
 
   return (
-    <Stack spacing={1} sx={{ width: "100%" }}>
-      <Button color="success" variant="contained" onClick={() => {
-        props.submitButton();
-        handleClick();
-      }}>
-        {props.text}
-      </Button>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          {props.message === "Suggestions saved successfully" ? props.message : "Unprocessable Entry"}
-        </Alert>
-      </Snackbar>
-    </Stack>
-  );
+		<Stack spacing={1} sx={{ width: "100%" }}>
+			<Button
+				color="success"
+				variant="contained"
+				onClick={() => {
+					props.submitButton();
+					handleClick();
+				}}
+			>
+				{props.text}
+			</Button>
+			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+				{props.message === "Suggestions saved successfully" ? (
+					<Alert
+						onClose={handleClose}
+						severity="success"
+						sx={{ width: "100%" }}
+					>
+						Suggestions saved successfully
+					</Alert>
+				) : (
+					<Alert
+						onClose={handleClose}
+						severity="error"
+						sx={{ width: "100%" }}
+					>
+						Could not saved suggestion
+					</Alert>
+				)}
+			</Snackbar>
+		</Stack>
+	);
 }
