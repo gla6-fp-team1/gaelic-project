@@ -30,9 +30,9 @@ router.post("/save-suggestions", async (req, res) => {
 	try {
 		// Check if all data exist in req.body
 		if (sentence && suggestions && selectedSuggestion) {
-			// Insert the sentence into the sentences table
+			// Select id from sentences table
 			const sentenceResult = await db.query(
-				"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+				"SELECT id FROM sentences WHERE sentence = $1",
 				[sentence]
 			);
 			const sentenceId = sentenceResult.rows[0].id;
