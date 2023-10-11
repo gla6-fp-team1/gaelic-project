@@ -14,7 +14,7 @@ router.get("/", async(_, res) => {
 	};
 	// Select sentences from sentences table
 	const sentences = await db.query(
-		"SELECT sentence FROM sentences WHERE count >= 1"
+		"SELECT sentence FROM sentences"
 	);
 	const randomSentences = [];
 	for (let sentence of sentences.rows) {
