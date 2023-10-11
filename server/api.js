@@ -64,7 +64,133 @@ router.post("/save-suggestions", async (req, res) => {
 			.json({ message: "An error occurred while saving suggestions" });
 	}
 });
+///Mele
+router.post("/save-correction", async (req, res) => {
+	const gaelicData = req.body;
+    const sentence = gaelicData.sentence;
+    const suggestions = gaelicData.suggestions;
+	const userSuggestion = gaelicData.userSuggestion;
+	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
+	try {
 
+if (sentence && suggestions && userSuggestion) {
+    // ...
+	// Insert the sentence into the sentences table
+	const sentenceResult = await db.query(
+		"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+		[sentence]
+	);
+	const sentenceId = sentenceResult.rows[0].id;
+
+	// Insert the suggestions into the suggestions table
+	const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";
+	//console.log(suggestions);
+	const suggestionInsertPromises = suggestions.map(async (suggestion) => {
+		try {
+			await db.query(insertSuggestionQuery, [sentenceId, suggestion]);
+		} catch (error) {
+			logger.error("%O", error);
+		}
+	});
+	// Wait for all suggestion insertions to complete
+	await Promise.all(suggestionInsertPromises);
+
+	// Insert user suggestion to user_interactions table
+	await db.query(
+  "INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
+		[sentenceId, userSuggestion]
+	);
+
+} else if (sentence && suggestions && originalSentenceWasCorrect) {
+    // ...
+	// Insert the sentence into the sentences table
+	const sentenceResult = await db.query(
+		"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+		[sentence]
+	);
+	const sentenceId = sentenceResult.rows[0].id;
+
+	// Insert the suggestions into the suggestions table
+	const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";
+	//console.log(suggestions);
+	const suggestionInsertPromises = suggestions.map(async (suggestion) => {
+		try {
+			await db.query(insertSuggestionQuery, [sentenceId, suggestion]);
+		} catch (error) {
+			logger.error("%O", error);
+		}
+	});
+	// Wait for all suggestion insertions to complete
+	await Promise.all(suggestionInsertPromises);
+
+	// Insert originalSentenceWasCorrect into user_interactions table
+	await db.query(
+		"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
+		[sentenceId, originalSentenceWasCorrect]
+	);
+
+
+} else {
+	res.status(422).json({ message: "Unprocessable Entry" });
+}
+} catch (error) {
+logger.error("%O", error);
+res.status(500).json({ message: "An error occurred while saving suggestions" });
+}
+});
+//Meleend
+
+/*
+router.post("/save-correction", async (req, res) => {
+	const gaelicData = req.body;
+    const sentence = gaelicData.sentence;
+    const suggestions = gaelicData.suggestions;
+	const userSuggestion = gaelicData.userSuggestion;
+	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
+	try {
+        // Check if all required data exist in req.body
+        if ((sentence && suggestions && userSuggestion) || (sentence && suggestions && originalSentenceWasCorrect)) {
+            // Insert the sentence into the sentences table
+            const sentenceResult = await db.query(
+                "INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+                [sentence]
+            );
+            const sentenceId = sentenceResult.rows[0].id;
+
+            // Insert the suggestions into the suggestions table
+            const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";
+			//console.log(suggestions);
+            const suggestionInsertPromises = suggestions.map(async (suggestion) => {
+                try {
+                    await db.query(insertSuggestionQuery, [sentenceId, suggestion]);
+                } catch (error) {
+                    logger.error("%O", error);
+                }
+            });
+            // Wait for all suggestion insertions to complete
+            await Promise.all(suggestionInsertPromises);
+
+            // Insert user suggestion to user_interactions table
+            await db.query(
+               "INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
+                [sentenceId, userSuggestion]
+            );
+			// Insert originalSentenceWasCorrect into user_interactions table
+			await db.query(
+				"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
+				[sentenceId, originalSentenceWasCorrect]
+			);
+
+          res.status(201).json({ message: "User correction saved successfully" });
+        } else {
+            res.status(422).json({ message: "Unprocessable Entry" });
+        }
+    } catch (error) {
+        logger.error("%O", error);
+        res.status(500).json({ message: "An error occurred while saving suggestions" });
+    }
+});
+*/
 router.get("/exportGaelicData", async (_, res) => {
 	try {
 		const querySentences = "SELECT * FROM sentences";

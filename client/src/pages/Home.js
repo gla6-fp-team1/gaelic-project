@@ -8,6 +8,8 @@ import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
 
+import UserSuggestion from "./UserSuggestion";
+import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
 export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
@@ -66,7 +68,10 @@ export function Home() {
 				</div>
 				<div className="center paddingBottom">
 					<OriginalSentence text={randomText} />
-				</div>
+				</div><div className="isOriginalDiv"><IsOriginalSentenceCorrect randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText} /></div>
 				<div className="paddingBottom">
 					<h3>Suggestions :</h3>
 					<div className="grid">
@@ -82,6 +87,11 @@ export function Home() {
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
+				<div><UserSuggestion
+                            randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText} /></div>
 			</main>
 		</div>
 	);
