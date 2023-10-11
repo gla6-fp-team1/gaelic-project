@@ -41,10 +41,12 @@ router.post("/save-suggestions", async (req, res) => {
 			const sentenceId = sentenceResult.rows[0].id;
 
 			// Insert the suggestions into the suggestions table
-			await db.query(
-				"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
-				[sentenceId, suggestions]
-			);
+			for (const suggestion of suggestions) {
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
+					[sentenceId, suggestion]
+				);
+			}
 			// for (const suggestion of suggestions) {
 			// }
 			// Insert selected suggestion to user_interactions table
