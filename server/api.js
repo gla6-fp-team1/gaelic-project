@@ -1,11 +1,10 @@
 import { Router } from "express";
-import authRouter from "./auth/routes/auth"
 import logger from "./utils/logger";
 import db from "./db";
 
-const router = Router();
 
-router.use("/auth", authRouter);
+
+const router = Router();
 
 router.get("/", async(_, res) => {
 	logger.debug("Welcoming everyone...");
