@@ -3,15 +3,17 @@ import { useState } from "react";
 const SubmitSuggestion = (props) => {
 	const [messageAfterPost, setMessageAfterPost] = useState("");
 	const submitButton = () => {
-		const data = new URLSearchParams();
-		data.append("sentence", props.randomText);
-		data.append("suggestions", props.suggestionsText);
-		data.append("selectedSuggestion", props.selectedSuggestion);
+		const jsonData = {
+			sentence: props.randomText,
+			suggestions: props.suggestionsText,
+			selectedSuggestion: props.selectedSuggestion,
+		};
 
 		fetch("/api/save-suggestions", {
 			method: "POST",
-			body: data,
+			body: JSON.stringify(jsonData),
 			headers: {
+				"Content-Type": "application/json",
 				"Access-Control-Allow-Origin": "*",
 			},
 		})

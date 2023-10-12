@@ -6,25 +6,22 @@ import db from "./db";
 
 const router = Router();
 
-router.get("/", (_, res) => {
+router.get("/", async(_, res) => {
 	logger.debug("Welcoming everyone...");
-	const text = [
-		"Bhiodh iad a' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn.",
-		"Tha iad ris an Gearrloch fhathast.",
-		"Well, chuala mi gun robh iad ris an Gearrloch a sin.",
-		"Bha iad a' faicinn bòcan shios ann an Arasaig.",
-		"agus 's e a'chiad rud a bha iad a' faicinn dhe'n rud colainn gun cheann a' falbh feadh siod.",
-		"agus bha bodach a' fuireach ann a' sabhall.",
-		"Chuir iad duine ann a' sabhall a dh' fhuireach oidhche.",
-		"agus chunnaic e am bòcan a bha seo agus an bòcan bhitheadh aige.",
-		"agus tha obair uamhasach aige mun d' fhuair e am bòcan a chumail bhuaidh.",
-		"agus bha coltas air gun deànadh am bòcan an gróthach air.",
-		"Cha robh buille a bhuaileadh e air nach robh e a' smaoineach' gur h- ann air póca cloìmh leis cho bog 's a bha a' bhuille is cha robh i a' dèanadh feum.",
-	];
+
 	const getRandomIndex = (length) => {
 		return Math.floor(Math.random() * length);
 	};
-	res.json(text[getRandomIndex(text.length)]);
+	// Select sentences from sentences table
+	const sentences = await db.query(
+		"SELECT sentence FROM sentences"
+	);
+	const randomSentences = [];
+	for (let sentence of sentences.rows) {
+		randomSentences.push(sentence.sentence);
+	}
+	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
+	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
 });
 
 router.post("/save-suggestions", async (req, res) => {
@@ -33,18 +30,20 @@ router.post("/save-suggestions", async (req, res) => {
 	try {
 		// Check if all data exist in req.body
 		if (sentence && suggestions && selectedSuggestion) {
-			// Insert the sentence into the sentences table
+			// Select id from sentences table
 			const sentenceResult = await db.query(
-				"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+				"SELECT id FROM sentences WHERE sentence = $1",
 				[sentence]
 			);
 			const sentenceId = sentenceResult.rows[0].id;
 
 			// Insert the suggestions into the suggestions table
-			await db.query(
-				"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
-				[sentenceId, suggestions]
-			);
+			for (const suggestion of suggestions) {
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
+					[sentenceId, suggestion]
+				);
+			}
 			// for (const suggestion of suggestions) {
 			// }
 			// Insert selected suggestion to user_interactions table
