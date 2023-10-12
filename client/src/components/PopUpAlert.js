@@ -8,7 +8,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function PopUpAlert({ text }) {
+export default function PopUpAlert(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -24,15 +24,36 @@ export default function PopUpAlert({ text }) {
   };
 
   return (
-    <Stack spacing={1} sx={{ width: "100%" }}>
-      <Button color="success" variant="contained" onClick={handleClick}>
-        {text}
-      </Button>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Suggestion saved successfully.
-        </Alert>
-      </Snackbar>
-    </Stack>
-  );
+		<Stack spacing={1} sx={{ width: "100%" }}>
+			<Button
+				color="success"
+				variant="contained"
+				onClick={() => {
+					props.submitButton();
+					handleClick();
+				}}
+			>
+				{props.text}
+			</Button>
+			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+				{props.message === "Suggestions saved successfully" ? (
+					<Alert
+						onClose={handleClose}
+						severity="success"
+						sx={{ width: "100%" }}
+					>
+						Suggestions saved successfully
+					</Alert>
+				) : (
+					<Alert
+						onClose={handleClose}
+						severity="error"
+						sx={{ width: "100%" }}
+					>
+						Could not saved suggestion
+					</Alert>
+				)}
+			</Snackbar>
+		</Stack>
+	);
 }

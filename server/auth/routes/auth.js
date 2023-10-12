@@ -1,16 +1,18 @@
-require("dotenv");
-const router = require("express").Router();
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+import "dotenv/config";
 
-const CLIENT_URL = "https://gaelic-project-pr-28.onrender.com/";
+import { Router } from "express";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+
+const router = Router();
+const CLIENT_URL = process.env.CLIENT_URL;
 
 passport.use(
 	new GoogleStrategy(
 		{
 			clientID: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-			callbackURL: "/auth/google/callback",
+			callbackURL: "/api/auth/google/callback",
 		},
 		function (accessToken, refreshToken, profile, cb) {
 			return cb(null, profile);
@@ -47,6 +49,8 @@ router.get("/login/success", (req, res) => {
 			user: req.user,
 			// cookies: req.cookies,
 		});
+	} else {
+		res.status(401);
 	}
 });
 

@@ -4,7 +4,7 @@ import "./Login.css";
 
 const Login = () => {
 	const google = () => {
-		window.open("https://gaelic-project-1lfx.onrender.com/auth/google", "_self");
+		window.open("/api/auth/google", "_self");
 	};
 
 	return (
