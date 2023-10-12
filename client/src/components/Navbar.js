@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 
 const Navbar = ({ user }) => {
 	const logout = () => {
-		window.open("https://gaelic-project-pr-28.onrender.com/auth/logout", "_self");
+		window.open("/api/auth/logout", "_self");
 	};
 
 	return (

@@ -8,6 +8,7 @@ import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
 import Navbar from "../components/Navbar";
+import LoadingSuggestions from "./LoadingSuggestions";
 
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -18,6 +19,8 @@ export function Home({ user }) {
 	]);
 	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
+	const [loading, setLoading] = useState(1);
+
 	//
 	//
 	useEffect(() => {
@@ -25,6 +28,7 @@ export function Home({ user }) {
 			const response = await fetch("/api");
 			const text = await response.json();
 			setRandomText(text);
+			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
 	}, [nextOriginalText]);
@@ -37,6 +41,11 @@ export function Home({ user }) {
 			);
 			const data = await response.json();
 			setSuggestionsText(data.data);
+			if (text !== "Loading...") {
+				setLoading(0);
+			} else {
+				setLoading(1);
+			}
 		};
 		getSuggestionsFromApi(randomText);
 	}, [randomText]);
@@ -72,15 +81,19 @@ export function Home({ user }) {
 					</div>
 					<div className="paddingBottom">
 						<h3>Suggestions :</h3>
-						<div className="grid">
-							{suggestions}
-							<SubmitSuggestion
-								randomText={randomText}
-								suggestionsText={suggestionsText}
-								selectedSuggestion={selectedSuggestion}
-								setNextOriginalText={setNextOriginalText}
-							/>
-						</div>
+						{loading ? (
+							<LoadingSuggestions />
+						) : (
+							<div className="grid">
+								{suggestions}
+								<SubmitSuggestion
+									randomText={randomText}
+									suggestionsText={suggestionsText}
+									selectedSuggestion={selectedSuggestion}
+									setNextOriginalText={setNextOriginalText}
+								/>
+							</div>
+						)}
 					</div>
 					<div>
 						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
