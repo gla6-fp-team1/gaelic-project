@@ -8,6 +8,7 @@ import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
 import LoadingSuggestions from "./LoadingSuggestions";
+import UserSuggestion from "./UserSuggestion";
 
 export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -95,6 +96,11 @@ export function Home() {
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
+					<div><UserSuggestion
+randomText={randomText}
+suggestionsText={suggestionsText}
+selectedSuggestion={selectedSuggestion}
+setNextOriginalText={setNextOriginalText} /></div>
 			</main>
 		</div>
 	);
