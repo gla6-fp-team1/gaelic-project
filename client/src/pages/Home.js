@@ -22,10 +22,6 @@ export function Home({ user }) {
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
 
-	const [loading, setLoading] = useState(1);
-
-	//
-	//
 	useEffect(() => {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
@@ -73,7 +69,6 @@ export function Home({ user }) {
 	});
 	//
 	return (
-
 		<>
 			<Navbar user={user} />
 			<div className="margin">
@@ -105,12 +100,12 @@ export function Home({ user }) {
 							</div>
 						)}
 					</div>
-				<div>
-					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-				</div>
-			</main>
-		</div>
-</>
+					<div>
+						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }
 
