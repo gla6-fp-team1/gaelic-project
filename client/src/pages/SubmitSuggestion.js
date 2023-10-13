@@ -27,10 +27,13 @@ const SubmitSuggestion = (props) => {
 	};
 	return (
 		<div className="flex-end">
-			<PopUpAlert text={"Submit Suggestion"}
+			<PopUpAlert
+				setEnableDisable={props.setEnableDisable}
+				enableDisable={props.enableDisable}
+				text={"Submit Suggestion"}
 				className="width submit"
 				submitButton={submitButton}
-				message = {messageAfterPost}
+				message={messageAfterPost}
 			/>
 		</div>
 	);

@@ -20,6 +20,8 @@ export function Home() {
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
 
+	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
+
 	//
 	//
 	useEffect(() => {
@@ -58,6 +60,7 @@ export function Home() {
 				randomText={randomText}
 				number={i + 1}
 				setSelectedSuggestion={setSelectedSuggestion}
+				setEnableDisable={setEnableDisable}
 			/>
 		);
 	});
@@ -88,6 +91,8 @@ export function Home() {
 								suggestionsText={suggestionsText}
 								selectedSuggestion={selectedSuggestion}
 								setNextOriginalText={setNextOriginalText}
+								enableDisable={enableDisable}
+								setEnableDisable={setEnableDisable}
 							/>
 						</div>
 					)}
