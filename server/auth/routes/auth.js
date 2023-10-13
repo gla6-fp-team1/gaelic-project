@@ -3,7 +3,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
-const CLIENT_URL = "https://gaelic-project-pr-28.onrender.com/";
+const CLIENT_URL = "https://gaelic-project-1lfx.onrender.com/";
 
 passport.use(
 	new GoogleStrategy(
