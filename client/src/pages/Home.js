@@ -7,13 +7,9 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
-
-import Navbar from "../components/Navbar";
-
 import LoadingSuggestions from "./LoadingSuggestions";
 
-
-export function Home({ user }) {
+export function Home() {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
@@ -70,9 +66,6 @@ export function Home({ user }) {
 	});
 	//
 	return (
-
-		<>
-			<Navbar user={user} />
 		<div className="margin">
 			<header>
 				<h1 className="center paddingBottom">
@@ -110,7 +103,6 @@ export function Home({ user }) {
 				</div>
 			</main>
 		</div>
-</>
 	);
 }
 

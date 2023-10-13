@@ -1,12 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-*{
-	font-family: 'Roboto', sans-serif;
-}
 .center {
 	text-align: center;
 }
 .margin {
-	margin: 6em 12em;
+	margin: 1em 12em;
 }
 .grid {
 	display: grid;
@@ -25,9 +21,9 @@ button.displayBlock:hover {
 	display: block;
 }
 
-.blue-background:focus {
+.blue-background:focus{
 	background-color: blue;
-	color: white;
+color: white;
 }
 .paddingBottom {
 	padding-bottom: 1em;
@@ -39,7 +35,7 @@ button.displayBlock:hover {
 button {
 	border: none;
 	padding: 1em;
-	border-radius: 0.5em;
+	border-radius: .5em;
 	background-color: whitesmoke;
 	cursor: pointer;
 }
@@ -49,6 +45,7 @@ button {
 	margin-left: 25%;
 	width: 50%;
 	font-weight: bold;
+	
 }
 
 .flex-end {
@@ -64,12 +61,15 @@ button {
 	color: red;
 	background-color: white;
 }
-.nextExportButton {
+.nextExportButton{
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	
+	
+
 }
-.nextExportButton button {
+.nextExportButton button{
 	background-color: gray;
 	color: white;
 }
@@ -142,6 +142,7 @@ button {
 	gap: 1em;
 }
 
+
 .loading {
 	width: 5%;
 	height: 5%;
@@ -160,5 +161,4 @@ button {
 	100% {
 		transform: rotate(360deg);
 	}
-
 }
