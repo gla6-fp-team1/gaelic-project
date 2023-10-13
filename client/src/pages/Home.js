@@ -7,6 +7,7 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+
 import Navbar from "../components/Navbar";
 import LoadingSuggestions from "./LoadingSuggestions";
 
@@ -21,6 +22,8 @@ export function Home({ user }) {
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
 
+	const [loading, setLoading] = useState(1);
+
 	//
 	//
 	useEffect(() => {
@@ -28,6 +31,7 @@ export function Home({ user }) {
 			const response = await fetch("/api");
 			const text = await response.json();
 			setRandomText(text);
+			setLoading(1);
 			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
@@ -41,6 +45,11 @@ export function Home({ user }) {
 			);
 			const data = await response.json();
 			setSuggestionsText(data.data);
+			if (text !== "Loading...") {
+				setLoading(0);
+			} else {
+				setLoading(1);
+			}
 			if (text !== "Loading...") {
 				setLoading(0);
 			} else {
@@ -64,6 +73,7 @@ export function Home({ user }) {
 	});
 	//
 	return (
+
 		<>
 			<Navbar user={user} />
 			<div className="margin">
@@ -95,12 +105,12 @@ export function Home({ user }) {
 							</div>
 						)}
 					</div>
-					<div>
-						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-					</div>
-				</main>
-			</div>
-		</>
+				<div>
+					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+				</div>
+			</main>
+		</div>
+</>
 	);
 }
 

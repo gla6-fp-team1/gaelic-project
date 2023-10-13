@@ -140,6 +140,27 @@ button {
 	justify-content: space-between;
 	align-items: center;
 	gap: 1em;
+
+
+.loading {
+	width: 5%;
+	height: 5%;
+	animation: spin 1s linear infinite;
+	margin: 1em 50%;
+	animation-iteration-count: 3;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(180deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+
 }
 
 .loading {
