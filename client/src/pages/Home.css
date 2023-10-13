@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+*{
+	font-family: 'Roboto', sans-serif;
+}
 .center {
 	text-align: center;
 }
 .margin {
-	margin: 1em 12em;
+	margin: 6em 12em;
 }
 .grid {
 	display: grid;
@@ -21,9 +25,9 @@ button.displayBlock:hover {
 	display: block;
 }
 
-.blue-background:focus{
+.blue-background:focus {
 	background-color: blue;
-color: white;
+	color: white;
 }
 .paddingBottom {
 	padding-bottom: 1em;
@@ -35,7 +39,7 @@ color: white;
 button {
 	border: none;
 	padding: 1em;
-	border-radius: .5em;
+	border-radius: 0.5em;
 	background-color: whitesmoke;
 	cursor: pointer;
 }
@@ -45,7 +49,6 @@ button {
 	margin-left: 25%;
 	width: 50%;
 	font-weight: bold;
-	
 }
 
 .flex-end {
@@ -61,17 +64,82 @@ button {
 	color: red;
 	background-color: white;
 }
-.nextExportButton{
+.nextExportButton {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	
-	
-
 }
-.nextExportButton button{
+.nextExportButton button {
 	background-color: gray;
 	color: white;
+}
+
+.navbar {
+	position: fixed;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	color: white;
+	background-color: #2f7f33;
+}
+
+.navbar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0 1em;
+	overflow: hidden;
+}
+
+.navbar li {
+	float: left;
+}
+
+.navbar a {
+	display: block;
+	text-align: center;
+	padding: 0 0.7em;
+	text-decoration: none;
+	color: white;
+}
+
+.navbar a:hover {
+	text-decoration: underline;
+}
+
+.logo {
+	padding: 1em;
+}
+.navbar-title {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin: 0;
+	color: white;
+}
+
+.user-info{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
+}
+
+.avatar > img{
+	width: 2.5em;
+	height: 2.5em;
+	border-radius: 50%;
+}
+
+.controls{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
 }
 
 .loading {
@@ -92,4 +160,5 @@ button {
 	100% {
 		transform: rotate(360deg);
 	}
+
 }
