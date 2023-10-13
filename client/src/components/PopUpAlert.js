@@ -5,32 +5,34 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function PopUpAlert(props) {
-  const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
+	const handleClick = () => {
+		setOpen(true);
+	};
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
 
-    setOpen(false);
-  };
+		setOpen(false);
+	};
 
-  return (
+	return (
 		<Stack spacing={1} sx={{ width: "100%" }}>
 			<Button
 				color="success"
 				variant="contained"
+				disabled={props.enableDisable}
 				onClick={() => {
 					props.submitButton();
 					handleClick();
+					props.setEnableDisable(true);
 				}}
 			>
 				{props.text}
@@ -45,11 +47,7 @@ export default function PopUpAlert(props) {
 						Suggestions saved successfully
 					</Alert>
 				) : (
-					<Alert
-						onClose={handleClose}
-						severity="error"
-						sx={{ width: "100%" }}
-					>
+					<Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
 						Could not saved suggestion
 					</Alert>
 				)}

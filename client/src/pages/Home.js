@@ -24,6 +24,8 @@ export function Home({ user }) {
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
 
+	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
+
 	//
 	//
 	useEffect(() => {
@@ -62,6 +64,7 @@ export function Home({ user }) {
 				randomText={randomText}
 				number={i + 1}
 				setSelectedSuggestion={setSelectedSuggestion}
+				setEnableDisable={setEnableDisable}
 			/>
 		);
 	});
@@ -85,22 +88,23 @@ export function Home({ user }) {
 				</div>
 				<div className="paddingBottom">
 					<h3>Suggestions :</h3>
-                        {loading ? (
-                            <LoadingSuggestions />
-                        ) : (
+					{loading ? (
+						<LoadingSuggestions />
+					) : (
+						<div className="grid">
+							{suggestions}
+							<SubmitSuggestion
+								randomText={randomText}
+								suggestionsText={suggestionsText}
+								selectedSuggestion={selectedSuggestion}
+								setNextOriginalText={setNextOriginalText}
+								enableDisable={enableDisable}
+								setEnableDisable={setEnableDisable}
+							/>
+						</div>
+					)}
+				</div>
 
-                            <div className="grid">
-                                {suggestions}
-                                <SubmitSuggestion
-                                    randomText={randomText}
-                                    suggestionsText={suggestionsText}
-                                    selectedSuggestion={selectedSuggestion}
-                                    setNextOriginalText={setNextOriginalText}
-                                />
-                            </div>
-                        )}
-					</div>
-                    
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
