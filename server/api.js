@@ -23,8 +23,48 @@ router.get("/", async(_, res) => {
 	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
 	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
 });
-//Mele
-router.post("/save-suggestions",async (req, res) =>{
+
+router.post("/save-suggestions", async (req, res) => {
+	const { sentence, suggestions, selectedSuggestion } = req.body;
+
+	try {
+		// Check if all data exist in req.body
+		if (sentence && suggestions && selectedSuggestion) {
+			// Select id from sentences table
+			const sentenceResult = await db.query(
+				"SELECT id FROM sentences WHERE sentence = $1",
+				[sentence]
+			);
+			const sentenceId = sentenceResult.rows[0].id;
+
+			// Insert the suggestions into the suggestions table
+			for (const suggestion of suggestions) {
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
+					[sentenceId, suggestion]
+				);
+			}
+			// for (const suggestion of suggestions) {
+			// }
+			// Insert selected suggestion to user_interactions table
+			await db.query(
+				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
+				[sentenceId, selectedSuggestion]
+			);
+
+			res.status(201).json({ message: "Suggestions saved successfully" });
+		} else {
+			res.status(422).json({ message: "Unprocessable Entry" });
+		}
+	} catch (error) {
+		logger.error("%O", error);
+		res
+			.status(500)
+			.json({ message: "An error occurred while saving suggestions" });
+	}
+});
+
+router.post("/save-corrections",async (req, res) =>{
 const gaelicData = req.body;
 const sentence = gaelicData.sentence;
 const suggestions = gaelicData.suggestions;
@@ -34,13 +74,21 @@ const selectedSuggestion = gaelicData.selectedSuggestion;
 try {
 
 if (sentence && suggestions && userSuggestion) {
-// ...
 // Insert the sentence into the sentences table
-const sentenceResult = await db.query(
-"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
-[sentence]
-);
-const sentenceId = sentenceResult.rows[0].id;
+let sentenceId;
+let existingSentenceIdQuery = await db.query("SELECT id FROM sentences WHERE sentence = ($1)",[sentence]);
+
+if(existingSentenceIdQuery.rows.length===0){
+let sentenceResult = await db.query(
+	"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+	[sentence]
+	);
+
+ sentenceId = sentenceResult.rows[0].id;
+
+} else{
+sentenceId = existingSentenceIdQuery.rows[0].id;
+ }
 
 // Insert the suggestions into the suggestions table
 const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";
@@ -62,13 +110,20 @@ await db.query(
 );
 
 } else if (sentence && suggestions && originalSentenceWasCorrect) {
-// ...
-// Insert the sentence into the sentences table
-const sentenceResult = await db.query(
-"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
-[sentence]
-);
-const sentenceId = sentenceResult.rows[0].id;
+let sentenceId;
+let existingSentenceIdQuery = await db.query("SELECT id FROM sentences WHERE sentence = ($1)",[sentence]);
+
+if(existingSentenceIdQuery.rows.length===0){
+let sentenceResult = await db.query(
+	"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
+	[sentence]
+	);
+
+ sentenceId = sentenceResult.rows[0].id;
+
+} else{
+sentenceId = existingSentenceIdQuery.rows[0].id;
+ }
 
 // Insert the suggestions into the suggestions table
 const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";
@@ -87,13 +142,24 @@ await db.query(
 "INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
 [sentenceId, originalSentenceWasCorrect]
 );
+
 } else if (sentence && suggestions && selectedSuggestion) {
-	// Insert the sentence into the sentences table
-const sentenceResult = await db.query(
+let sentenceId;
+let existingSentenceIdQuery = await db.query("SELECT id FROM sentences WHERE sentence = ($1)",[sentence]);
+
+if(existingSentenceIdQuery.rows.length===0){
+let sentenceResult = await db.query(
 	"INSERT INTO sentences (sentence) VALUES ($1) RETURNING id",
 	[sentence]
 	);
-	const sentenceId = sentenceResult.rows[0].id;
+
+ sentenceId = sentenceResult.rows[0].id;
+
+} else{
+sentenceId = existingSentenceIdQuery.rows[0].id;
+ }
+
+
 
 	// Insert the suggestions into the suggestions table
 	const insertSuggestionQuery = "INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)";

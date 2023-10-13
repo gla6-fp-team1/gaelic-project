@@ -14,7 +14,7 @@ const IsOriginalSentenceCorrect= (props) => {
         const formData = { sentence, suggestions,originalSentenceWasCorrect };
 
         try {
-            const response = await fetch("/api/save-suggestions", {
+            const response = await fetch("/api/save-corrections", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
