@@ -1,21 +1,20 @@
 import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
-
-
+import authRouter from "./auth/routes/auth";
 
 const router = Router();
 
-router.get("/", async(_, res) => {
+router.use("/auth", authRouter);
+
+router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
 	const getRandomIndex = (length) => {
 		return Math.floor(Math.random() * length);
 	};
 	// Select sentences from sentences table
-	const sentences = await db.query(
-		"SELECT sentence FROM sentences"
-	);
+	const sentences = await db.query("SELECT sentence FROM sentences");
 	const randomSentences = [];
 	for (let sentence of sentences.rows) {
 		randomSentences.push(sentence.sentence);
@@ -79,7 +78,8 @@ router.get("/exportGaelicData", async (_, res) => {
 		const jsonData = JSON.stringify(data, null, 2);
 
 		res.set({
-			"Content-Type": "application/json","Content-Disposition":'attachment; filename="exportData.json"',
+			"Content-Type": "application/json",
+			"Content-Disposition": 'attachment; filename="exportData.json"',
 		});
 		// Send the file as a response for download
 		res.send(jsonData);
