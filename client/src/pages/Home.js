@@ -85,21 +85,22 @@ export function Home({ user }) {
 				</div>
 				<div className="paddingBottom">
 					<h3>Suggestions :</h3>
-					{loading ? (
-						<LoadingSuggestions />
-					) : (
+                        {loading ? (
+                            <LoadingSuggestions />
+                        ) : (
 
-						<div className="grid">
-							{suggestions}
-							<SubmitSuggestion
-								randomText={randomText}
-								suggestionsText={suggestionsText}
-								selectedSuggestion={selectedSuggestion}
-								setNextOriginalText={setNextOriginalText}
-							/>
-						</div>
-
+                            <div className="grid">
+                                {suggestions}
+                                <SubmitSuggestion
+                                    randomText={randomText}
+                                    suggestionsText={suggestionsText}
+                                    selectedSuggestion={selectedSuggestion}
+                                    setNextOriginalText={setNextOriginalText}
+                                />
+                            </div>
+                        )}
 					</div>
+                    
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
