@@ -7,9 +7,13 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+
+import Navbar from "../components/Navbar";
+
 import LoadingSuggestions from "./LoadingSuggestions";
 
-export function Home() {
+
+export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
@@ -63,6 +67,9 @@ export function Home() {
 	});
 	//
 	return (
+
+		<>
+			<Navbar user={user} />
 		<div className="margin">
 			<header>
 				<h1 className="center paddingBottom">
@@ -81,6 +88,7 @@ export function Home() {
 					{loading ? (
 						<LoadingSuggestions />
 					) : (
+
 						<div className="grid">
 							{suggestions}
 							<SubmitSuggestion
@@ -90,13 +98,14 @@ export function Home() {
 								setNextOriginalText={setNextOriginalText}
 							/>
 						</div>
-					)}
-				</div>
+
+					</div>
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
 			</main>
 		</div>
+</>
 	);
 }
 
