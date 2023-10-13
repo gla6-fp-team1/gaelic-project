@@ -12,7 +12,6 @@ import Navbar from "../components/Navbar";
 
 import LoadingSuggestions from "./LoadingSuggestions";
 
-
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
@@ -20,6 +19,9 @@ export function Home({ user }) {
 		"Loading...",
 		"Loading...",
 	]);
+
+	//  nasir trying to make changes for the loadinf wheel bug
+
 	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
@@ -70,47 +72,46 @@ export function Home({ user }) {
 	});
 	//
 	return (
-
 		<>
 			<Navbar user={user} />
-		<div className="margin">
-			<header>
-				<h1 className="center paddingBottom">
-					Reinforcement Learning With Human Feedback
-				</h1>
-			</header>
-			<main role="main" className="flex">
-				<div>
-					<NextSentence setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="center paddingBottom">
-					<OriginalSentence text={randomText} />
-				</div>
-				<div className="paddingBottom">
-					<h3>Suggestions :</h3>
-					{loading ? (
-						<LoadingSuggestions />
-					) : (
-						<div className="grid">
-							{suggestions}
-							<SubmitSuggestion
-								randomText={randomText}
-								suggestionsText={suggestionsText}
-								selectedSuggestion={selectedSuggestion}
-								setNextOriginalText={setNextOriginalText}
-								enableDisable={enableDisable}
-								setEnableDisable={setEnableDisable}
-							/>
-						</div>
-					)}
-				</div>
+			<div className="margin">
+				<header>
+					<h1 className="center paddingBottom">
+						Reinforcement Learning With Human Feedback
+					</h1>
+				</header>
+				<main role="main" className="flex">
+					<div>
+						<NextSentence setNextOriginalText={setNextOriginalText} />
+					</div>
+					<div className="center paddingBottom">
+						<OriginalSentence text={randomText} />
+					</div>
+					<div className="paddingBottom">
+						<h3>Suggestions :</h3>
+						{loading ? (
+							<LoadingSuggestions />
+						) : (
+							<div className="grid">
+								{suggestions}
+								<SubmitSuggestion
+									randomText={randomText}
+									suggestionsText={suggestionsText}
+									selectedSuggestion={selectedSuggestion}
+									setNextOriginalText={setNextOriginalText}
+									enableDisable={enableDisable}
+									setEnableDisable={setEnableDisable}
+								/>
+							</div>
+						)}
+					</div>
 
-				<div>
-					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-				</div>
-			</main>
-		</div>
-</>
+					<div>
+						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }
 
