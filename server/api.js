@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authRouter from "./auth/routes/auth"
+import authRouter from "./auth/routes/auth";
 import logger from "./utils/logger";
 import db from "./db";
 
