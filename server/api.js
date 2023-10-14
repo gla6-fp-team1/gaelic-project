@@ -22,14 +22,15 @@ router.get("/", async (_, res) => {
 	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
 	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
 });
-
 router.post("/save-suggestions", async (req, res) => {
-	const { sentence, suggestions, selectedSuggestion } = req.body;
-
+	const gaelicData = req.body;
+	const sentence = gaelicData.sentence;
+	const suggestions = gaelicData.suggestions;
+	const userSuggestion = gaelicData.userSuggestion;
+	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
+	const selectedSuggestion = gaelicData.selectedSuggestion;
 	try {
-		// Check if all data exist in req.body
-		if (sentence && suggestions && selectedSuggestion) {
-			// Select id from sentences table
+		if (sentence && suggestions) {
 			const sentenceResult = await db.query(
 				"SELECT id FROM sentences WHERE sentence = $1",
 				[sentence]
@@ -43,20 +44,32 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
-			// for (const suggestion of suggestions) {
-			// }
-			// Insert selected suggestion to user_interactions table
-			await db.query(
-				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
-				[sentenceId, selectedSuggestion]
-			);
+			if (userSuggestion) {
+				// Insert user suggestion to user_interactions table
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
+					[sentenceId, userSuggestion]
+				);
+			} else if (originalSentenceWasCorrect) {
+				// Insert originalSentenceWasCorrect into user_interactions table
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
+					[sentenceId, originalSentenceWasCorrect == "Correct"]
+				);
+			} else if (selectedSuggestion) {
+				// Insert selectedSuggestion into user_interactions table
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
+					[sentenceId, selectedSuggestion]
+				);
+			}
 
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {
 			res.status(422).json({ message: "Unprocessable Entry" });
 		}
 	} catch (error) {
-		logger.error("%O", error);
+		logger.error("%0", error);
 		res
 			.status(500)
 			.json({ message: "An error occurred while saving suggestions" });
@@ -75,7 +88,7 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.Sentences = gaelicSentences.rows;
 		data.Suggestions = gaelicSuggestions.rows;
 		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data, null, 2);
+		const jsonData = JSON.stringify(data. null, 0);
 
 		res.set({
 			"Content-Type": "application/json",

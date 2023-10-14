@@ -11,6 +11,9 @@ import SubmitSuggestion from "./SubmitSuggestion";
 import Navbar from "../components/Navbar";
 
 import LoadingSuggestions from "./LoadingSuggestions";
+import UserSuggestion from "./UserSuggestion";
+import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
+
 
 
 export function Home({ user }) {
@@ -86,6 +89,13 @@ export function Home({ user }) {
 				<div className="center paddingBottom">
 					<OriginalSentence text={randomText} />
 				</div>
+				<div className="isOriginalDiv">
+					<IsOriginalSentenceCorrect
+					randomText={randomText}
+					suggestionsText={suggestionsText}
+					selectedSuggestion={selectedSuggestion}
+					setNextOriginalText={setNextOriginalText} />
+				</div>
 				<div className="paddingBottom">
 					<h3>Suggestions :</h3>
 					{loading ? (
@@ -107,6 +117,14 @@ export function Home({ user }) {
 
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+				</div>
+				<div>
+					<UserSuggestion
+						randomText={randomText}
+						suggestionsText={suggestionsText}
+						selectedSuggestion={selectedSuggestion}
+						setNextOriginalText={setNextOriginalText}
+					/>
 				</div>
 			</main>
 		</div>

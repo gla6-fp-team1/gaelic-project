@@ -162,3 +162,45 @@ button {
 	}
 
 }
+.suggestionInput{
+
+	width: 100%;
+	padding: 12px;
+	border: 1px solid gray;
+	border-radius: 3px;
+	margin: 5px 0;
+	opacity: 0.85;
+	display: inline-block;
+	font-size: 17px;
+	line-height: 20px;
+	
+	}
+	
+	.correctionButton {
+	border-top-left-radius: none;
+	border-bottom-left-radius: none;
+	padding: 1.2em;
+	margin-top: .5em;
+	background-color:#2e7d32 ;
+	color:white;
+	
+	}
+	.isOriginalDiv{
+
+		text-align: right;
+		color: red;
+		
+	}
+	
+	.isOriginSubmit {
+		    margin-top: 1em;
+			background-color: #2e7d32;
+			color: white;
+			padding: 12px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-left: 3px;
+	
+	
+	}
