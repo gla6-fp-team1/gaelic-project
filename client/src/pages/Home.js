@@ -96,11 +96,14 @@ export function Home() {
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
-					<div><UserSuggestion
-randomText={randomText}
-suggestionsText={suggestionsText}
-selectedSuggestion={selectedSuggestion}
-setNextOriginalText={setNextOriginalText} /></div>
+				<div>
+					<UserSuggestion
+						randomText={randomText}
+						suggestionsText={suggestionsText}
+						selectedSuggestion={selectedSuggestion}
+						setNextOriginalText={setNextOriginalText}
+					/>
+				</div>
 			</main>
 		</div>
 	);
