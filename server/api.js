@@ -44,14 +44,6 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
-			// for (const suggestion of suggestions) {
-			// }
-			// Insert selected suggestion to user_interactions table
-			await db.query(
-				"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
-				[sentenceId, selectedSuggestion]
-			);
-
 			if (userSuggestion) {
 				// Insert user suggestion to user_interactions table
 				await db.query(
@@ -62,7 +54,7 @@ router.post("/save-suggestions", async (req, res) => {
 				// Insert originalSentenceWasCorrect into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
-					[sentenceId, originalSentenceWasCorrect]
+					[sentenceId, originalSentenceWasCorrect == "Correct"]
 				);
 			} else if (selectedSuggestion) {
 				// Insert selectedSuggestion into user_interactions table
@@ -96,7 +88,7 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.Sentences = gaelicSentences.rows;
 		data.Suggestions = gaelicSuggestions.rows;
 		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data, null, 2);
+		const jsonData = JSON.stringify(data. null, 0);
 
 		res.set({
 			"Content-Type": "application/json",

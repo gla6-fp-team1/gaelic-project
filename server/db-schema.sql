@@ -15,7 +15,7 @@ CREATE TABLE user_interactions (
   id SERIAL PRIMARY KEY,
   sentence_id INTEGER REFERENCES sentences(id),
   selected_suggestion TEXT,
-  user_provided_suggestion TEXT
+  user_provided_suggestion TEXT,
   original_sentence_was_correct BOOLEAN
 );
 
