@@ -1,8 +1,11 @@
 import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
+import authRouter from "./auth/routes/auth";
 
 const router = Router();
+
+router.use("/auth", authRouter);
 
 router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");

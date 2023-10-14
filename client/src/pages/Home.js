@@ -7,12 +7,16 @@ import SuggestionSentence from "./SuggestionSentence";
 import NextSentence from "./NextSentence";
 import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
 import SubmitSuggestion from "./SubmitSuggestion";
+
+import Navbar from "../components/Navbar";
+
 import LoadingSuggestions from "./LoadingSuggestions";
 import UserSuggestion from "./UserSuggestion";
 import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
 
 
-export function Home() {
+
+export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
@@ -22,6 +26,8 @@ export function Home() {
 	const [selectedSuggestion, setSelectedSuggestion] = useState("");
 	const [nextOriginalText, setNextOriginalText] = useState(1);
 	const [loading, setLoading] = useState(1);
+
+	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
 
 	//
 	//
@@ -61,11 +67,15 @@ export function Home() {
 				randomText={randomText}
 				number={i + 1}
 				setSelectedSuggestion={setSelectedSuggestion}
+				setEnableDisable={setEnableDisable}
 			/>
 		);
 	});
 	//
 	return (
+
+		<>
+			<Navbar user={user} />
 		<div className="margin">
 			<header>
 				<h1 className="center paddingBottom">
@@ -98,10 +108,13 @@ export function Home() {
 								suggestionsText={suggestionsText}
 								selectedSuggestion={selectedSuggestion}
 								setNextOriginalText={setNextOriginalText}
+								enableDisable={enableDisable}
+								setEnableDisable={setEnableDisable}
 							/>
 						</div>
 					)}
 				</div>
+
 				<div>
 					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 				</div>
@@ -115,6 +128,7 @@ export function Home() {
 				</div>
 			</main>
 		</div>
+</>
 	);
 }
 
