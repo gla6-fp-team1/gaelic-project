@@ -13,7 +13,7 @@ const userSuggestion = userProvidedCorrection;
 const formData = { sentence, suggestions,userSuggestion };
 
 try {
-const response = await fetch("/api/save-suggestions", {
+const response = await fetch("/api/save-corrections", {
 method: "POST",
 headers: {
 "Content-Type": "application/json",

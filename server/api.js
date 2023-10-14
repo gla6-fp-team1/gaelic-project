@@ -19,7 +19,6 @@ router.get("/", async (_, res) => {
 	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
 	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
 });
-
 router.post("/save-suggestions", async (req, res) => {
 	const gaelicData = req.body;
 	const sentence = gaelicData.sentence;
