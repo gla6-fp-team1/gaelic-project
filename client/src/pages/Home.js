@@ -27,7 +27,7 @@ export function Home({ user }) {
 	const [loading, setLoading] = useState(1);
 
 	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
-	const [submitClickCounter, setSubmitClickCounter] = useState(1);
+	const [submitClickCounter, setSubmitClickCounter] = useState(4);
 	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
 	const handleNonAuthSubmitClick = () => {
@@ -146,7 +146,6 @@ export function Home({ user }) {
 					</div>
 				</main>
 			</div>
-			{console.log(submitClickCounter)}
 		</>
 	);
 }
