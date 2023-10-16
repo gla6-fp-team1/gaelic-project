@@ -1,5 +1,9 @@
-const About = () => (
+import "./Home.css";
+import Navbar from "../components/Navbar";
+const About = ({ user }) => (
 	<main role="main">
+		<Navbar user={user} />
+
 		<div>
 			<h1>About</h1>
 			<p>

@@ -1,13 +1,14 @@
 import PopUpAlert from "../components/PopUpAlert";
 import { useState } from "react";
 const SubmitSuggestion = (props) => {
+	const { randomText, suggestionsText, selectedSuggestion,user } = props;
 	const [messageAfterPost, setMessageAfterPost] = useState("");
 	const submitButton = () => {
-		const jsonData = {
-			sentence: props.randomText,
-			suggestions: props.suggestionsText,
-			selectedSuggestion: props.selectedSuggestion,
-		};
+		const sentence = randomText;
+		const suggestions = suggestionsText;
+		const userID = user ? user.id : null;
+
+		const jsonData = { sentence,suggestions, selectedSuggestion, userID };
 
 		fetch("/api/save-suggestions", {
 			method: "POST",

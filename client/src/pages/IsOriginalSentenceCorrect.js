@@ -1,5 +1,5 @@
 import { useState } from "react";
-const IsOriginalSentenceCorrect = (props) => {
+const IsOriginalSentenceCorrect = ({ randomText, suggestionsText, user }) => {
 	const [selectedOption, setSelectedOption] = useState("");
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -7,10 +7,12 @@ const IsOriginalSentenceCorrect = (props) => {
 			event.preventDefault();
 			alert("Are you sure the sentence correct? select Correct.");
 		}
-		const sentence = props.randomText;
-		const suggestions = props.suggestionsText;
+		const sentence = randomText;
+		const suggestions = suggestionsText;
 		const originalSentenceWasCorrect = selectedOption;
-		const formData = { sentence, suggestions, originalSentenceWasCorrect };
+		const userID = user ? user.id : null;
+		const formData = { sentence, suggestions, originalSentenceWasCorrect , userID };
+		console.log(formData);
 
 		try {
 			const response = await fetch("/api/save-suggestions", {

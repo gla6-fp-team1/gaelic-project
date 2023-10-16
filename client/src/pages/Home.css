@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-*{
-	font-family: 'Roboto', sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+* {
+	font-family: "Roboto", sans-serif;
 }
 .center {
 	text-align: center;
@@ -120,7 +120,7 @@ button {
 	color: white;
 }
 
-.user-info{
+.user-info {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -128,13 +128,13 @@ button {
 	gap: 1em;
 }
 
-.avatar > img{
+.avatar > img {
 	width: 2.5em;
 	height: 2.5em;
 	border-radius: 50%;
 }
 
-.controls{
+.controls {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -160,10 +160,8 @@ button {
 	100% {
 		transform: rotate(360deg);
 	}
-
 }
-.suggestionInput{
-
+.suggestionInput {
 	width: 100%;
 	padding: 12px;
 	border: 1px solid gray;
@@ -173,34 +171,77 @@ button {
 	display: inline-block;
 	font-size: 17px;
 	line-height: 20px;
-	
-	}
-	
-	.correctionButton {
+}
+
+.correctionButton {
 	border-top-left-radius: none;
 	border-bottom-left-radius: none;
 	padding: 1.2em;
-	margin-top: .5em;
-	background-color:#2e7d32 ;
-	color:white;
-	
-	}
-	.isOriginalDiv{
+	margin-top: 0.5em;
+	background-color: #2e7d32;
+	color: white;
+}
+.isOriginalDiv {
+	text-align: right;
+	color: red;
+}
 
-		text-align: right;
-		color: red;
-		
-	}
-	
-	.isOriginSubmit {
-		    margin-top: 1em;
-			background-color: #2e7d32;
-			color: white;
-			padding: 12px 20px;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-			margin-left: 3px;
-	
-	
-	}
+.isOriginSubmit {
+	margin-top: 1em;
+	background-color: #2e7d32;
+	color: white;
+	padding: 12px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	margin-left: 3px;
+}
+
+.adminGooglecontainer {
+	position: relative;
+	width: 30%;
+	border-radius: 5px;
+	background-color: whitesmoke;
+	padding: 5px;
+	margin: 10em 10em 10em 20em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+input,
+.btn {
+	padding: 12px;
+	border: none;
+	border-radius: 4px;
+	margin: 5px 0;
+	opacity: 0.85;
+	display: inline-block;
+	font-size: 17px;
+	line-height: 20px;
+	text-decoration: none;
+}
+
+input:hover,
+.btn:hover {
+	opacity: 1;
+}
+input[type="submit"] {
+	background-color: #04aa6d;
+	color: white;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: #45a049;
+}
+
+.adminGoogleInput {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	padding: 0 5px;
+
+	margin: 26px 0px 26px 0px;
+}

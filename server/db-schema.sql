@@ -18,7 +18,7 @@ CREATE TABLE user_interactions (
   user_provided_suggestion TEXT,
   original_sentence_was_correct BOOLEAN
 );
-
+CREATE TABLE admin (id SERIAL PRIMARY KEY, admin_google_id TEXT);
 
 INSERT INTO sentences (sentence) VALUES ('Bhiodh iad a'' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn.');
 INSERT INTO sentences (sentence) VALUES ('Tha iad ris an Gearrloch fhathast.');

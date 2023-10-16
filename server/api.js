@@ -29,6 +29,9 @@ router.post("/save-suggestions", async (req, res) => {
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
+    const userID = gaelicData.userID;
+
+
 	try {
 		if (sentence && suggestions) {
 			const sentenceResult = await db.query(
@@ -44,23 +47,23 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
-			if (userSuggestion) {
+			if (userSuggestion && userID) {
 				// Insert user suggestion to user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
-					[sentenceId, userSuggestion]
+					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, userSuggestion, userID]
 				);
-			} else if (originalSentenceWasCorrect) {
+			} else if (originalSentenceWasCorrect && userID) {
 				// Insert originalSentenceWasCorrect into user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
-					[sentenceId, originalSentenceWasCorrect == "Correct"]
+					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, originalSentenceWasCorrect == "Correct", userID]
 				);
-			} else if (selectedSuggestion) {
+			} else if (selectedSuggestion && userID) {
 				// Insert selectedSuggestion into user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
-					[sentenceId, selectedSuggestion]
+					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, selectedSuggestion, userID ]
 				);
 			}
 
@@ -88,7 +91,7 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.Sentences = gaelicSentences.rows;
 		data.Suggestions = gaelicSuggestions.rows;
 		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data. null, 0);
+		const jsonData = JSON.stringify(data.null, 0);
 
 		res.set({
 			"Content-Type": "application/json",
@@ -100,4 +103,27 @@ router.get("/exportGaelicData", async (_, res) => {
 		res.status(500).send("Internal server error");
 	}
 });
+router.post("/save-adminGoogleID", async (request, response) => {
+	const adminGoogleId = request.body;
+	try {
+		await db.query("INSERT INTO admin (admin_google_id) VALUES ($1)", [
+			adminGoogleId.admin_google_id,
+		]);
+
+		response.json({ message: "Data inserted successfully" });
+	} catch (error) {
+		response.status(500).json({ error: "Internal server error" });
+	}
+});
+router.get("/adminGoogleID", async (_, res) => {
+	try {
+		const queryGoogleID = "SELECT *FROM admin";
+		const result = await db.query(queryGoogleID);
+		const arrayOfGoogleID = result.rows;
+		res.json({ arrayOfGoogleID });
+	} catch (error) {
+		res.status(500).send("Internal server error");
+	}
+});
+
 export default router;

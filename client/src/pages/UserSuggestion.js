@@ -1,16 +1,19 @@
 import { useState } from "react";
 
-const UserSuggestion = (props) => {
+const UserSuggestion= (props) => {
+	const { user, randomText, suggestionsText } = props;
 	const [userProvidedCorrection, setUserProvidedCorrection] = useState("");
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if (userProvidedCorrection.trim() === "") {
 			return alert("Users correction cannot be empty.");
 		}
-		const sentence = props.randomText;
-		const suggestions = props.suggestionsText;
+		const sentence = randomText;
+		const suggestions = suggestionsText;
 		const userSuggestion = userProvidedCorrection;
-		const formData = { sentence, suggestions, userSuggestion };
+		const userID = user ? user.id : null;
+
+		const formData = { sentence, suggestions, userSuggestion, userID };
 
 		try {
 			const response = await fetch("/api/save-suggestions", {
