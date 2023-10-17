@@ -29,6 +29,7 @@ router.post("/save-suggestions", async (req, res) => {
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
+	const userID = req.user.id;
 	try {
 		if (sentence && suggestions) {
 			const sentenceResult = await db.query(
@@ -44,23 +45,23 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
-			if (userSuggestion) {
+			if (userSuggestion && userID) {
 				// Insert user suggestion to user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion) VALUES ($1, $2)",
-					[sentenceId, userSuggestion]
+					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, userSuggestion, userID]
 				);
-			} else if (originalSentenceWasCorrect) {
+			} else if (originalSentenceWasCorrect && userID) {
 				// Insert originalSentenceWasCorrect into user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
-					[sentenceId, originalSentenceWasCorrect == "Correct"]
+					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, originalSentenceWasCorrect == "Correct", userID]
 				);
-			} else if (selectedSuggestion) {
+			} else if (selectedSuggestion && userID) {
 				// Insert selectedSuggestion into user_interactions table
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
-					[sentenceId, selectedSuggestion]
+					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, selectedSuggestion, userID]
 				);
 			}
 
@@ -78,6 +79,14 @@ router.post("/save-suggestions", async (req, res) => {
 
 router.get("/exportGaelicData", async (_, res) => {
 	try {
+		const userGoogleID = _.user.id;
+
+		const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
+
+		const result = await db.query(queryGoogleID);
+
+		const isAdmin = result.rows[0].count > 0;
+
 		const querySentences = "SELECT * FROM sentences";
 		const querySuggestions = "SELECT * FROM suggestions";
 		const queryUser_interactions = "SELECT * FROM user_interactions";
@@ -88,14 +97,17 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.Sentences = gaelicSentences.rows;
 		data.Suggestions = gaelicSuggestions.rows;
 		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data. null, 0);
-
+		const jsonData = JSON.stringify(data, null, 0);
 		res.set({
 			"Content-Type": "application/json",
 			"Content-Disposition": 'attachment; filename="exportData.json"',
 		});
-		// Send the file as a response for download
-		res.send(jsonData);
+		//Send the file as a response for download
+		if (isAdmin) {
+			res.send(jsonData);
+		} else {
+			res.send(isAdmin);
+		}
 	} catch (error) {
 		res.status(500).send("Internal server error");
 	}

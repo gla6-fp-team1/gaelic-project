@@ -14,8 +14,6 @@ import LoadingSuggestions from "./LoadingSuggestions";
 import UserSuggestion from "./UserSuggestion";
 import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
 
-
-
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
 	const [suggestionsText, setSuggestionsText] = useState([
@@ -73,62 +71,68 @@ export function Home({ user }) {
 	});
 	//
 	return (
-
 		<>
 			<Navbar user={user} />
-		<div className="margin">
-			<header>
-				<h1 className="center paddingBottom">
-					Reinforcement Learning With Human Feedback
-				</h1>
-			</header>
-			<main role="main" className="flex">
-				<div>
-					<NextSentence setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="center paddingBottom">
-					<OriginalSentence text={randomText} />
-				</div>
-				<div className="isOriginalDiv">
-					<IsOriginalSentenceCorrect
-					randomText={randomText}
-					suggestionsText={suggestionsText}
-					selectedSuggestion={selectedSuggestion}
-					setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="paddingBottom">
-					<h3>Suggestions :</h3>
-					{loading ? (
-						<LoadingSuggestions />
-					) : (
-						<div className="grid">
-							{suggestions}
-							<SubmitSuggestion
-								randomText={randomText}
-								suggestionsText={suggestionsText}
-								selectedSuggestion={selectedSuggestion}
-								setNextOriginalText={setNextOriginalText}
-								enableDisable={enableDisable}
-								setEnableDisable={setEnableDisable}
-							/>
-						</div>
-					)}
-				</div>
+			<div className="margin">
+				<header>
+					<h1 className="center paddingBottom">
+						Reinforcement Learning With Human Feedback
+					</h1>
+				</header>
+				<main role="main" className="flex">
+					<div>
+						<NextSentence setNextOriginalText={setNextOriginalText} />
+					</div>
+					<div className="center paddingBottom">
+						<OriginalSentence text={randomText} />
+					</div>
+					<div className="isOriginalDiv">
+						<IsOriginalSentenceCorrect
+							randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText}
+							user={user}
+						/>
+					</div>
+					<div className="paddingBottom">
+						<h3>Suggestions :</h3>
+						{loading ? (
+							<LoadingSuggestions />
+						) : (
+							<div className="grid">
+								{suggestions}
+								<SubmitSuggestion
+									randomText={randomText}
+									suggestionsText={suggestionsText}
+									selectedSuggestion={selectedSuggestion}
+									setNextOriginalText={setNextOriginalText}
+									enableDisable={enableDisable}
+									setEnableDisable={setEnableDisable}
+									user={user}
+								/>
+							</div>
+						)}
+					</div>
 
-				<div>
-					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div>
-					<UserSuggestion
-						randomText={randomText}
-						suggestionsText={suggestionsText}
-						selectedSuggestion={selectedSuggestion}
-						setNextOriginalText={setNextOriginalText}
-					/>
-				</div>
-			</main>
-		</div>
-</>
+					<div>
+						<NoneOfTheSuggestions
+							setNextOriginalText={setNextOriginalText}
+							user={user}
+						/>
+					</div>
+					<div>
+						<UserSuggestion
+							randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText}
+							user={user}
+						/>
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }
 
