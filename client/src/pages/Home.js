@@ -31,9 +31,7 @@ export function Home({ user }) {
 	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
 	const handleNonAuthSubmitClick = () => {
-		if (user) {
-			setSubmitClickCounter(submitClickCounter - 1);
-		} else {
+		if (!user) {
 			setSubmitClickCounter(submitClickCounter - 1);
 			if (submitClickCounter < 1) {
 				setLoginDialogOpen(true);
