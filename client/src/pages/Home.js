@@ -38,6 +38,7 @@ export function Home({ user }) {
 			if (submitClickCounter < 1) {
 				setLoginDialogOpen(true);
 				setSubmitClickCounter(4);
+				setEnableDisable(true);
 			}
 		}
 	};
