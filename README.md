@@ -50,20 +50,33 @@ DB_PORT=5432
 
 ## Database Setup
 
-The project relies on a PostgreSQL database to store the Gaelic sentences. Unfortunately, the schema for the database was missing from the repository. You should create the necessary database schema and tables to store the sentences. Here's a sample schema:
+The project relies on a PostgreSQL database to store the Gaelic sentences. Unfortunately, the schema for the database was missing from the repository. You should create the necessary database schema and tables to store the sentences. You can also use Dbeaver https://dbeaver.io/download/ client to see the postgres database. Here's a schema:
 
 sql
 Copy code
 -- Create a schema if you want to keep things organized
-CREATE SCHEMA IF NOT EXISTS gaelic_text;
 
 -- Create a table to store sentences
-CREATE TABLE IF NOT EXISTS gaelic_text.sentences (
+
+CREATE TABLE IF NOT EXISTS sentences (
 id SERIAL PRIMARY KEY,
-sentence_text TEXT,
-source_filename TEXT,
-sentence_order INT
+sentence TEXT
 );
+
+CREATE TABLE IF NOT EXISTS suggestions (
+id SERIAL PRIMARY KEY,
+sentence_id INTEGER REFERENCES sentences(id),
+suggestion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS user_interactions (
+id SERIAL PRIMARY KEY,
+sentence_id INTEGER REFERENCES sentences(id),
+selected_suggestion TEXT,
+user_provided_suggestion TEXT,
+original_sentence_was_correct BOOLEAN
+);
+
 You can run these SQL statements using a PostgreSQL database management tool or by executing SQL scripts.
 
 ## Deploying to Render
