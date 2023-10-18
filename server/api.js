@@ -10,15 +10,11 @@ router.use("/auth", authRouter);
 router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
-
-	// count the number of cell in count column that IS NOT NULL
-	const countSentences = await db.query("SELECT count(count) FROM sentences WHERE count IS NOT NULL");
-	const numberOfSentences = countSentences.rows[0].count;
-	// generate random number
-	const randomNumber = getRandomIndex(numberOfSentences);
 	// Select a random sentence from sentences table
-	const oneSentence = await db.query("SELECT sentence FROM sentences WHERE count = $1", [randomNumber]);
-	const randomSentence = oneSentence.rows[0].sentence;
+	const oneRow = await db.query(
+		"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
+	);
+	const randomSentence = oneRow.rows[0].sentence;
 	// Send randomSentence to frontend;
 	res.json(randomSentence);
 });
