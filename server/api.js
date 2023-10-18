@@ -15,12 +15,14 @@ router.get("/", async (_, res) => {
 		"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
 	);
 	const randomSentence = oneRow.rows[0].sentence;
+	const randomSentenceId = oneRow.rows[0].id;
 	// Send randomSentence to frontend;
-	res.json(randomSentence);
+	res.json([randomSentence, randomSentenceId]);
 });
 router.post("/save-suggestions", async (req, res) => {
 	const gaelicData = req.body;
 	const sentence = gaelicData.sentence;
+	const sentenceId = gaelicData.sentenceId;
 	const suggestions = gaelicData.suggestions;
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
@@ -30,12 +32,6 @@ router.post("/save-suggestions", async (req, res) => {
 		const suggestionIds = [];
         // data validation
 		if (sentence && suggestions) {
-			const sentenceResult = await db.query(
-				"SELECT id FROM sentences WHERE sentence = $1",
-				[sentence]
-			);
-			const sentenceId = sentenceResult.rows[0].id;
-
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
 				const insertSuggestions = await db.query(
