@@ -18,6 +18,7 @@ import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
 
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
+	const [randomTextId, setRandomTextId] = useState(1);
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
 		"Loading...",
@@ -35,7 +36,8 @@ export function Home({ user }) {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-			setRandomText(text);
+			setRandomText(text[0]);
+			setRandomTextId(text[1]);
 			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
@@ -105,6 +107,7 @@ export function Home({ user }) {
 							{suggestions}
 							<SubmitSuggestion
 								randomText={randomText}
+								randomTextId={randomTextId}
 								suggestionsText={suggestionsText}
 								selectedSuggestion={selectedSuggestion}
 								setNextOriginalText={setNextOriginalText}

@@ -5,6 +5,7 @@ const SubmitSuggestion = (props) => {
 	const submitButton = () => {
 		const jsonData = {
 			sentence: props.randomText,
+			sentenceId: props.randomTextId,
 			suggestions: props.suggestionsText,
 			selectedSuggestion: props.selectedSuggestion,
 		};
