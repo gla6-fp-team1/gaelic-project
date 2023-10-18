@@ -10,14 +10,7 @@ router.use("/auth", authRouter);
 router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
-	const getRandomIndex = (length) => {
-		const random = Math.floor(Math.random() * length);
-		if (random) {
-			return random;
-		} else {
-			return length - random;
-		}
-	};
+
 	// count the number of cell in count column that IS NOT NULL
 	const countSentences = await db.query("SELECT count(count) FROM sentences WHERE count IS NOT NULL");
 	const numberOfSentences = countSentences.rows[0].count;
