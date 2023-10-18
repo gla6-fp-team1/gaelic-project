@@ -11,16 +11,23 @@ router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
 	const getRandomIndex = (length) => {
-		return Math.floor(Math.random() * length);
+		const random = Math.floor(Math.random() * length);
+		if (random) {
+			return random;
+		} else {
+			return length - random;
+		}
 	};
-	// Select sentences from sentences table
-	const sentences = await db.query("SELECT sentence FROM sentences");
-	const randomSentences = [];
-	for (let sentence of sentences.rows) {
-		randomSentences.push(sentence.sentence);
-	}
-	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
-	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
+	// count the number of cell in count column that IS NOT NULL
+	const countSentences = await db.query("SELECT count(count) FROM sentences WHERE count IS NOT NULL");
+	const numberOfSentences = countSentences.rows[0].count;
+	// generate random number
+	const randomNumber = getRandomIndex(numberOfSentences);
+	// Select a random sentence from sentences table
+	const oneSentence = await db.query("SELECT sentence FROM sentences WHERE count = $1", [randomNumber]);
+	const randomSentence = oneSentence.rows[0].sentence;
+	// Send randomSentence to frontend;
+	res.json(randomSentence);
 });
 router.post("/save-suggestions", async (req, res) => {
 	const gaelicData = req.body;
