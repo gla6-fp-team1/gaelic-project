@@ -28,17 +28,19 @@ router.post("/save-suggestions", async (req, res) => {
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
 	try {
-		// Array to store IDs of the 3 suggestions
-		const suggestionIds = [];
+		// Variable to store selected suggestion id
+		let selectedSuggestionId;
         // data validation
 		if (sentence && suggestions) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
 				const insertSuggestions = await db.query(
-					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) RETURNING id",
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) RETURNING id, suggestion",
 					[sentenceId, suggestion]
 				);
-				suggestionIds.push(insertSuggestions.rows[0].id);
+				if (insertSuggestions.rows[0].suggestion === selectedSuggestion) {
+					selectedSuggestionId= insertSuggestions.rows[0].id;
+				}
 			}
 			if (userSuggestion) {
 				// Insert user suggestion to user_interactions table
@@ -53,12 +55,10 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, originalSentenceWasCorrect == "Correct"]
 				);
 		} else if (selectedSuggestion) {
-				// Select selectedSuggestion ID
-				const selectedSuggestionId = await db.query("SELECT id FROM suggestions WHERE id IN ($1, $2, $3) AND suggestion = $4", [suggestionIds[0],suggestionIds[1],suggestionIds[2], selectedSuggestion]);
 				// Insert selectedSuggestion ID into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
-					[sentenceId, selectedSuggestionId.rows[0].id]
+					[sentenceId, selectedSuggestionId]
 				);
 			}
 
