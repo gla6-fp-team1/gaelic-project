@@ -17,6 +17,7 @@ import LoginDialog from "../components/LoginDialog";
 
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
+	const [randomTextId, setRandomTextId] = useState(1);
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
 		"Loading...",
@@ -47,7 +48,8 @@ export function Home({ user }) {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-			setRandomText(text);
+			setRandomText(text.sentence);
+			setRandomTextId(text.id);
 			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
@@ -91,6 +93,7 @@ export function Home({ user }) {
 				onClose={() => setLoginDialogOpen(false)}
 			/>
 			<Navbar user={user} />
+
 			<div className="margin">
 				<header>
 					<h1 className="center paddingBottom">
@@ -107,6 +110,7 @@ export function Home({ user }) {
 					<div className="isOriginalDiv">
 						<IsOriginalSentenceCorrect
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
@@ -121,6 +125,7 @@ export function Home({ user }) {
 								{suggestions}
 								<SubmitSuggestion
 									randomText={randomText}
+									randomTextId={randomTextId}
 									suggestionsText={suggestionsText}
 									selectedSuggestion={selectedSuggestion}
 									setNextOriginalText={setNextOriginalText}
@@ -131,13 +136,13 @@ export function Home({ user }) {
 							</div>
 						)}
 					</div>
-
 					<div>
 						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
 					</div>
 					<div>
 						<UserSuggestion
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
