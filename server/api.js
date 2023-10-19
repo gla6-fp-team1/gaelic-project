@@ -17,7 +17,7 @@ router.get("/", async (_, res) => {
 	const randomSentence = oneRow.rows[0].sentence;
 	const randomSentenceId = oneRow.rows[0].id;
 	// Send randomSentence to frontend;
-	res.json([randomSentence, randomSentenceId]);
+	res.json({ sentence: randomSentence, id: randomSentenceId });
 });
 router.post("/save-suggestions", async (req, res) => {
 	const gaelicData = req.body;
@@ -30,7 +30,7 @@ router.post("/save-suggestions", async (req, res) => {
 	try {
 		// Variable to store selected suggestion id
 		let selectedSuggestionId;
-        // data validation
+		// data validation
 		if (sentence && suggestions) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
@@ -39,7 +39,7 @@ router.post("/save-suggestions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 				if (insertSuggestions.rows[0].suggestion === selectedSuggestion) {
-					selectedSuggestionId= insertSuggestions.rows[0].id;
+					selectedSuggestionId = insertSuggestions.rows[0].id;
 				}
 			}
 			if (userSuggestion) {
@@ -54,7 +54,7 @@ router.post("/save-suggestions", async (req, res) => {
 					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct) VALUES ($1, $2)",
 					[sentenceId, originalSentenceWasCorrect == "Correct"]
 				);
-		} else if (selectedSuggestion) {
+			} else if (selectedSuggestion) {
 				// Insert selectedSuggestion ID into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, selected_suggestion) VALUES ($1, $2)",
@@ -86,7 +86,7 @@ router.get("/exportGaelicData", async (_, res) => {
 		data.Sentences = gaelicSentences.rows;
 		data.Suggestions = gaelicSuggestions.rows;
 		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data. null, 0);
+		const jsonData = JSON.stringify(data.null, 0);
 
 		res.set({
 			"Content-Type": "application/json",

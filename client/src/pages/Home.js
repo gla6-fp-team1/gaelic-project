@@ -48,8 +48,8 @@ export function Home({ user }) {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-			setRandomText(text[0]);
-			setRandomTextId(text[1]);
+			setRandomText(text.sentence);
+			setRandomTextId(text.id);
 			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
