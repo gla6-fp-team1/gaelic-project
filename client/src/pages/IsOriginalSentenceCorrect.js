@@ -8,9 +8,16 @@ const IsOriginalSentenceCorrect = (props) => {
 			alert("Are you sure the sentence correct? select Correct.");
 		}
 		const sentence = props.randomText;
+		const sentenceId = props.randomTextId;
 		const suggestions = props.suggestionsText;
 		const originalSentenceWasCorrect = selectedOption;
-		const formData = { sentence, suggestions, originalSentenceWasCorrect };
+		console.log(sentenceId);
+		const formData = {
+			sentence,
+			sentenceId,
+			suggestions,
+			originalSentenceWasCorrect,
+		};
 
 		try {
 			const response = await fetch("/api/save-suggestions", {

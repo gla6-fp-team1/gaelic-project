@@ -110,6 +110,7 @@ export function Home({ user }) {
 					<div className="isOriginalDiv">
 						<IsOriginalSentenceCorrect
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
@@ -141,6 +142,7 @@ export function Home({ user }) {
 					<div>
 						<UserSuggestion
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
