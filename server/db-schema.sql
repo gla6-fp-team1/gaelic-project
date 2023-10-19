@@ -15,10 +15,15 @@ CREATE TABLE suggestions (
 );
 CREATE TABLE user_interactions (
   id SERIAL PRIMARY KEY,
+  user_google_id TEXT,
   sentence_id INTEGER REFERENCES sentences(id),
   selected_suggestion INTEGER,
   user_provided_suggestion TEXT,
   original_sentence_was_correct BOOLEAN
+);
+CREATE TABLE admin (
+  id SERIAL PRIMARY KEY,
+  admin_google_id TEXT
 );
 
 
@@ -33,3 +38,5 @@ INSERT INTO sentences (sentence, source, count) VALUES ('agus chunnaic e am bòc
 INSERT INTO sentences (sentence, source, count) VALUES ('agus tha obair uamhasach aige mun d'' fhuair e am bòcan a chumail bhuaidh.', 'original.txt', 9);
 INSERT INTO sentences (sentence, source, count) VALUES ('agus bha coltas air gun deànadh am bòcan an gróthach air.', 'original.txt', 10);
 INSERT INTO sentences (sentence, source, count) VALUES ('Cha robh buille a bhuaileadh e air nach robh e a'' smaoineach'' gur h- ann air póca cloìmh leis cho bog ''s a bha a'' bhuille is cha robh i a'' dèanadh feum.', 'original.txt', 11);
+
+INSERT INTO admin (admin_google_id) VALUES ('117060750196714169595');

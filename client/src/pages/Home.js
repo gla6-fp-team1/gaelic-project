@@ -114,6 +114,7 @@ export function Home({ user }) {
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
+							user={user}
 						/>
 					</div>
 					<div className="paddingBottom">
@@ -132,12 +133,17 @@ export function Home({ user }) {
 									enableDisable={enableDisable}
 									setEnableDisable={setEnableDisable}
 									handleNonAuthSubmitClick={handleNonAuthSubmitClick}
+									user={user}
 								/>
 							</div>
 						)}
 					</div>
+
 					<div>
-						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+						<NoneOfTheSuggestions
+							setNextOriginalText={setNextOriginalText}
+							user={user}
+						/>
 					</div>
 					<div>
 						<UserSuggestion
@@ -146,6 +152,7 @@ export function Home({ user }) {
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
+							user={user}
 						/>
 					</div>
 				</main>
