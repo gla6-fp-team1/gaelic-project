@@ -6,6 +6,9 @@ const Navbar = ({ user }) => {
 	const logout = () => {
 		window.open("/api/auth/logout", "_self");
 	};
+	const login = () => {
+		window.open("/login", "_self");
+	};
 
 	return (
 		<nav className="navbar">
@@ -15,30 +18,34 @@ const Navbar = ({ user }) => {
 				</Link>
 			</span>
 			{user ? (
-				<>
-					<ul className="user-info">
-						<li className="avatar">
-							<img src={user.photos[0].value} alt="avatar" />
-						</li>
-						<li className="username">{user.displayName}</li>
-					</ul>
-					<ul className="controls">
-						<li>
-							<Link to="/">Home</Link>
-						</li>
-						<li>
-							<Link to="/about/this/site">About</Link>
-						</li>
-						<li>
-							<Button variant="contained" color="primary" onClick={logout}>
-								<Link to="/">Logout</Link>
-							</Button>
-						</li>
-					</ul>
-				</>
+				<ul className="user-info">
+					<li className="avatar">
+						<img src={user.photos[0].value} alt="avatar" />
+					</li>
+					<li className="username">{user.displayName}</li>
+				</ul>
 			) : (
-				<Link to="/login">Login</Link>
+				<></>
 			)}
+			<ul className="controls">
+				<li>
+					<Link to="/">Home</Link>
+				</li>
+				<li>
+					<Link to="/about/this/site">About</Link>
+				</li>
+				<li>
+					{user ? (
+						<Button variant="contained" color="primary" onClick={logout}>
+							<Link to="/">Logout</Link>
+						</Button>
+					) : (
+						<Button variant="contained" color="primary" onClick={login}>
+							<Link to="/">Login</Link>
+						</Button>
+					)}
+				</li>
+			</ul>
 		</nav>
 	);
 };

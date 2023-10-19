@@ -33,6 +33,7 @@ export default function PopUpAlert(props) {
 					props.submitButton();
 					handleClick();
 					props.setEnableDisable(true);
+					props.handleNonAuthSubmitClick();
 				}}
 			>
 				{props.text}
