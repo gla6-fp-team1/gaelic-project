@@ -77,16 +77,8 @@ router.post("/save-suggestions", async (req, res) => {
 	}
 });
 
-router.get("/exportGaelicData", async (_, res) => {
+router.get("/exportGaelicData", async (req, res) => {
 	try {
-		const userGoogleID = _.user.id;
-
-		const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
-
-		const result = await db.query(queryGoogleID);
-
-		const isAdmin = result.rows[0].count > 0;
-
 		const querySentences = "SELECT * FROM sentences";
 		const querySuggestions = "SELECT * FROM suggestions";
 		const queryUser_interactions = "SELECT * FROM user_interactions";
@@ -103,9 +95,23 @@ router.get("/exportGaelicData", async (_, res) => {
 			"Content-Disposition": 'attachment; filename="exportData.json"',
 		});
 		//Send the file as a response for download
+		res.send(jsonData);
+	} catch (error) {
+		res.status(500).send("Internal server error");
+	}
+});
+router.get("/getUser", async (req, res) => {
+	try {
+		const userGoogleID = req.user.id;
+
+		const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
+
+		const result = await db.query(queryGoogleID);
+
+		const isAdmin = result.rows[0].count > 0;
 		if (isAdmin) {
-			res.send(jsonData);
-		} else {
+			res.send(isAdmin);
+		}else {
 			res.send(isAdmin);
 		}
 	} catch (error) {

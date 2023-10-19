@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const exportGaelicData = async (data) => {
 	try {
 		const jsonData = JSON.stringify(data, null, 2);
@@ -15,21 +15,30 @@ const exportGaelicData = async (data) => {
 		console.error("Error exporting data:", error);
 	}
 };
-
 const NextSentence = (props) => {
-	const [hideMyGaelicButton, setHideMyGaelicButton] = useState(true);
+	const [hideMyGaelicButton, setHideMyGaelicButton] = useState(false);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch("/api/getUser");
+				const data = await response.json();
+				console.log("User:", data);
+
+				setHideMyGaelicButton(data);
+			} catch (error) {
+				console.error("Error fetching user data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
 	const handleExportGaelicData = async () => {
 		try {
 			const response = await fetch("/api/exportGaelicData");
-
 			const data = await response.json();
-
-			if (typeof data === "boolean") {
-				setHideMyGaelicButton(!(typeof data === "boolean"));
-			} else {
-				setHideMyGaelicButton(!(typeof data === "boolean"));
-				exportGaelicData(data);
-			}
+			exportGaelicData(data);
 		} catch (error) {
 			console.error("Error fetching Gaelic data:", error);
 		}
