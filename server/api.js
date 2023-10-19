@@ -109,11 +109,7 @@ router.get("/getUser", async (req, res) => {
 		const result = await db.query(queryGoogleID);
 
 		const isAdmin = result.rows[0].count > 0;
-		if (isAdmin) {
-			res.send(isAdmin);
-		}else {
-			res.send(isAdmin);
-		}
+		res.send(isAdmin);
 	} catch (error) {
 		res.status(500).send("Internal server error");
 	}
