@@ -13,8 +13,7 @@ import Navbar from "../components/Navbar";
 import LoadingSuggestions from "./LoadingSuggestions";
 import UserSuggestion from "./UserSuggestion";
 import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
-
-
+import LoginDialog from "../components/LoginDialog";
 
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
@@ -28,6 +27,19 @@ export function Home({ user }) {
 	const [loading, setLoading] = useState(1);
 
 	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
+	const [submitClickCounter, setSubmitClickCounter] = useState(4);
+	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+	const handleNonAuthSubmitClick = () => {
+		if (!user) {
+			setSubmitClickCounter(submitClickCounter - 1);
+			if (submitClickCounter < 1) {
+				setLoginDialogOpen(true);
+				setSubmitClickCounter(4);
+				setEnableDisable(true);
+			}
+		}
+	};
 
 	//
 	//
@@ -73,62 +85,67 @@ export function Home({ user }) {
 	});
 	//
 	return (
-
 		<>
+			<LoginDialog
+				open={loginDialogOpen}
+				onClose={() => setLoginDialogOpen(false)}
+			/>
 			<Navbar user={user} />
-		<div className="margin">
-			<header>
-				<h1 className="center paddingBottom">
-					Reinforcement Learning With Human Feedback
-				</h1>
-			</header>
-			<main role="main" className="flex">
-				<div>
-					<NextSentence setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="center paddingBottom">
-					<OriginalSentence text={randomText} />
-				</div>
-				<div className="isOriginalDiv">
-					<IsOriginalSentenceCorrect
-					randomText={randomText}
-					suggestionsText={suggestionsText}
-					selectedSuggestion={selectedSuggestion}
-					setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div className="paddingBottom">
-					<h3>Suggestions :</h3>
-					{loading ? (
-						<LoadingSuggestions />
-					) : (
-						<div className="grid">
-							{suggestions}
-							<SubmitSuggestion
-								randomText={randomText}
-								suggestionsText={suggestionsText}
-								selectedSuggestion={selectedSuggestion}
-								setNextOriginalText={setNextOriginalText}
-								enableDisable={enableDisable}
-								setEnableDisable={setEnableDisable}
-							/>
-						</div>
-					)}
-				</div>
+			<div className="margin">
+				<header>
+					<h1 className="center paddingBottom">
+						Reinforcement Learning With Human Feedback
+					</h1>
+				</header>
+				<main role="main" className="flex">
+					<div>
+						<NextSentence setNextOriginalText={setNextOriginalText} />
+					</div>
+					<div className="center paddingBottom">
+						<OriginalSentence text={randomText} />
+					</div>
+					<div className="isOriginalDiv">
+						<IsOriginalSentenceCorrect
+							randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText}
+						/>
+					</div>
+					<div className="paddingBottom">
+						<h3>Suggestions :</h3>
+						{loading ? (
+							<LoadingSuggestions />
+						) : (
+							<div className="grid">
+								{suggestions}
+								<SubmitSuggestion
+									randomText={randomText}
+									suggestionsText={suggestionsText}
+									selectedSuggestion={selectedSuggestion}
+									setNextOriginalText={setNextOriginalText}
+									enableDisable={enableDisable}
+									setEnableDisable={setEnableDisable}
+									handleNonAuthSubmitClick={handleNonAuthSubmitClick}
+								/>
+							</div>
+						)}
+					</div>
 
-				<div>
-					<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
-				</div>
-				<div>
-					<UserSuggestion
-						randomText={randomText}
-						suggestionsText={suggestionsText}
-						selectedSuggestion={selectedSuggestion}
-						setNextOriginalText={setNextOriginalText}
-					/>
-				</div>
-			</main>
-		</div>
-</>
+					<div>
+						<NoneOfTheSuggestions setNextOriginalText={setNextOriginalText} />
+					</div>
+					<div>
+						<UserSuggestion
+							randomText={randomText}
+							suggestionsText={suggestionsText}
+							selectedSuggestion={selectedSuggestion}
+							setNextOriginalText={setNextOriginalText}
+						/>
+					</div>
+				</main>
+			</div>
+		</>
 	);
 }
 
