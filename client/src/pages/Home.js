@@ -13,9 +13,11 @@ import Navbar from "../components/Navbar";
 import LoadingSuggestions from "./LoadingSuggestions";
 import UserSuggestion from "./UserSuggestion";
 import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
+import LoginDialog from "../components/LoginDialog";
 
 export function Home({ user }) {
 	const [randomText, setRandomText] = useState("Loading...");
+	const [randomTextId, setRandomTextId] = useState(1);
 	const [suggestionsText, setSuggestionsText] = useState([
 		"Loading...",
 		"Loading...",
@@ -26,6 +28,19 @@ export function Home({ user }) {
 	const [loading, setLoading] = useState(1);
 
 	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
+	const [submitClickCounter, setSubmitClickCounter] = useState(4);
+	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+	const handleNonAuthSubmitClick = () => {
+		if (!user) {
+			setSubmitClickCounter(submitClickCounter - 1);
+			if (submitClickCounter < 1) {
+				setLoginDialogOpen(true);
+				setSubmitClickCounter(4);
+				setEnableDisable(true);
+			}
+		}
+	};
 
 	//
 	//
@@ -33,7 +48,8 @@ export function Home({ user }) {
 		const loadRandomSentenceFromFile = async () => {
 			const response = await fetch("/api");
 			const text = await response.json();
-			setRandomText(text);
+			setRandomText(text.sentence);
+			setRandomTextId(text.id);
 			setLoading(1);
 		};
 		loadRandomSentenceFromFile();
@@ -72,7 +88,12 @@ export function Home({ user }) {
 	//
 	return (
 		<>
+			<LoginDialog
+				open={loginDialogOpen}
+				onClose={() => setLoginDialogOpen(false)}
+			/>
 			<Navbar user={user} />
+
 			<div className="margin">
 				<header>
 					<h1 className="center paddingBottom">
@@ -89,6 +110,7 @@ export function Home({ user }) {
 					<div className="isOriginalDiv">
 						<IsOriginalSentenceCorrect
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}
@@ -104,11 +126,13 @@ export function Home({ user }) {
 								{suggestions}
 								<SubmitSuggestion
 									randomText={randomText}
+									randomTextId={randomTextId}
 									suggestionsText={suggestionsText}
 									selectedSuggestion={selectedSuggestion}
 									setNextOriginalText={setNextOriginalText}
 									enableDisable={enableDisable}
 									setEnableDisable={setEnableDisable}
+									handleNonAuthSubmitClick={handleNonAuthSubmitClick}
 									user={user}
 								/>
 							</div>
@@ -124,6 +148,7 @@ export function Home({ user }) {
 					<div>
 						<UserSuggestion
 							randomText={randomText}
+							randomTextId={randomTextId}
 							suggestionsText={suggestionsText}
 							selectedSuggestion={selectedSuggestion}
 							setNextOriginalText={setNextOriginalText}

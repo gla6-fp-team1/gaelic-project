@@ -10,40 +10,37 @@ router.use("/auth", authRouter);
 router.get("/", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
-	const getRandomIndex = (length) => {
-		return Math.floor(Math.random() * length);
-	};
-	// Select sentences from sentences table
-	const sentences = await db.query("SELECT sentence FROM sentences");
-	const randomSentences = [];
-	for (let sentence of sentences.rows) {
-		randomSentences.push(sentence.sentence);
-	}
-	// const randomSentence = sentences.rows[getRandomIndex(sentences.rows.length)];
-	res.json(randomSentences[getRandomIndex(randomSentences.length)]);
+	// Select a random sentence from sentences table
+	const oneRow = await db.query(
+		"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
+	);
+	const randomSentence = oneRow.rows[0].sentence;
+	const randomSentenceId = oneRow.rows[0].id;
+	// Send randomSentence to frontend;
+	res.json({ sentence: randomSentence, id: randomSentenceId });
 });
 router.post("/save-suggestions", async (req, res) => {
 	const gaelicData = req.body;
-	const sentence = gaelicData.sentence;
+	const sentenceId = gaelicData.sentenceId;
 	const suggestions = gaelicData.suggestions;
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
-	const userID = req.user.id;
+	const userID = req.user ? req.user.id : '0';
 	try {
-		if (sentence && suggestions) {
-			const sentenceResult = await db.query(
-				"SELECT id FROM sentences WHERE sentence = $1",
-				[sentence]
-			);
-			const sentenceId = sentenceResult.rows[0].id;
-
+		// Variable to store selected suggestion id
+		let selectedSuggestionId;
+		// data validation
+		if (sentenceId && suggestions) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
-				await db.query(
-					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2)",
+				const insertSuggestions = await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) RETURNING id, suggestion",
 					[sentenceId, suggestion]
 				);
+				if (insertSuggestions.rows[0].suggestion === selectedSuggestion) {
+					selectedSuggestionId = insertSuggestions.rows[0].id;
+				}
 			}
 			if (userSuggestion && userID) {
 				// Insert user suggestion to user_interactions table
@@ -57,14 +54,13 @@ router.post("/save-suggestions", async (req, res) => {
 					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
 					[sentenceId, originalSentenceWasCorrect == "Correct", userID]
 				);
-			} else if (selectedSuggestion && userID) {
+			} else if (selectedSuggestionId && userID) {
 				// Insert selectedSuggestion into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, selectedSuggestion, userID]
+					[sentenceId, selectedSuggestionId, userID]
 				);
 			}
-
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {
 			res.status(422).json({ message: "Unprocessable Entry" });
@@ -114,4 +110,5 @@ router.get("/getUser", async (req, res) => {
 		res.status(500).send("Internal server error");
 	}
 });
+
 export default router;

@@ -8,10 +8,10 @@ const UserSuggestion = (props) => {
 			return alert("Users correction cannot be empty.");
 		}
 		const sentence = props.randomText;
+		const sentenceId = props.randomTextId;
 		const suggestions = props.suggestionsText;
 		const userSuggestion = userProvidedCorrection;
-		const formData = { sentence, suggestions, userSuggestion };
-
+		const formData = { sentence, sentenceId, suggestions, userSuggestion };
 		try {
 			const response = await fetch("/api/save-suggestions", {
 				method: "POST",
