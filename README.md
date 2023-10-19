@@ -6,6 +6,7 @@ Welcome to the Gaelic Text Project! This project focuses on allowing users to se
 
 - [About the Project](#about-the-project)
 - [Local Setup](#local-setup)
+- [Google API credentials](#google-api-credentials)
 - [Database Setup](#database-setup)
 - [Deploying to Render](#deploying-to-render)
 - [Starter Kit](#starter-kit)
@@ -35,22 +36,37 @@ To set up the project locally, follow these steps:
 2. Install dependencies:  
    npm install
 
-3. Create a .env file and configure it with your environment-specific settings. You might need to set environment variables, such as the database connection details.
+3. Create a .env file and configure it with your environment-specific settings. You might need to set environment variables, such as the database connection details. .env.example file content can be used for that propose.
 
-```bash
-CLIENT_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=XXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleXXXXXXXXXXXX.com
-GOOGLE_CLIENT_SECRET=XXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXX
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASSWORD=0000
-DB_NAME=postgres
-DB_PORT=5432
-```
+## Google API credentials
+
+Follow the instructions to setup the Google API credentials:
+
+1. Create a Google Cloud Project
+   Go to the Google Cloud Console.
+   Click the project drop-down and select "New Project."
+   Enter a name for your project and click "Create."
+
+2. Enable APIs
+   In the Google Cloud Console, navigate to "APIs & Services" > "Library."
+   Search for and enable the APIs you need for your project.
+
+3. Create Credentials
+   In the Google Cloud Console, navigate to "APIs & Services" > "Credentials."
+   Click "Create credentials" and select "Service Account Key."
+   Choose the role for your service account. For access to Google APIs, you can use the "Project" role or a more specific role like "Editor."
+   Select the "JSON" key type and click "Create." This will download a JSON file with your credentials. Store this file securely.
+
+4. More helpful links
+   https://developers.google.com/workspace/guides/create-credentials
+   https://developers.google.com/workspace/guides/create-credentials
+
+Save your changes.
 
 ## Database Setup
 
-The project relies on a PostgreSQL database to store the Gaelic sentences. Unfortunately, the schema for the database was missing from the repository. You should create the necessary database schema and tables to store the sentences. You can also use Dbeaver https://dbeaver.io/download/ client to see the postgres database. Here's a schema:
+The project relies on a PostgreSQL database to store the Gaelic sentences. The schema for the database can be created if necessary to store the sentences and user interaction. More information about the database schema is in the [Database Schema File](./server/db-schema.sql)
+file. Here's a schema if you want to create the database terminal:
 
 sql
 Copy code
@@ -58,59 +74,32 @@ Copy code
 
 -- Create a table to store sentences
 
-CREATE TABLE IF NOT EXISTS sentences (
+```bash
+psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS sentences (
 id SERIAL PRIMARY KEY,
 sentence TEXT
-);
+);"
 
-CREATE TABLE IF NOT EXISTS suggestions (
+psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS suggestions (
 id SERIAL PRIMARY KEY,
 sentence_id INTEGER REFERENCES sentences(id),
 suggestion TEXT
-);
+);"
 
-CREATE TABLE IF NOT EXISTS user_interactions (
+psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS user_interactions (
 id SERIAL PRIMARY KEY,
 sentence_id INTEGER REFERENCES sentences(id),
 selected_suggestion TEXT,
 user_provided_suggestion TEXT,
 original_sentence_was_correct BOOLEAN
-);
+);"
+```
 
-You can run these SQL statements using a PostgreSQL database management tool or by executing SQL scripts.
+You can run these SQL statements using a PostgreSQL database management tool.
 
 ## Deploying to Render
 
-Deployment instructions can be added here, detailing how to deploy the project to the Render platform or any other deployment solution you choose.
-
-1. Create a Render Account: If you don't already have a Render account, go to the Render website and sign up for an account.
-
-2. Create a New Service on Render: Once you have an account, log in to Render and follow these steps to create a new service for your project:
-
-3. Click on the "New" button in your Render dashboard.
-   Choose "Web Service."
-
-4. Configure Your Service: You will need to configure your service settings.
-
-5. Follow these guidelines:
-
-```bash
-Service Name: Provide a name for your service, such as "Gaelic-Project."
-Environment: Choose the environment for your project.
-Build Command: Specify the build command to build your project. For a typical Node.js project, this might be npm run build or yarn build. Make sure this command produces a production-ready build of your project.
-Start Command: Specify the command to start your application. In a Node.js project, this is often something like npm start or yarn start.
-Add Environment Variables:
-
-If your project relies on environment variables, you can add them in the Render dashboard. This is where you can provide any configuration details, like database connection strings.
-
-Configure Databases and Add-Ons:
-
-If your project uses a database or other add-ons, Render allows you to add them through the dashboard. Configure your database settings, such as the type of database (e.g., PostgreSQL), and provide connection details.
-```
-
-6. Add Repositories: Connect your Render service to your project's Git repository. Render supports GitHub, GitLab, and Bitbucket. Select the repository and branch you want to deploy.
-
-7. Build and Deploy: Render will automatically detect your project type and set up the build environment accordingly. After you've configured everything, click the "Create Web Service" or equivalent button to start the build and deployment process.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
 ## Starter Kit
 
@@ -189,6 +178,6 @@ See the guidance in the [wiki].
 
 We welcome contributions from the community to make this Gaelic Text Project even better. Feel free to open issues and pull requests.
 
-## License
+<!-- ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. -->
