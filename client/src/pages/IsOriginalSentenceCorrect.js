@@ -11,7 +11,6 @@ const IsOriginalSentenceCorrect = (props) => {
 		const sentenceId = props.randomTextId;
 		const suggestions = props.suggestionsText;
 		const originalSentenceWasCorrect = selectedOption;
-		console.log(sentenceId);
 		const formData = {
 			sentence,
 			sentenceId,

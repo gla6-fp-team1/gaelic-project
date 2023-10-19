@@ -12,7 +12,6 @@ const UserSuggestion = (props) => {
 		const suggestions = props.suggestionsText;
 		const userSuggestion = userProvidedCorrection;
 		const formData = { sentence, sentenceId, suggestions, userSuggestion };
-		console.log(sentenceId);
 		try {
 			const response = await fetch("/api/save-suggestions", {
 				method: "POST",
