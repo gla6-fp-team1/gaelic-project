@@ -23,7 +23,7 @@ const NextSentence = (props) => {
 			try {
 				const response = await fetch("/api/getUser");
 				const data = await response.json();
-				console.log("User:", data);
+
 
 				setHideMyGaelicButton(data);
 			} catch (error) {
