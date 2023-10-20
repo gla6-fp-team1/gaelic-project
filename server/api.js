@@ -2,8 +2,11 @@ import { Router } from "express";
 import logger from "./utils/logger";
 import db from "./db";
 import authRouter from "./auth/routes/auth";
+import multer from "multer";
 
 const router = Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 router.use("/auth", authRouter);
 
@@ -26,7 +29,7 @@ router.post("/save-suggestions", async (req, res) => {
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
-	const userID = req.user ? req.user.id : '0';
+	const userID = req.user ? req.user.id : "0";
 	try {
 		// Variable to store selected suggestion id
 		let selectedSuggestionId;
@@ -108,6 +111,26 @@ router.get("/getUser", async (req, res) => {
 		res.send(isAdmin);
 	} catch (error) {
 		res.status(500).send("Internal server error");
+	}
+});
+
+router.post("/saveFile", upload.single("file"), async (req, res) => {
+	try {
+		const fileContent = req.file.buffer.toString();
+		const fileName = req.file.originalname;
+		const sentencesArray = fileContent.split(".");
+		for (let i = 0; i < sentencesArray.length; i++) {
+			if (sentencesArray[i].trim().length > 0) {
+				await db.query(
+					"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
+					[sentencesArray[i].trim(), fileName, i]
+				);
+			}
+		}
+		res.redirect("/");
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ message: "An error occurred while saving a file" });
 	}
 });
 

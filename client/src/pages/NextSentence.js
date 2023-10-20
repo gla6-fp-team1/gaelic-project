@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "./Home.css";
+
 const exportGaelicData = async (data) => {
 	try {
 		const jsonData = JSON.stringify(data, null, 2);
@@ -16,24 +18,20 @@ const exportGaelicData = async (data) => {
 	}
 };
 const NextSentence = (props) => {
-	const [hideMyGaelicButton, setHideMyGaelicButton] = useState(false);
+	const [hideMyUploadButton, setHideUploadButton] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await fetch("/api/getUser");
 				const data = await response.json();
-
-
-				setHideMyGaelicButton(data);
+				setHideUploadButton(data);
 			} catch (error) {
 				console.error("Error fetching user data:", error);
 			}
 		};
-
 		fetchData();
 	}, []);
-
 	const handleExportGaelicData = async () => {
 		try {
 			const response = await fetch("/api/exportGaelicData");
@@ -55,13 +53,25 @@ const NextSentence = (props) => {
 			>
 				Next
 			</button>
-			{hideMyGaelicButton && (
-				<button id="myGaelicButton" onClick={handleExportGaelicData}>
-					ExportGaelicData
-				</button>
+			{hideMyUploadButton && (
+				<div className="adminFunctions">
+					<p> Admin Functions:</p>
+					<div className="fileUpload">
+						<form
+							method="POST"
+							action="/api/saveFile"
+							enctype="multipart/form-data"
+						>
+							<input type="file" name="file" id="fileInput" />
+							<input type="submit" value="Upload File" />
+						</form>
+					</div>
+					<button id="myGaelicButton" onClick={handleExportGaelicData}>
+						ExportGaelicData
+					</button>
+				</div>
 			)}
 		</div>
 	);
 };
-
 export default NextSentence;
