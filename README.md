@@ -36,7 +36,7 @@ To set up the project locally, follow these steps:
 2. Install dependencies:  
    npm install
 
-3. Create a .env file and configure it with your environment-specific settings. You might need to set environment variables, such as the database connection details. .env.example file content can be used for that propose.
+3. Create a .env file and configure it with your environment-specific settings. You might need to set environment variables, such as the database connection details. `.env.example` file content can be used for that propose.
 
 ## Google API credentials
 
@@ -58,7 +58,6 @@ Follow the instructions to setup the Google API credentials:
    Select the "JSON" key type and click "Create." This will download a JSON file with your credentials. Store this file securely.
 
 4. More helpful links
-   https://developers.google.com/workspace/guides/create-credentials
    https://developers.google.com/workspace/guides/create-credentials
 
 Save your changes.
