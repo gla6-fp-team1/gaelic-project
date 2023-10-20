@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Home.css";
+import { Input } from "@mui/material";
 const exportGaelicData = async (data) => {
 	try {
 		const jsonData = JSON.stringify(data, null, 2);
@@ -84,14 +85,12 @@ const NextSentence = (props) => {
 			</button>
 			{hideMyUploadButton && (
 				<>
-					{" "}
 					<div className="fileUpload">
 						{submissionStatus === "success" && (
 							<p>File submitted successfully!</p>
 						)}
-						<input type="file" id="fileInput" onChange={handleSaveFile} />
-						{/* <button onClick={handleSaveFile}>UploadText</button> */}
-					</div>{" "}
+						<Input type="file" id="fileInput" onChange={handleSaveFile} />
+					</div>
 					<button id="myGaelicButton" onClick={handleExportGaelicData}>
 						ExportGaelicData
 					</button>
