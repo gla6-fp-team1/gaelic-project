@@ -18,7 +18,7 @@ const exportGaelicData = async (data) => {
 	}
 };
 const NextSentence = (props) => {
-	const [hideMyUploadButton, setHideUploadButton] = useState(true);
+	const [hideMyUploadButton, setHideUploadButton] = useState(false);
 	const [submissionStatus, setSubmissionStatus] = useState(null);
 	useEffect(() => {
 		const fetchData = async () => {
