@@ -15,7 +15,6 @@ Welcome to the Gaelic Text Project! This project focuses on allowing users to se
 - [Security](#security)
 - [Troubleshooting](#troubleshooting)
 - [Contributions](#contributions)
-- [License](#license)
 
 ## About the Project
 
@@ -176,7 +175,3 @@ See the guidance in the [wiki].
 ## Contributions
 
 We welcome contributions from the community to make this Gaelic Text Project even better. Feel free to open issues and pull requests.
-
-<!-- ## License
-
-This project is licensed under the MIT License. -->
