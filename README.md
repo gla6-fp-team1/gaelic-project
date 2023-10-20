@@ -73,24 +73,7 @@ Copy code
 -- Create a table to store sentences
 
 ```bash
-psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS sentences (
-id SERIAL PRIMARY KEY,
-sentence TEXT
-);"
-
-psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS suggestions (
-id SERIAL PRIMARY KEY,
-sentence_id INTEGER REFERENCES sentences(id),
-suggestion TEXT
-);"
-
-psql -U your_username -d your_database_name -c "CREATE TABLE IF NOT EXISTS user_interactions (
-id SERIAL PRIMARY KEY,
-sentence_id INTEGER REFERENCES sentences(id),
-selected_suggestion TEXT,
-user_provided_suggestion TEXT,
-original_sentence_was_correct BOOLEAN
-);"
+psql -U postgres -h localhost -d cyf < server/db-schema.sql
 ```
 
 You can run these SQL statements using a PostgreSQL database management tool.
