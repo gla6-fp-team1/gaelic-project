@@ -197,6 +197,12 @@ button {
 	margin-left: 3px;
 }
 
+/*  adminFunctions  */
+.adminFunctions {
+	border: 1px solid black;
+	padding: 1em;
+}
+
 .fileUpload {
 	display: flex;
 	flex-direction: column;

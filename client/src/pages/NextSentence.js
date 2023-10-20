@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Home.css";
-import { Input } from "@mui/material";
+
 const exportGaelicData = async (data) => {
 	try {
 		const jsonData = JSON.stringify(data, null, 2);
@@ -19,7 +19,7 @@ const exportGaelicData = async (data) => {
 };
 const NextSentence = (props) => {
 	const [hideMyUploadButton, setHideUploadButton] = useState(false);
-	const [submissionStatus, setSubmissionStatus] = useState(null);
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -41,37 +41,7 @@ const NextSentence = (props) => {
 			console.error("Error fetching Gaelic data:", error);
 		}
 	};
-	const handleSaveFile = async (event) => {
-		const selectedFile = event.target.files[0];
-		console.log(setSubmissionStatus("success"));
-		if (selectedFile) {
-			const reader = new FileReader();
-			reader.onload = async (e) => {
-				const fileContent = e.target.result;
-				console.log("File content:", typeof fileContent);
-				try {
-					const response = await fetch("/api/saveFile", {
-						method: "POST",
-						body: JSON.stringify({ fileContent }),
-						headers: {
-							"Content-Type": "application/json",
-						},
-					});
-					if (response.ok) {
-						const data = await response.json();
-						console.log("File saved on the server:", data);
-					} else {
-						console.error("Error saving the file:", response.status);
-					}
-				} catch (error) {
-					console.error("Error saving the file:", error);
-				}
-			};
-			reader.readAsText(selectedFile);
-		} else {
-			console.log("No file selected.");
-		}
-	};
+
 	return (
 		<div className="nextExportButton">
 			<button
@@ -84,17 +54,22 @@ const NextSentence = (props) => {
 				Next
 			</button>
 			{hideMyUploadButton && (
-				<>
+				<div className="adminFunctions">
+					<p> Admin Functions:</p>
 					<div className="fileUpload">
-						{submissionStatus === "success" && (
-							<p>File submitted successfully!</p>
-						)}
-						<Input type="file" id="fileInput" onChange={handleSaveFile} />
+						<form
+							method="POST"
+							action="/api/saveFile"
+							enctype="multipart/form-data"
+						>
+							<input type="file" name="file" id="fileInput" />
+							<input type="submit" value="Upload File" />
+						</form>
 					</div>
 					<button id="myGaelicButton" onClick={handleExportGaelicData}>
 						ExportGaelicData
 					</button>
-				</>
+				</div>
 			)}
 		</div>
 	);
