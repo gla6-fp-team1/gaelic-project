@@ -26,7 +26,7 @@ router.post("/save-suggestions", async (req, res) => {
 	const userSuggestion = gaelicData.userSuggestion;
 	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
 	const selectedSuggestion = gaelicData.selectedSuggestion;
-	const userID = req.user ? req.user.id : '0';
+	const userID = req.user ? req.user.id : "0";
 	try {
 		// Variable to store selected suggestion id
 		let selectedSuggestionId;
@@ -108,6 +108,28 @@ router.get("/getUser", async (req, res) => {
 		res.send(isAdmin);
 	} catch (error) {
 		res.status(500).send("Internal server error");
+	}
+});
+
+router.post("/saveFile", async (req, res) => {
+	const { fileContent } = req.body;
+	try {
+		const sentencesArray = fileContent.split(/(?<=\.)\s+(?=\w)/);
+		const lastCount = await db.query("SELECT COUNT(count) FROM sentences");
+		let lastCountValue = Number(lastCount.rows[0].count);
+		for (let i = 0; i < sentencesArray.length; i++) {
+			await db.query(
+				"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
+				[
+					sentencesArray[i],
+					"original.txt",
+					i ? lastCountValue + i : (lastCountValue += 1),
+				]
+			);
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ message: "An error occurred while saving a file" });
 	}
 });
 
