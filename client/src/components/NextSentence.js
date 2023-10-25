@@ -22,7 +22,7 @@ const NextSentence = (props) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch("/api/getUser");
+				const response = await fetch("/api/users/current");
 				const data = await response.json();
 				setHideUploadButton(data);
 			} catch (error) {
@@ -33,7 +33,7 @@ const NextSentence = (props) => {
 	}, []);
 	const handleExportGaelicData = async () => {
 		try {
-			const response = await fetch("/api/exportGaelicData");
+			const response = await fetch("/api/sentences/export");
 			const data = await response.json();
 			exportGaelicData(data);
 		} catch (error) {
@@ -58,7 +58,7 @@ const NextSentence = (props) => {
 					<div className="fileUpload">
 						<form
 							method="POST"
-							action="/api/saveFile"
+							action="/api/sentences/upload"
 							encType="multipart/form-data"
 						>
 							<input type="file" name="file" id="fileInput" />

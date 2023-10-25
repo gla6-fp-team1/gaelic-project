@@ -13,7 +13,7 @@ const UserSuggestion = (props) => {
 		const userSuggestion = userProvidedCorrection;
 		const formData = { sentence, sentenceId, suggestions, userSuggestion };
 		try {
-			const response = await fetch("/api/save-suggestions", {
+			const response = await fetch("/api/user_interactions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

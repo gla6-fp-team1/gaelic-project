@@ -46,7 +46,7 @@ export function Home({ user }) {
 	//
 	useEffect(() => {
 		const loadRandomSentenceFromFile = async () => {
-			const response = await fetch("/api");
+			const response = await fetch("/api/sentences/random");
 			const text = await response.json();
 			setRandomText(text.sentence);
 			setRandomTextId(text.id);

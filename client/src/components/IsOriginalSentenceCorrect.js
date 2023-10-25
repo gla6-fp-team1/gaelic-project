@@ -19,7 +19,7 @@ const IsOriginalSentenceCorrect = (props) => {
 		};
 
 		try {
-			const response = await fetch("/api/save-suggestions", {
+			const response = await fetch("/api/user_interactions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

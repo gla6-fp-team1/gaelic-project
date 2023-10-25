@@ -10,7 +10,7 @@ const upload = multer({ storage: storage });
 
 router.use("/auth", authRouter);
 
-router.get("/", async (_, res) => {
+router.get("/sentences/random", async (_, res) => {
 	logger.debug("Welcoming everyone...");
 
 	// Select a random sentence from sentences table
@@ -22,7 +22,8 @@ router.get("/", async (_, res) => {
 	// Send randomSentence to frontend;
 	res.json({ sentence: randomSentence, id: randomSentenceId });
 });
-router.post("/save-suggestions", async (req, res) => {
+
+router.post("/user_interactions", async (req, res) => {
 	const gaelicData = req.body;
 	const sentenceId = gaelicData.sentenceId;
 	const suggestions = gaelicData.suggestions;
@@ -76,7 +77,7 @@ router.post("/save-suggestions", async (req, res) => {
 	}
 });
 
-router.get("/exportGaelicData", async (req, res) => {
+router.get("/sentences/export", async (req, res) => {
 	try {
 		const querySentences = "SELECT * FROM sentences";
 		const querySuggestions = "SELECT * FROM suggestions";
@@ -99,7 +100,8 @@ router.get("/exportGaelicData", async (req, res) => {
 		res.status(500).send("Internal server error");
 	}
 });
-router.get("/getUser", async (req, res) => {
+
+router.get("/users/current", async (req, res) => {
 	try {
 		const userGoogleID = req.user.id;
 
@@ -114,7 +116,7 @@ router.get("/getUser", async (req, res) => {
 	}
 });
 
-router.post("/saveFile", upload.single("file"), async (req, res) => {
+router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 	try {
 		const fileContent = req.file.buffer.toString();
 		const fileName = req.file.originalname;

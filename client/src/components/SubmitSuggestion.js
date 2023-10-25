@@ -10,7 +10,7 @@ const SubmitSuggestion = (props) => {
 			selectedSuggestion: props.selectedSuggestion,
 		};
 
-		fetch("/api/save-suggestions", {
+		fetch("/api/user_interactions", {
 			method: "POST",
 			body: JSON.stringify(jsonData),
 			headers: {
