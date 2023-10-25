@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 //import { Link } from "react-router-dom";
 
 import "./Home.css";
-import OriginalSentence from "./OriginalSentence";
-import SuggestionSentence from "./SuggestionSentence";
-import NextSentence from "./NextSentence";
-import NoneOfTheSuggestions from "./NoneOfTheSuggestions";
-import SubmitSuggestion from "./SubmitSuggestion";
+import OriginalSentence from "../components/OriginalSentence";
+import SuggestionSentence from "../components/SuggestionSentence";
+import NextSentence from "../components/NextSentence";
+import NoneOfTheSuggestions from "../components/NoneOfTheSuggestions";
+import SubmitSuggestion from "../components/SubmitSuggestion";
 
 import Navbar from "../components/Navbar";
 
-import LoadingSuggestions from "./LoadingSuggestions";
-import UserSuggestion from "./UserSuggestion";
-import IsOriginalSentenceCorrect from "./IsOriginalSentenceCorrect";
+import LoadingSuggestions from "../components/LoadingSuggestions";
+import UserSuggestion from "../components/UserSuggestion";
+import IsOriginalSentenceCorrect from "../components/IsOriginalSentenceCorrect";
 import LoginDialog from "../components/LoginDialog";
 
 export function Home({ user }) {

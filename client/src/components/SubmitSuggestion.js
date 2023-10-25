@@ -1,4 +1,4 @@
-import PopUpAlert from "../components/PopUpAlert";
+import PopUpAlert from "./PopUpAlert";
 import { useState } from "react";
 const SubmitSuggestion = (props) => {
 	const [messageAfterPost, setMessageAfterPost] = useState("");
