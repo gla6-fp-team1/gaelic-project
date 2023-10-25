@@ -1,21 +1,5 @@
 import { useEffect, useState } from "react";
 
-const exportGaelicData = async (data) => {
-	try {
-		const jsonData = JSON.stringify(data, null, 2);
-		const blob = new Blob([jsonData], { type: "application/json" });
-		const link = document.createElement("a");
-		link.href = URL.createObjectURL(blob);
-		link.download = "exported_data.json";
-		document.body.appendChild(link);
-		link.click();
-		setTimeout(() => {
-			document.body.removeChild(link);
-		}, 0);
-	} catch (error) {
-		console.error("Error exporting data:", error);
-	}
-};
 const NextSentence = (props) => {
 	const [hideMyUploadButton, setHideUploadButton] = useState(false);
 
@@ -31,14 +15,19 @@ const NextSentence = (props) => {
 		};
 		fetchData();
 	}, []);
+
 	const handleExportGaelicData = async () => {
-		try {
-			const response = await fetch("/api/sentences/export");
-			const data = await response.json();
-			exportGaelicData(data);
-		} catch (error) {
-			console.error("Error fetching Gaelic data:", error);
-		}
+		const link = document.createElement("a");
+
+		link.href = "/api/sentences/export";
+		link.download = "exported_data.json";
+
+		document.body.appendChild(link);
+		link.click();
+
+		setTimeout(() => {
+			document.body.removeChild(link);
+		}, 0);
 	};
 
 	return (
