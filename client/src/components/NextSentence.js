@@ -24,7 +24,7 @@ const NextSentence = (props) => {
 			try {
 				const response = await fetch("/api/users/current");
 				const data = await response.json();
-				setHideUploadButton(data);
+				setHideUploadButton(data.is_admin);
 			} catch (error) {
 				console.error("Error fetching user data:", error);
 			}

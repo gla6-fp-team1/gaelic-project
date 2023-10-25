@@ -8,19 +8,34 @@ const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+async function getCurrentUserData(req) {
+	const userGoogleID = req.user ? req.user.id : "0";
+	const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
+	const result = await db.query(queryGoogleID);
+	const isAdmin = result.rows[0].count > 0;
+
+	return {
+		id: userGoogleID,
+		isAdmin: isAdmin,
+	};
+}
+
 router.use("/auth", authRouter);
 
 router.get("/sentences/random", async (_, res) => {
-	logger.debug("Welcoming everyone...");
-
-	// Select a random sentence from sentences table
-	const oneRow = await db.query(
-		"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
-	);
-	const randomSentence = oneRow.rows[0].sentence;
-	const randomSentenceId = oneRow.rows[0].id;
-	// Send randomSentence to frontend;
-	res.json({ sentence: randomSentence, id: randomSentenceId });
+	try {
+		// Select a random sentence from sentences table
+		const oneRow = await db.query(
+			"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
+		);
+		const randomSentence = oneRow.rows[0].sentence;
+		const randomSentenceId = oneRow.rows[0].id;
+		// Send randomSentence to frontend;
+		res.status(200).json({ sentence: randomSentence, id: randomSentenceId });
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ message: "Internal Server Error" });
+	}
 });
 
 router.post("/user_interactions", async (req, res) => {
@@ -79,60 +94,73 @@ router.post("/user_interactions", async (req, res) => {
 
 router.get("/sentences/export", async (req, res) => {
 	try {
-		const querySentences = "SELECT * FROM sentences";
-		const querySuggestions = "SELECT * FROM suggestions";
-		const queryUser_interactions = "SELECT * FROM user_interactions";
-		const data = {};
-		const gaelicSentences = await db.query(querySentences);
-		const gaelicSuggestions = await db.query(querySuggestions);
-		const gaelicUser_interactions = await db.query(queryUser_interactions);
-		data.Sentences = gaelicSentences.rows;
-		data.Suggestions = gaelicSuggestions.rows;
-		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data, null, 0);
-		res.set({
-			"Content-Type": "application/json",
-			"Content-Disposition": 'attachment; filename="exportData.json"',
-		});
-		//Send the file as a response for download
-		res.send(jsonData);
+		const userData = await getCurrentUserData(req);
+		if (userData.isAdmin) {
+			const querySentences = "SELECT * FROM sentences";
+			const querySuggestions = "SELECT * FROM suggestions";
+			const queryUser_interactions = "SELECT * FROM user_interactions";
+
+			const data = {};
+
+			const gaelicSentences = await db.query(querySentences);
+			const gaelicSuggestions = await db.query(querySuggestions);
+			const gaelicUser_interactions = await db.query(queryUser_interactions);
+
+			data.sentences = gaelicSentences.rows;
+			data.suggestions = gaelicSuggestions.rows;
+			data.user_interactions = gaelicUser_interactions.rows;
+
+			res.set({
+				"Content-Type": "application/json",
+				"Content-Disposition": 'attachment; filename="exportData.json"',
+			});
+
+			//Send the file as a response for download
+			res.status(200).json(data);
+		} else {
+			res.status(401).json({ message: "Unauthorized" });
+		}
 	} catch (error) {
-		res.status(500).send("Internal server error");
+		logger.error("%0", error);
+		res.status(500).json({ message: "Internal Server Error" });
 	}
 });
 
 router.get("/users/current", async (req, res) => {
 	try {
-		const userGoogleID = req.user.id;
-
-		const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
-
-		const result = await db.query(queryGoogleID);
-
-		const isAdmin = result.rows[0].count > 0;
-		res.send(isAdmin);
+		const userData = await getCurrentUserData(req);
+		res.status(200).json({
+			id: userData.id,
+			is_admin: userData.isAdmin,
+		});
 	} catch (error) {
-		res.status(500).send("Internal server error");
+		logger.error("%0", error);
+		res.status(500).json({ message: "Internal Server Error" });
 	}
 });
 
 router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 	try {
-		const fileContent = req.file.buffer.toString();
-		const fileName = req.file.originalname;
-		const sentencesArray = fileContent.split(".");
-		for (let i = 0; i < sentencesArray.length; i++) {
-			if (sentencesArray[i].trim().length > 0) {
-				await db.query(
-					"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
-					[sentencesArray[i].trim(), fileName, i]
-				);
+		const userData = await getCurrentUserData(req);
+		if (userData.isAdmin) {
+			const fileContent = req.file.buffer.toString();
+			const fileName = req.file.originalname;
+			const sentencesArray = fileContent.split(".");
+			for (let i = 0; i < sentencesArray.length; i++) {
+				if (sentencesArray[i].trim().length > 0) {
+					await db.query(
+						"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
+						[sentencesArray[i].trim(), fileName, i]
+					);
+				}
 			}
+			res.redirect("/");
+		} else {
+			res.status(401).json({ message: "Unauthorized" });
 		}
-		res.redirect("/");
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "An error occurred while saving a file" });
+		res.status(500).json({ message: "Internal Server Error" });
 	}
 });
 
