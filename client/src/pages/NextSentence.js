@@ -60,7 +60,7 @@ const NextSentence = (props) => {
 						<form
 							method="POST"
 							action="/api/saveFile"
-							enctype="multipart/form-data"
+							encType="multipart/form-data"
 						>
 							<input type="file" name="file" id="fileInput" />
 							<input type="submit" value="Upload File" />

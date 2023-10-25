@@ -1,0 +1,18 @@
+name: enforce-linting
+
+run-name: Enforce lint passes on committed files
+
+on:
+  pull_request:
+
+jobs:
+  run-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "npm"
+      - run: npm install
+      - run: npm run lint
