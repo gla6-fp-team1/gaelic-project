@@ -8,7 +8,34 @@ const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const ITEMS_PER_PAGE = 25;
+
 router.use("/auth", authRouter);
+
+// List of sentences
+router.get("/sentences", async (req, res) => {
+	try {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const page = parseInt(req.query.page) || 0;
+			const sentences = await db.query(
+				"SELECT * FROM sentences ORDER BY id ASC LIMIT $1 OFFSET $2",
+				[ITEMS_PER_PAGE, page * ITEMS_PER_PAGE]
+			);
+			const count = await db.query("SELECT COUNT(*) FROM sentences");
+			res.status(200).json({
+				success: true,
+				total: parseInt(count.rows[0].count),
+				page_size: ITEMS_PER_PAGE,
+				data: sentences.rows,
+			});
+		} else {
+			res.status(401).json({ success: false, message: "Unauthorized" });
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ success: false, message: "Internal Server Error" });
+	}
+});
 
 // Obtain random sentence
 router.get("/sentences/random", async (_, res) => {

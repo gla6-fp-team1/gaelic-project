@@ -4,6 +4,12 @@
 	font-family: "Roboto", sans-serif;
 }
 
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
 h1,
 #interactions-top {
 	text-align: center;
@@ -11,7 +17,8 @@ h1,
 }
 
 div.main-content {
-	margin: 6em 12em;
+	margin-left: 12em;
+	margin-right: 12em;
 }
 
 div.grid {
@@ -107,7 +114,7 @@ input.suggestion-input {
 /* NAVBAR */
 
 .navbar {
-	position: absolute;
+	position: relative;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -201,9 +208,12 @@ input.suggestion-input {
 
 /*  Admin  */
 
-.admin-functions {
+div.admin-functions {
 	border: 1px solid black;
-	padding: 1em;
+	padding: 2em;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .file-upload {
@@ -218,11 +228,19 @@ input.suggestion-input {
 	width: 60%;
 }
 
+div.sentence-table {
+	width: 800px;
+	height: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 /* Responsive Design */
 
 @media screen and (max-width: 1200px) and (min-width: 800px) {
 	div.main-content {
-		margin: 4em;
+		margin-left: 4em;
+		margin-right: 4em;
 	}
 }
 
@@ -235,7 +253,8 @@ input.suggestion-input {
 	}
 
 	div.main-content {
-		margin: 1em;
+		margin-left: 1em;
+		margin-right: 1em;
 	}
 
 	button.user-suggestion {

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 
 import "./Home.css";
 
-import SentenceDisplay from "../components/SentenceDisplay";
+import SentenceDisplay from "../components/home/SentenceDisplay";
 
-import Navbar from "../components/Navbar";
+import Navbar from "../components/common/Navbar";
 
-import UserInteraction from "../components/UserInteraction";
-import LoginDialog from "../components/LoginDialog";
+import UserInteraction from "../components/home/UserInteraction";
+import LoginDialog from "../components/common/LoginDialog";
 
 export function Home({ user, setAlertMessage }) {
 	const [sentence, setSentence] = useState(null);

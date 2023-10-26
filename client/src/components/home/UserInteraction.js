@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
-import SuggestionSentence from "./SuggestionSentence";
-import InteractionSelector from "./InteractionSelector";
-import SubmitSuggestion from "./SubmitSuggestion";
+import SuggestionSentence from "./interactions/SuggestionSentence";
+import InteractionSelector from "./interactions/InteractionSelector";
+import SubmitSuggestion from "./interactions/SubmitSuggestion";
 
 import LoadingSuggestions from "./LoadingSuggestions";
-import UserSuggestion from "./UserSuggestion";
+import UserSuggestion from "./interactions/UserSuggestion";
 
 export default function UserInteraction({
 	sentence,

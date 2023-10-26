@@ -1,4 +1,4 @@
-import Loading from "../images/loading.png";
+import Loading from "../../images/loading.png";
 const LoadingSuggestions = () => {
 	return (
 		<div>

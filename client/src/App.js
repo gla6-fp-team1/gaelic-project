@@ -4,7 +4,7 @@ import Admin from "./pages/Admin";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import PopUpAlert from "./components/PopUpAlert";
+import PopUpAlert from "./components/common/PopUpAlert";
 
 const App = () => {
 	const [user, setUser] = useState(null);
@@ -56,7 +56,10 @@ const App = () => {
 				/>
 				<Route path="/about" element={<About user={user} />} />
 				<Route path="/login" element={<Login />} />
-				<Route path="/admin" element={<Admin user={user} />} />
+				<Route
+					path="/admin"
+					element={<Admin setAlertMessage={setAlertMessage} user={user} />}
+				/>
 			</Routes>
 			{alertMessage && (
 				<PopUpAlert setAlertMessage={setAlertMessage} message={alertMessage} />
