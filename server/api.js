@@ -41,19 +41,24 @@ router.post("/user_interactions", async (req, res) => {
 	const userID = req.user ? req.user.id : "0";
 	try {
 		// Variable to store selected suggestion id
-		let selectedSuggestionId;
+		let selectedSuggestionId = null;
 		// data validation
 		if (sentenceId && suggestions && type) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
-				const insertSuggestions = await db.query(
-					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) RETURNING id, suggestion",
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) ON CONFLICT DO NOTHING",
 					[sentenceId, suggestion]
 				);
-				if (insertSuggestions.rows[0].suggestion === selectedSuggestion) {
-					selectedSuggestionId = insertSuggestions.rows[0].id;
-				}
 			}
+			const suggestionSearch = await db.query(
+				"SELECT id FROM suggestions WHERE sentence_id = $1 AND suggestion = $2 LIMIT 1",
+				[sentenceId, selectedSuggestion]
+			);
+			if (suggestionSearch.rows[0]) {
+				selectedSuggestionId = suggestionSearch.rows[0].id;
+			}
+
 			if (type === "user" && userSuggestion) {
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, type, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3, $4)",
@@ -137,11 +142,11 @@ router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
 			const fileContent = req.file.buffer.toString();
 			const fileName = req.file.originalname;
-			const sentencesArray = fileContent.split(".");
+			const sentencesArray = fileContent.split(/(?<=[.?!\n])/);
 			for (let i = 0; i < sentencesArray.length; i++) {
 				if (sentencesArray[i].trim().length > 0) {
 					await db.query(
-						"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
+						"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
 						[sentencesArray[i].trim(), fileName, i]
 					);
 				}

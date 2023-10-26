@@ -27,6 +27,9 @@ CREATE TABLE admin (
   admin_google_id TEXT
 );
 
+CREATE UNIQUE INDEX ON sentences (sentence, source);
+CREATE UNIQUE INDEX ON suggestions (sentence_id, suggestions);
+CREATE UNIQUE INDEX ON admin (admin_google_id);
 
 INSERT INTO sentences (sentence, source, count) VALUES ('Bhiodh iad a'' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn.', 'original.txt', 1);
 INSERT INTO sentences (sentence, source, count) VALUES ('Tha iad ris an Gearrloch fhathast.', 'original.txt', 2);
