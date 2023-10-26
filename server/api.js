@@ -10,6 +10,7 @@ const upload = multer({ storage: storage });
 
 router.use("/auth", authRouter);
 
+// Obtain random sentence
 router.get("/sentences/random", async (_, res) => {
 	try {
 		// Select a random sentence from sentences table
@@ -26,6 +27,7 @@ router.get("/sentences/random", async (_, res) => {
 	}
 });
 
+// Submit user interaction information
 router.post("/user_interactions", async (req, res) => {
 	const body = req.body;
 
@@ -104,6 +106,7 @@ router.post("/user_interactions", async (req, res) => {
 	}
 });
 
+// Export database to file
 router.get("/sentences/export", async (req, res) => {
 	try {
 		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
@@ -137,6 +140,8 @@ router.get("/sentences/export", async (req, res) => {
 	}
 });
 
+// Upload sentence information
+// Note: not an AJAX call, relies on redirects
 router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 	try {
 		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
@@ -151,13 +156,12 @@ router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 					);
 				}
 			}
-			res.redirect("/");
+			res.redirect("/admin?message=Successful%20upload");
 		} else {
-			res.status(401).json({ success: false, message: "Unauthorized" });
+			res.redirect("/admin?fail=Unauthorized");
 		}
 	} catch (error) {
-		logger.error("%0", error);
-		res.status(500).json({ success: false, message: "Internal Server Error" });
+		res.redirect("/admin?fail=Internal%20Server%20Error");
 	}
 });
 

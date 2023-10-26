@@ -8,16 +8,13 @@ import Navbar from "../components/Navbar";
 
 import UserInteraction from "../components/UserInteraction";
 import LoginDialog from "../components/LoginDialog";
-import PopUpAlert from "../components/PopUpAlert";
 
-export function Home({ user }) {
+export function Home({ user, setAlertMessage }) {
 	const [sentence, setSentence] = useState(null);
 	const [suggestions, setSuggestions] = useState([]);
 
 	const [selectedInteraction, setSelectedInteraction] = useState(null);
 	const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
-
-	const [alertMessage, setAlertMessage] = useState(null);
 
 	const [nextSentenceCounter, setNextSentenceCounter] = useState(0); // counter for triggering useEffect
 	const [submitClickCounter, setSubmitClickCounter] = useState(4);
@@ -76,12 +73,6 @@ export function Home({ user }) {
 							setAlertMessage={setAlertMessage}
 						/>
 					</div>
-					{alertMessage && (
-						<PopUpAlert
-							setAlertMessage={setAlertMessage}
-							message={alertMessage}
-						/>
-					)}
 				</main>
 			</div>
 		</>
