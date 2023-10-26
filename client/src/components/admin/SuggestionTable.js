@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import SentenceDisplay from "./SentenceDisplay";
 
-const SentenceTable = ({ setAlertMessage }) => {
+const SuggestionTable = ({ setAlertMessage, sentenceId }) => {
 	const [paginationModel, setPaginationModel] = useState({
 		page: 0,
 		pageSize: 1,
@@ -10,19 +9,22 @@ const SentenceTable = ({ setAlertMessage }) => {
 
 	const [rows, setRows] = useState([]);
 	const [totalRows, setTotalRows] = useState(0);
-	const [selectionModel, setSelectionModel] = useState([]);
 
 	const columns = [
 		{ field: "id", headerName: "ID", width: 75, sortable: false },
-		{ field: "source", headerName: "Source File", width: 150, sortable: false },
-		{ field: "count", headerName: "Position", width: 75, sortable: false },
-		{ field: "sentence", headerName: "Sentence", width: 500, sortable: false },
+		{ field: "user_type", headerName: "User", width: 150, sortable: false },
+		{
+			field: "user_suggestion",
+			headerName: "Suggestion",
+			width: 575,
+			sortable: false,
+		},
 	];
 
 	useEffect(() => {
 		async function fetchSentences() {
 			const response = await fetch(
-				`/api/sentences?page=${paginationModel.page}`
+				`/api/sentences/${sentenceId}/user_suggestions?page=${paginationModel.page}`
 			);
 			const responseData = await response.json();
 			if (responseData.success) {
@@ -37,11 +39,10 @@ const SentenceTable = ({ setAlertMessage }) => {
 			}
 		}
 		fetchSentences();
-	}, [paginationModel.page, setAlertMessage]);
+	}, [paginationModel.page, sentenceId, setAlertMessage]);
 
 	return (
 		<>
-			<h2>Sentence database:</h2>
 			<div className="sentence-table">
 				<DataGrid
 					rows={rows}
@@ -52,15 +53,9 @@ const SentenceTable = ({ setAlertMessage }) => {
 					rowCount={totalRows}
 					onPaginationModelChange={setPaginationModel}
 					disableColumnFilter
-					rowSelectionModel={selectionModel}
-					onRowSelectionModelChange={setSelectionModel}
 				/>
 			</div>
-			<SentenceDisplay
-				setAlertMessage={setAlertMessage}
-				sentenceId={selectionModel[0]}
-			/>
 		</>
 	);
 };
-export default SentenceTable;
+export default SuggestionTable;

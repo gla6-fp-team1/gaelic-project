@@ -16,20 +16,25 @@ CREATE TABLE suggestions (
 );
 CREATE TABLE user_interactions (
   id SERIAL PRIMARY KEY,
-  user_google_id TEXT,
+  user_id TEXT,
   sentence_id INTEGER REFERENCES sentences(id),
   type TEXT,
-  selected_suggestion INTEGER REFERENCES suggestions(id),
-  user_provided_suggestion TEXT
+  suggestion_id INTEGER REFERENCES suggestions(id),
+  user_suggestion TEXT
 );
 CREATE TABLE admin (
   id SERIAL PRIMARY KEY,
-  admin_google_id TEXT
+  user_id TEXT
 );
 
 CREATE UNIQUE INDEX ON sentences (sentence, source);
-CREATE UNIQUE INDEX ON suggestions (sentence_id, suggestions);
-CREATE UNIQUE INDEX ON admin (admin_google_id);
+CREATE UNIQUE INDEX ON suggestions (sentence_id, suggestion);
+CREATE UNIQUE INDEX ON admin (user_id);
+
+CREATE INDEX on user_interactions (sentence_id);
+CREATE INDEX on user_interactions (sentence_id, type);
+CREATE INDEX on user_interactions (sentence_id, suggestion_id);
+CREATE INDEX ON user_interactions (user_id);
 
 INSERT INTO sentences (sentence, source, count) VALUES ('Bhiodh iad a'' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn.', 'original.txt', 1);
 INSERT INTO sentences (sentence, source, count) VALUES ('Tha iad ris an Gearrloch fhathast.', 'original.txt', 2);
@@ -43,4 +48,4 @@ INSERT INTO sentences (sentence, source, count) VALUES ('agus tha obair uamhasac
 INSERT INTO sentences (sentence, source, count) VALUES ('agus bha coltas air gun deànadh am bòcan an gróthach air.', 'original.txt', 10);
 INSERT INTO sentences (sentence, source, count) VALUES ('Cha robh buille a bhuaileadh e air nach robh e a'' smaoineach'' gur h- ann air póca cloìmh leis cho bog ''s a bha a'' bhuille is cha robh i a'' dèanadh feum.', 'original.txt', 11);
 
-INSERT INTO admin (admin_google_id) VALUES ('117060750196714169595');
+INSERT INTO admin (user_id) VALUES ('117060750196714169595');

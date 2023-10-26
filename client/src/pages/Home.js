@@ -38,10 +38,14 @@ export function Home({ user, setAlertMessage }) {
 		const obtainRandomSentence = async () => {
 			const response = await fetch("/api/sentences/random");
 			const responseData = await response.json();
-			setSentence(responseData);
+			if (responseData.success) {
+				setSentence(responseData.data);
+			} else {
+				setAlertMessage(responseData);
+			}
 		};
 		obtainRandomSentence();
-	}, [nextSentenceCounter]);
+	}, [nextSentenceCounter, setAlertMessage]);
 
 	return (
 		<>

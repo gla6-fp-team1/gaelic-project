@@ -23,7 +23,7 @@ passport.use(
 
 passport.serializeUser(async (user, done) => {
 	const userGoogleID = user ? user.id : "0";
-	const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
+	const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE user_id = '${userGoogleID}'`;
 	const result = await db.query(queryGoogleID);
 	const isAdmin = result.rows[0].count > 0;
 
