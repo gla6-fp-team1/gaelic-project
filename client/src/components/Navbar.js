@@ -34,6 +34,11 @@ const Navbar = ({ user }) => {
 				<li>
 					<Link to="/about/this/site">About</Link>
 				</li>
+				{user && user.permissions && user.permissions.isAdmin && (
+					<li>
+						<Link to="/admin">Admin</Link>
+					</li>
+				)}
 				<li>
 					{user ? (
 						<Button variant="contained" color="primary" onClick={logout}>

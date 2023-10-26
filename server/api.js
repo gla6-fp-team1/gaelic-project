@@ -8,18 +8,6 @@ const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-async function getCurrentUserData(req) {
-	const userGoogleID = req.user ? req.user.id : "0";
-	const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
-	const result = await db.query(queryGoogleID);
-	const isAdmin = result.rows[0].count > 0;
-
-	return {
-		id: userGoogleID,
-		isAdmin: isAdmin,
-	};
-}
-
 router.use("/auth", authRouter);
 
 router.get("/sentences/random", async (_, res) => {
@@ -113,8 +101,7 @@ router.post("/user_interactions", async (req, res) => {
 
 router.get("/sentences/export", async (req, res) => {
 	try {
-		const userData = await getCurrentUserData(req);
-		if (userData.isAdmin) {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
 			const querySentences = "SELECT * FROM sentences";
 			const querySuggestions = "SELECT * FROM suggestions";
 			const queryUser_interactions = "SELECT * FROM user_interactions";
@@ -145,23 +132,9 @@ router.get("/sentences/export", async (req, res) => {
 	}
 });
 
-router.get("/users/current", async (req, res) => {
-	try {
-		const userData = await getCurrentUserData(req);
-		res.status(200).json({
-			id: userData.id,
-			is_admin: userData.isAdmin,
-		});
-	} catch (error) {
-		logger.error("%0", error);
-		res.status(500).json({ success: false, message: "Internal Server Error" });
-	}
-});
-
 router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 	try {
-		const userData = await getCurrentUserData(req);
-		if (userData.isAdmin) {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
 			const fileContent = req.file.buffer.toString();
 			const fileName = req.file.originalname;
 			const sentencesArray = fileContent.split(".");

@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import express from "express";
 import bodyParser from "body-parser";
 import apiRouter from "./api";
@@ -24,7 +26,7 @@ app.use(configuredMorgan());
 app.use(
 	cookieSession({
 		name: "session",
-		keys: ["key1", "key2"],
+		keys: [process.env.COOKIE_SECRET],
 	})
 );
 
