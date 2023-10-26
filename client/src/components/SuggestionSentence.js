@@ -1,4 +1,10 @@
-const SuggestionSentence = (props) => {
+const SuggestionSentence = ({
+	number,
+	suggestion,
+	sentence,
+	selectedInteraction,
+	setSelectedInteraction,
+}) => {
 	const diff = (original, corrected) => {
 		const originalWords = original.split(" ");
 		const correctedWords = corrected.split(" ");
@@ -12,23 +18,32 @@ const SuggestionSentence = (props) => {
 		});
 		return result.trim();
 	};
-	const originalSentence = props.sentence ? props.sentence.sentence : "";
+	const originalSentence = sentence ? sentence.sentence : "";
 
-	const innerText = diff(originalSentence, props.suggestion);
+	const innerText = diff(originalSentence, suggestion);
+
+	const classNames = ["displayBlock", "width"];
+
+	if (
+		selectedInteraction &&
+		selectedInteraction.type === "suggestion" &&
+		selectedInteraction.selectedSuggestion === suggestion
+	) {
+		classNames.push("SelectedInteraction");
+	}
+
 	return (
 		<div>
 			<button
-				className="displayBlock width blue-background"
-				onClick={(e) => {
-					const text = e.currentTarget.children[2].innerHTML.replace(
-						/<u>/g,
-						""
-					);
-					const finalText = text.replace(/<[/]u>/g, "");
-					props.setSelectedSuggestion(finalText);
+				className={classNames.join(" ")}
+				onClick={() => {
+					setSelectedInteraction({
+						type: "suggestion",
+						selectedSuggestion: suggestion,
+					});
 				}}
 			>
-				<b>Suggestion {props.number}:</b>
+				<b>Suggestion {number}:</b>
 				<br></br>
 				<span dangerouslySetInnerHTML={{ __html: innerText }}></span>
 			</button>

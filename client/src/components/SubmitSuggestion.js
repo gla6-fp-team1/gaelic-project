@@ -1,12 +1,19 @@
 import SubmitButton from "./SubmitButton";
 
-const SubmitSuggestion = (props) => {
+const SubmitSuggestion = ({
+	sentence,
+	suggestions,
+	setAlertMessage,
+	selectedInteraction,
+	loadNextSentence,
+}) => {
 	const submitButton = () => {
 		const jsonData = {
-			sentence: props.sentence,
-			suggestions: props.suggestions,
-			type: "suggestion_selected",
-			selected_suggestion: props.selectedSuggestion,
+			sentence: sentence,
+			suggestions: suggestions,
+			type: selectedInteraction.type,
+			selected_suggestion: selectedInteraction.selectedSuggestion,
+			user_suggestion: selectedInteraction.userSuggestion,
 		};
 
 		fetch("/api/user_interactions", {
@@ -19,17 +26,17 @@ const SubmitSuggestion = (props) => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				props.setAlertMessage(data);
+				setAlertMessage(data);
 			});
-		props.loadNextSentence();
+		loadNextSentence();
 	};
 	return (
 		<div className="flex-end">
 			<SubmitButton
-				text={"Submit Suggestion"}
+				text={"Submit"}
 				className="width submit"
 				submitButton={submitButton}
-				selectedSuggestion={props.selectedSuggestion}
+				disabled={selectedInteraction === null}
 			/>
 		</div>
 	);

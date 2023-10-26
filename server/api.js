@@ -66,35 +66,41 @@ router.post("/user_interactions", async (req, res) => {
 					selectedSuggestionId = insertSuggestions.rows[0].id;
 				}
 			}
-			if (type === "user_provided_suggestion" && userSuggestion) {
-				// Insert user suggestion to user_interactions table
+			if (type === "user" && userSuggestion) {
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, userSuggestion, userID]
+					"INSERT INTO user_interactions (sentence_id, type, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3, $4)",
+					[sentenceId, type, userSuggestion, userID]
 				);
-			} else if (type === "original_sentence_was_correct") {
-				// Insert originalSentenceWasCorrect into user_interactions table
+			} else if (type === "original") {
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, true, userID]
+					"INSERT INTO user_interactions (sentence_id, type, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, type, userID]
 				);
-			} else if (type === "suggestion_selected" && selectedSuggestionId) {
-				// Insert selectedSuggestion into user_interactions table
+			} else if (type === "none") {
 				await db.query(
-					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, selectedSuggestionId, userID]
+					"INSERT INTO user_interactions (sentence_id, type, user_google_id) VALUES ($1, $2, $3)",
+					[sentenceId, type, userID]
+				);
+			} else if (type === "suggestion" && selectedSuggestionId) {
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, type, selected_suggestion, user_google_id) VALUES ($1, $2, $3, $4)",
+					[sentenceId, type, selectedSuggestionId, userID]
 				);
 			} else {
-				res
-					.status(422)
-					.json({ success: false, message: "Unprocessable Entry" });
+				res.status(422).json({
+					success: false,
+					message: "Missing user interaction data in input",
+				});
 				return;
 			}
 			res
 				.status(201)
 				.json({ success: true, message: "Suggestions saved successfully" });
 		} else {
-			res.status(422).json({ success: false, message: "Unprocessable Entry" });
+			res.status(422).json({
+				success: false,
+				message: "Missing sentence and suggestion information in input",
+			});
 		}
 	} catch (error) {
 		logger.error("%0", error);

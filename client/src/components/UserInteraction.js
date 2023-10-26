@@ -1,22 +1,21 @@
 import { useEffect } from "react";
 
-import SuggestionSentence from "../components/SuggestionSentence";
-import NoneOfTheSuggestions from "../components/NoneOfTheSuggestions";
-import SubmitSuggestion from "../components/SubmitSuggestion";
+import SuggestionSentence from "./SuggestionSentence";
+import InteractionSelector from "./InteractionSelector";
+import SubmitSuggestion from "./SubmitSuggestion";
 
-import LoadingSuggestions from "../components/LoadingSuggestions";
-import UserSuggestion from "../components/UserSuggestion";
-import IsOriginalSentenceCorrect from "../components/IsOriginalSentenceCorrect";
+import LoadingSuggestions from "./LoadingSuggestions";
+import UserSuggestion from "./UserSuggestion";
 
-export default function UserInteraction(props) {
-	const sentence = props.sentence;
-	const suggestions = props.suggestions;
-	const setSuggestions = props.setSuggestions;
-	const loadNextSentence = props.loadNextSentence;
-	const selectedSuggestion = props.selectedSuggestion;
-	const setSelectedSuggestion = props.setSelectedSuggestion;
-	const setAlertMessage = props.setAlertMessage;
-
+export default function UserInteraction({
+	sentence,
+	suggestions,
+	setSuggestions,
+	loadNextSentence,
+	selectedInteraction,
+	setSelectedInteraction,
+	setAlertMessage,
+}) {
 	useEffect(() => {
 		const getSuggestionsFromApi = async (text) => {
 			const response = await fetch(
@@ -31,57 +30,61 @@ export default function UserInteraction(props) {
 		}
 	}, [sentence, setSuggestions, setAlertMessage]);
 
-	const suggestionComponents = suggestions.map((text, i) => {
-		return (
-			<SuggestionSentence
-				key={i}
-				number={i + 1}
-				sentence={sentence}
-				suggestion={text}
-				setSelectedSuggestion={setSelectedSuggestion}
-			/>
-		);
-	});
-
 	return (
 		<>
-			<div className="isOriginalDiv">
-				<IsOriginalSentenceCorrect
-					sentence={sentence}
-					suggestions={suggestions}
-					selectedSuggestion={selectedSuggestion}
-					loadNextSentence={loadNextSentence}
-				/>
-			</div>
-			<div className="paddingBottom">
-				<h3>Suggestions :</h3>
-				{suggestionComponents.length == 0 ? (
-					<LoadingSuggestions />
-				) : (
+			{suggestions.length == 0 ? (
+				<LoadingSuggestions />
+			) : (
+				<>
+					<div className="paddingBottom">
+						<h3>Please select a suggestion you believe is correct:</h3>
+
+						<div className="grid">
+							{suggestions.map((suggestion, i) => (
+								<SuggestionSentence
+									key={i}
+									number={i + 1}
+									sentence={sentence}
+									suggestion={suggestion}
+									selectedInteraction={selectedInteraction}
+									setSelectedInteraction={setSelectedInteraction}
+								/>
+							))}
+						</div>
+					</div>
+					<h3>Or select from the following options:</h3>
 					<div className="grid">
-						{suggestionComponents}
+						<InteractionSelector
+							message="None of the suggestions are helpful"
+							type="none"
+							selectedInteraction={selectedInteraction}
+							setSelectedInteraction={setSelectedInteraction}
+						/>
+						<InteractionSelector
+							message="Original sentence is correct"
+							type="original"
+							selectedInteraction={selectedInteraction}
+							setSelectedInteraction={setSelectedInteraction}
+						/>
+					</div>
+
+					<UserSuggestion
+						sentence={sentence}
+						selectedInteraction={selectedInteraction}
+						setSelectedInteraction={setSelectedInteraction}
+					/>
+
+					<div>
 						<SubmitSuggestion
 							sentence={sentence}
 							suggestions={suggestions}
-							selectedSuggestion={selectedSuggestion}
+							selectedInteraction={selectedInteraction}
 							loadNextSentence={loadNextSentence}
 							setAlertMessage={setAlertMessage}
 						/>
 					</div>
-				)}
-			</div>
-
-			<div>
-				<NoneOfTheSuggestions loadNextSentence={loadNextSentence} />
-			</div>
-			<div>
-				<UserSuggestion
-					sentence={sentence}
-					suggestions={suggestions}
-					selectedSuggestion={selectedSuggestion}
-					loadNextSentence={loadNextSentence}
-				/>
-			</div>
+				</>
+			)}
 		</>
 	);
 }

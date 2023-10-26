@@ -1,34 +1,33 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
 * {
 	font-family: "Roboto", sans-serif;
 }
+
 .center {
 	text-align: center;
 }
+
 .margin {
 	margin: 6em 12em;
 }
+
 .grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(2, 1fr);
+	grid-template-rows: repeat(2, auto);
 	gap: 2em;
 }
-button.displayBlock:hover {
-	background-color: lightgrey;
-}
+
 .flex {
 	display: flex;
 	flex-direction: column;
 }
+
 .displayBlock {
 	display: block;
 }
 
-.blue-background:focus {
-	background-color: blue;
-	color: white;
-}
 .paddingBottom {
 	padding-bottom: 1em;
 }
@@ -36,6 +35,7 @@ button.displayBlock:hover {
 .width {
 	width: 100%;
 }
+
 button {
 	border: none;
 	padding: 1em;
@@ -43,6 +43,31 @@ button {
 	background-color: whitesmoke;
 	cursor: pointer;
 }
+
+button.displayBlock:hover {
+	background-color: lightgrey;
+}
+
+button.Next {
+	background-color: gray;
+	color: white;
+}
+
+button.InteractionSelector {
+	border: 1px solid red;
+	color: red;
+}
+
+button.SelectedInteraction {
+	background-color: blue;
+	border: none;
+	color: white;
+}
+
+button.SelectedInteraction:hover {
+	background-color: darkblue;
+}
+
 .submit {
 	background-color: blue;
 	color: white;
@@ -55,20 +80,12 @@ button {
 	align-self: flex-end;
 }
 
-.Next {
-	background-color: gray;
-	color: white;
-}
-.NoneSuggestions {
-	border: 1px solid red;
-	color: red;
-	background-color: white;
-}
 .nextExportButton {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 }
+
 .nextExportButton button {
 	background-color: gray;
 	color: white;
@@ -113,6 +130,7 @@ button {
 .logo {
 	padding: 1em;
 }
+
 .navbar-title {
 	font-size: 1.5em;
 	font-weight: bold;
@@ -154,21 +172,24 @@ button {
 	0% {
 		transform: rotate(0deg);
 	}
+
 	50% {
 		transform: rotate(180deg);
 	}
+
 	100% {
 		transform: rotate(360deg);
 	}
 }
+
 .suggestionInput {
 	width: 100%;
+	box-sizing: border-box;
 	padding: 12px;
 	border: 1px solid gray;
 	border-radius: 3px;
-	margin: 5px 0;
-	opacity: 0.85;
-	display: inline-block;
+	margin-bottom: 2em;
+	display: block;
 	font-size: 17px;
 	line-height: 20px;
 }
@@ -181,6 +202,7 @@ button {
 	background-color: #2e7d32;
 	color: white;
 }
+
 .isOriginalDiv {
 	text-align: right;
 	color: red;
@@ -207,6 +229,7 @@ button {
 	display: flex;
 	flex-direction: column;
 }
+
 .fileUpload button {
 	margin-top: 5px;
 	padding-left: 0px;

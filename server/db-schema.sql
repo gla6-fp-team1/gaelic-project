@@ -1,6 +1,7 @@
 DROP TABLE sentences CASCADE;
 DROP TABLE suggestions CASCADE;
 DROP TABLE user_interactions CASCADE;
+DROP TABLE admin CASCADE;
 
 CREATE TABLE sentences (
   id SERIAL PRIMARY KEY,
@@ -17,9 +18,9 @@ CREATE TABLE user_interactions (
   id SERIAL PRIMARY KEY,
   user_google_id TEXT,
   sentence_id INTEGER REFERENCES sentences(id),
-  selected_suggestion INTEGER,
-  user_provided_suggestion TEXT,
-  original_sentence_was_correct BOOLEAN
+  type TEXT,
+  selected_suggestion INTEGER REFERENCES suggestions(id),
+  user_provided_suggestion TEXT
 );
 CREATE TABLE admin (
   id SERIAL PRIMARY KEY,

@@ -1,57 +1,40 @@
-import { useState } from "react";
+import InteractionSelector from "./InteractionSelector";
 
-const UserSuggestion = (props) => {
-	const [userProvidedCorrection, setUserProvidedCorrection] = useState("");
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		if (userProvidedCorrection.trim() === "") {
-			return alert("Users correction cannot be empty.");
-		}
-		const formData = {
-			sentence: props.sentence,
-			suggestions: props.suggestions,
-			type: "user_provided_suggestion",
-			user_suggestion: userProvidedCorrection,
-		};
-		try {
-			const response = await fetch("/api/user_interactions", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (response.ok) {
-				setUserProvidedCorrection("");
-				props.loadNextSentence();
-			} else {
-				console.error("Form data submission failed");
-			}
-		} catch (error) {
-			console.log("Error submitting form:", error);
-		}
-	};
-
+const UserSuggestion = ({
+	sentence,
+	selectedInteraction,
+	setSelectedInteraction,
+}) => {
 	return (
-		<div>
-			<h3>Or Enter your own Correction:</h3>
-			<form id="myForm" onSubmit={handleSubmit}>
+		<>
+			<div className="grid">
+				<InteractionSelector
+					message="I'd like to provide my own suggestion"
+					type="user"
+					selectedInteraction={selectedInteraction}
+					setSelectedInteraction={setSelectedInteraction}
+					additionalValues={{ userSuggestion: sentence && sentence.sentence }}
+				/>
+			</div>
+
+			{selectedInteraction && selectedInteraction.type == "user" && (
 				<input
+					className="suggestionInput"
 					type="text"
 					name="suggestion"
-					className="suggestionInput"
 					placeholder="Type correction"
 					id="userProvidedCorrection"
-					value={userProvidedCorrection}
-					onChange={(event) => setUserProvidedCorrection(event.target.value)}
+					value={selectedInteraction.userSuggestion}
+					onChange={(event) => {
+						setSelectedInteraction({
+							type: "user",
+							userSuggestion: event.target.value,
+						});
+					}}
 					required
-				></input>
-				<button className="correctionButton" type="submit">
-					Save Correction
-				</button>
-			</form>
-		</div>
+				/>
+			)}
+		</>
 	);
 };
 

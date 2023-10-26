@@ -1,18 +1,16 @@
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 
-export default function SubmitButton(props) {
+export default function SubmitButton({ text, submitButton, disabled }) {
 	return (
 		<Stack spacing={1} sx={{ width: "100%" }}>
 			<Button
 				color="success"
 				variant="contained"
-				disabled={props.selectedSuggestion == null}
-				onClick={() => {
-					props.submitButton();
-				}}
+				disabled={disabled}
+				onClick={submitButton}
 			>
-				{props.text}
+				{text}
 			</Button>
 		</Stack>
 	);

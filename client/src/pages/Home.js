@@ -15,7 +15,7 @@ export function Home({ user }) {
 	const [sentence, setSentence] = useState(null);
 	const [suggestions, setSuggestions] = useState([]);
 
-	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+	const [selectedInteraction, setSelectedInteraction] = useState(null);
 	const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
 	const [alertMessage, setAlertMessage] = useState(null);
@@ -33,7 +33,7 @@ export function Home({ user }) {
 		}
 
 		setSentence(null);
-		setSelectedSuggestion(null);
+		setSelectedInteraction(null);
 		setSuggestions([]);
 		setNextSentenceCounter(nextSentenceCounter + 1);
 	};
@@ -72,8 +72,8 @@ export function Home({ user }) {
 						<UserInteraction
 							sentence={sentence}
 							suggestions={suggestions}
-							selectedSuggestion={selectedSuggestion}
-							setSelectedSuggestion={setSelectedSuggestion}
+							selectedInteraction={selectedInteraction}
+							setSelectedInteraction={setSelectedInteraction}
 							setSuggestions={setSuggestions}
 							loadNextSentence={loadNextSentence}
 							setAlertMessage={setAlertMessage}

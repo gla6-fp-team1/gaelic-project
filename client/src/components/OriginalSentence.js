@@ -1,9 +1,9 @@
-const OriginalSentence = (props) => {
+const OriginalSentence = ({ sentence }) => {
 	return (
 		<div>
-			<h3>Original Sentence :</h3>
+			<h3 id="topOfForm">Original Sentence:</h3>
 			<button className="width">
-				{props.sentence ? props.sentence.sentence : "Loading..."}
+				{sentence ? sentence.sentence : "Loading..."}
 			</button>
 		</div>
 	);
