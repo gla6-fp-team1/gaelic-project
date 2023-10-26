@@ -8,6 +8,10 @@
 	text-align: center;
 }
 
+.right {
+	text-align: right;
+}
+
 .margin {
 	margin: 6em 12em;
 }
@@ -17,6 +21,12 @@
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(2, auto);
 	gap: 2em;
+}
+
+.grid-90 {
+	display: grid;
+	grid-template-columns: 9fr 1fr;
+	gap: 1em;
 }
 
 .flex {
@@ -48,11 +58,6 @@ button.displayBlock:hover {
 	background-color: lightgrey;
 }
 
-button.Next {
-	background-color: gray;
-	color: white;
-}
-
 button.InteractionSelector {
 	border: 1px solid red;
 	color: red;
@@ -68,6 +73,16 @@ button.SelectedInteraction:hover {
 	background-color: darkblue;
 }
 
+button.SkipButton {
+	background-color: gray;
+	color: white;
+	width: 100%;
+}
+
+button.SkipButton:hover {
+	background-color: darkgray;
+}
+
 .submit {
 	background-color: blue;
 	color: white;
@@ -80,19 +95,8 @@ button.SelectedInteraction:hover {
 	align-self: flex-end;
 }
 
-.nextExportButton {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-}
-
-.nextExportButton button {
-	background-color: gray;
-	color: white;
-}
-
 .navbar {
-	position: fixed;
+	position: absolute;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;

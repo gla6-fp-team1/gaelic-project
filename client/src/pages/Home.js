@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 
 import "./Home.css";
 
-import OriginalSentence from "../components/OriginalSentence";
-import NextSentence from "../components/NextSentence";
+import SentenceDisplay from "../components/SentenceDisplay";
 
 import Navbar from "../components/Navbar";
 
@@ -62,11 +61,11 @@ export function Home({ user }) {
 					</h1>
 				</header>
 				<main role="main" className="flex">
-					<div>
-						<NextSentence loadNextSentence={loadNextSentence} />
-					</div>
-					<div className="center paddingBottom">
-						<OriginalSentence sentence={sentence} />
+					<div id="interactionsTop" className="center paddingBottom">
+						<SentenceDisplay
+							sentence={sentence}
+							loadNextSentence={loadNextSentence}
+						/>
 					</div>
 					<div className="userInteraction">
 						<UserInteraction

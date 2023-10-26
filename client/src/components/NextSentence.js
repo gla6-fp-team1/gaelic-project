@@ -1,15 +1,13 @@
 const NextSentence = ({ loadNextSentence }) => {
 	return (
-		<div className="nextExportButton">
-			<button
-				className="Next"
-				onClick={() => {
-					loadNextSentence();
-				}}
-			>
-				Skip
-			</button>
-		</div>
+		<button
+			className="SkipButton"
+			onClick={() => {
+				loadNextSentence();
+			}}
+		>
+			Skip
+		</button>
 	);
 };
 export default NextSentence;
