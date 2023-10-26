@@ -7,7 +7,7 @@ const UserSuggestion = ({
 }) => {
 	return (
 		<>
-			<div className="grid">
+			<div className="grid userSuggestion">
 				<InteractionSelector
 					message="I'd like to provide my own suggestion"
 					type="user"

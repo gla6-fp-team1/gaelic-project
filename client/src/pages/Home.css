@@ -18,8 +18,8 @@
 
 .grid {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(2, auto);
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto auto;
 	gap: 2em;
 }
 
@@ -239,4 +239,28 @@ button.SkipButton:hover {
 	padding-left: 0px;
 	padding-right: 0px;
 	width: 60%;
+}
+
+@media screen and (max-width: 1200px) and (min-width: 800px) {
+	.margin {
+		margin: 4em;
+	}
+}
+
+@media screen and (max-width: 800px) {
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr;
+		gap: 2em;
+	}
+
+	.margin {
+		margin: 1em;
+	}
+
+	.userSuggestion {
+		padding-top: 2em;
+		padding-bottom: 1em;
+	}
 }
