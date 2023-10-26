@@ -30,7 +30,6 @@ const SubmitSuggestion = (props) => {
 				className="width submit"
 				submitButton={submitButton}
 				selectedSuggestion={props.selectedSuggestion}
-				handleNonAuthSubmitClick={props.handleNonAuthSubmitClick}
 			/>
 		</div>
 	);
