@@ -5,10 +5,10 @@ export default function InteractionSelector({
 	message,
 	additionalValues,
 }) {
-	const classNames = ["InteractionSelector", "displayBlock", "width"];
+	const classNames = ["interaction-selector"];
 
 	if (selectedInteraction && selectedInteraction.type == type) {
-		classNames.push("SelectedInteraction");
+		classNames.push("selected-interaction");
 	}
 
 	return (

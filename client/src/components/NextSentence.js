@@ -1,7 +1,7 @@
 const NextSentence = ({ loadNextSentence }) => {
 	return (
 		<button
-			className="SkipButton"
+			className="skip-button"
 			onClick={() => {
 				loadNextSentence();
 			}}

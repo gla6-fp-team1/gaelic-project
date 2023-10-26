@@ -1,5 +1,5 @@
 const AdminButtons = ({ user }) => {
-	const handleExportGaelicData = async () => {
+	const handleExportDatabase = async () => {
 		const link = document.createElement("a");
 
 		link.href = "/api/sentences/export";
@@ -16,9 +16,9 @@ const AdminButtons = ({ user }) => {
 	return (
 		<>
 			{user && user.permissions && user.permissions.isAdmin && (
-				<div className="adminFunctions">
+				<div className="admin-functions">
 					<p> Admin Functions:</p>
-					<div className="fileUpload">
+					<div className="file-upload">
 						<form
 							method="POST"
 							action="/api/sentences/upload"
@@ -28,9 +28,7 @@ const AdminButtons = ({ user }) => {
 							<input type="submit" value="Upload File" />
 						</form>
 					</div>
-					<button id="myGaelicButton" onClick={handleExportGaelicData}>
-						ExportGaelicData
-					</button>
+					<button onClick={handleExportDatabase}>Export Database</button>
 				</div>
 			)}
 		</>

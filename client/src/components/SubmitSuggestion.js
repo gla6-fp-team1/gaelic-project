@@ -1,4 +1,4 @@
-import SubmitButton from "./SubmitButton";
+import Button from "@mui/material/Button";
 
 const SubmitSuggestion = ({
 	sentence,
@@ -31,14 +31,15 @@ const SubmitSuggestion = ({
 		loadNextSentence();
 	};
 	return (
-		<div className="flex-end">
-			<SubmitButton
-				text={"Submit"}
-				className="width submit"
-				submitButton={submitButton}
-				disabled={selectedInteraction === null}
-			/>
-		</div>
+		<Button
+			className="submit"
+			color="success"
+			variant="contained"
+			disabled={selectedInteraction === null}
+			onClick={submitButton}
+		>
+			Submit
+		</Button>
 	);
 };
 

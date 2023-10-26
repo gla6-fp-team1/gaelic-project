@@ -54,14 +54,12 @@ export function Home({ user }) {
 			/>
 			<Navbar user={user} />
 
-			<div className="margin">
+			<div className="main-content">
 				<header>
-					<h1 className="center paddingBottom">
-						Reinforcement Learning With Human Feedback
-					</h1>
+					<h1>Reinforcement Learning With Human Feedback</h1>
 				</header>
-				<main role="main" className="flex">
-					<div id="interactionsTop" className="center paddingBottom">
+				<main role="main" className="main-container">
+					<div id="interactions-top">
 						<SentenceDisplay
 							sentence={sentence}
 							loadNextSentence={loadNextSentence}

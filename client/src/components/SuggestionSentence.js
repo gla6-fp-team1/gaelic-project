@@ -22,14 +22,14 @@ const SuggestionSentence = ({
 
 	const innerText = diff(originalSentence, suggestion);
 
-	const classNames = ["displayBlock", "width"];
+	const classNames = ["suggestion"];
 
 	if (
 		selectedInteraction &&
 		selectedInteraction.type === "suggestion" &&
 		selectedInteraction.selectedSuggestion === suggestion
 	) {
-		classNames.push("SelectedInteraction");
+		classNames.push("selected-interaction");
 	}
 
 	return (

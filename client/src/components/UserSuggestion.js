@@ -7,7 +7,7 @@ const UserSuggestion = ({
 }) => {
 	return (
 		<>
-			<div className="grid userSuggestion">
+			<div className="grid user-suggestion">
 				<InteractionSelector
 					message="I'd like to provide my own suggestion"
 					type="user"
@@ -19,7 +19,7 @@ const UserSuggestion = ({
 
 			{selectedInteraction && selectedInteraction.type == "user" && (
 				<input
-					className="suggestionInput"
+					className="suggestion-input"
 					type="text"
 					name="suggestion"
 					placeholder="Type correction"

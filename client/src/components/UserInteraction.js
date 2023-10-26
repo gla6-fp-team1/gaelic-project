@@ -36,7 +36,7 @@ export default function UserInteraction({
 				<LoadingSuggestions />
 			) : (
 				<>
-					<div className="paddingBottom">
+					<div>
 						<h3>Please select a suggestion you believe is correct:</h3>
 
 						<div className="grid">

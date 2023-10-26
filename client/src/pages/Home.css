@@ -4,42 +4,36 @@
 	font-family: "Roboto", sans-serif;
 }
 
-.center {
+h1,
+#interactions-top {
 	text-align: center;
+	padding-bottom: 1em;
 }
 
-.right {
-	text-align: right;
-}
-
-.margin {
+div.main-content {
 	margin: 6em 12em;
 }
 
-.grid {
+div.grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto auto;
 	gap: 2em;
 }
 
-.grid-90 {
+div.grid-90 {
 	display: grid;
 	grid-template-columns: 9fr 1fr;
 	gap: 1em;
 }
 
-.flex {
+div.main-container {
 	display: flex;
 	flex-direction: column;
 }
 
 .displayBlock {
 	display: block;
-}
-
-.paddingBottom {
-	padding-bottom: 1em;
 }
 
 .width {
@@ -54,46 +48,63 @@ button {
 	cursor: pointer;
 }
 
-button.displayBlock:hover {
+button.suggestion:hover,
+button.interaction-selector:hover {
 	background-color: lightgrey;
 }
 
-button.InteractionSelector {
-	border: 1px solid red;
-	color: red;
+button.suggestion {
+	display: block;
+	width: 100%;
 }
 
-button.SelectedInteraction {
+button.interaction-selector {
+	border: 1px solid red;
+	color: red;
+	display: block;
+	width: 100%;
+}
+
+button.selected-interaction {
 	background-color: blue;
 	border: none;
 	color: white;
 }
 
-button.SelectedInteraction:hover {
+button.selected-interaction:hover {
 	background-color: darkblue;
 }
 
-button.SkipButton {
+button.skip-button {
 	background-color: gray;
 	color: white;
 	width: 100%;
 }
 
-button.SkipButton:hover {
+button.skip-button:hover {
 	background-color: darkgray;
 }
 
-.submit {
-	background-color: blue;
+button.submit {
+	background-color: green;
 	color: white;
-	margin-left: 25%;
-	width: 50%;
+	width: 100%;
 	font-weight: bold;
 }
 
-.flex-end {
-	align-self: flex-end;
+input.suggestion-input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 12px;
+	border: 1px solid gray;
+	border-radius: 3px;
+	margin-bottom: 2em;
+	display: block;
+	font-size: 17px;
+	line-height: 20px;
 }
+
+/* NAVBAR */
 
 .navbar {
 	position: absolute;
@@ -164,6 +175,8 @@ button.SkipButton:hover {
 	gap: 1em;
 }
 
+/* LOADING */
+
 .loading {
 	width: 5%;
 	height: 5%;
@@ -186,80 +199,46 @@ button.SkipButton:hover {
 	}
 }
 
-.suggestionInput {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 12px;
-	border: 1px solid gray;
-	border-radius: 3px;
-	margin-bottom: 2em;
-	display: block;
-	font-size: 17px;
-	line-height: 20px;
-}
+/*  Admin  */
 
-.correctionButton {
-	border-top-left-radius: none;
-	border-bottom-left-radius: none;
-	padding: 1.2em;
-	margin-top: 0.5em;
-	background-color: #2e7d32;
-	color: white;
-}
-
-.isOriginalDiv {
-	text-align: right;
-	color: red;
-}
-
-.isOriginSubmit {
-	margin-top: 1em;
-	background-color: #2e7d32;
-	color: white;
-	padding: 12px 20px;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	margin-left: 3px;
-}
-
-/*  adminFunctions  */
-.adminFunctions {
+.admin-functions {
 	border: 1px solid black;
 	padding: 1em;
 }
 
-.fileUpload {
+.file-upload {
 	display: flex;
 	flex-direction: column;
 }
 
-.fileUpload button {
+.file-upload button {
 	margin-top: 5px;
 	padding-left: 0px;
 	padding-right: 0px;
 	width: 60%;
 }
 
+/* Responsive Design */
+
 @media screen and (max-width: 1200px) and (min-width: 800px) {
-	.margin {
+	div.main-content {
 		margin: 4em;
 	}
 }
 
 @media screen and (max-width: 800px) {
-	.grid {
+	div.grid {
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr;
 		gap: 2em;
 	}
 
-	.margin {
+	div.main-content {
 		margin: 1em;
 	}
 
-	.userSuggestion {
+	button.user-suggestion {
 		padding-top: 2em;
 		padding-bottom: 1em;
 	}
