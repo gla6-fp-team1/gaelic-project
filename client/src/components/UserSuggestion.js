@@ -7,11 +7,12 @@ const UserSuggestion = (props) => {
 		if (userProvidedCorrection.trim() === "") {
 			return alert("Users correction cannot be empty.");
 		}
-		const sentence = props.randomText;
-		const sentenceId = props.randomTextId;
-		const suggestions = props.suggestionsText;
-		const userSuggestion = userProvidedCorrection;
-		const formData = { sentence, sentenceId, suggestions, userSuggestion };
+		const formData = {
+			sentence: props.sentence,
+			suggestions: props.suggestions,
+			type: "user_provided_suggestion",
+			user_suggestion: userProvidedCorrection,
+		};
 		try {
 			const response = await fetch("/api/user_interactions", {
 				method: "POST",
@@ -22,13 +23,8 @@ const UserSuggestion = (props) => {
 			});
 
 			if (response.ok) {
-				console.log("Form data submitted successfully");
-				console.log("before reloading");
-				window.location.reload();
-
-				console.log("after reloading");
-
 				setUserProvidedCorrection("");
+				props.loadNextSentence();
 			} else {
 				console.error("Form data submission failed");
 			}
@@ -51,18 +47,7 @@ const UserSuggestion = (props) => {
 					onChange={(event) => setUserProvidedCorrection(event.target.value)}
 					required
 				></input>
-				<button
-					className="correctionButton"
-					type="submit"
-					onClick={() => {
-						setTimeout(() => {
-							let randomNumber = Math.random() * 1000;
-							props.setNextOriginalText(randomNumber);
-							setUserProvidedCorrection("");
-							window.location.reload();
-						}, 1000); // 4000 milliseconds (4 seconds)
-					}}
-				>
+				<button className="correctionButton" type="submit">
 					Save Correction
 				</button>
 			</form>

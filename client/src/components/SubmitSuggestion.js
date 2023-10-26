@@ -4,10 +4,10 @@ const SubmitSuggestion = (props) => {
 	const [messageAfterPost, setMessageAfterPost] = useState("");
 	const submitButton = () => {
 		const jsonData = {
-			sentence: props.randomText,
-			sentenceId: props.randomTextId,
-			suggestions: props.suggestionsText,
-			selectedSuggestion: props.selectedSuggestion,
+			sentence: props.sentence,
+			suggestions: props.suggestions,
+			type: "suggestion_selected",
+			selected_suggestion: props.selectedSuggestion,
 		};
 
 		fetch("/api/user_interactions", {
@@ -23,18 +23,16 @@ const SubmitSuggestion = (props) => {
 				setMessageAfterPost(data.message);
 				console.log(data.message);
 			});
-		let randomNumber = Math.random() * 1000;
-		props.setNextOriginalText(randomNumber);
+		props.loadNextSentence();
 	};
 	return (
 		<div className="flex-end">
 			<PopUpAlert
-				setEnableDisable={props.setEnableDisable}
-				enableDisable={props.enableDisable}
 				text={"Submit Suggestion"}
 				className="width submit"
 				submitButton={submitButton}
 				message={messageAfterPost}
+				selectedSuggestion={props.selectedSuggestion}
 				handleNonAuthSubmitClick={props.handleNonAuthSubmitClick}
 			/>
 		</div>

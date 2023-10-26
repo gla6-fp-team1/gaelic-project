@@ -39,18 +39,23 @@ router.get("/sentences/random", async (_, res) => {
 });
 
 router.post("/user_interactions", async (req, res) => {
-	const gaelicData = req.body;
-	const sentenceId = gaelicData.sentenceId;
-	const suggestions = gaelicData.suggestions;
-	const userSuggestion = gaelicData.userSuggestion;
-	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
-	const selectedSuggestion = gaelicData.selectedSuggestion;
+	const body = req.body;
+
+	const sentence = body.sentence;
+	const suggestions = body.suggestions;
+	const type = body.type;
+
+	const selectedSuggestion = body.selected_suggestion;
+	const userSuggestion = body.user_suggestion;
+
+	const sentenceId = sentence ? sentence.id : null;
+
 	const userID = req.user ? req.user.id : "0";
 	try {
 		// Variable to store selected suggestion id
 		let selectedSuggestionId;
 		// data validation
-		if (sentenceId && suggestions) {
+		if (sentenceId && suggestions && type) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
 				const insertSuggestions = await db.query(
@@ -61,24 +66,27 @@ router.post("/user_interactions", async (req, res) => {
 					selectedSuggestionId = insertSuggestions.rows[0].id;
 				}
 			}
-			if (userSuggestion && userID) {
+			if (type === "user_provided_suggestion" && userSuggestion) {
 				// Insert user suggestion to user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3)",
 					[sentenceId, userSuggestion, userID]
 				);
-			} else if (originalSentenceWasCorrect && userID) {
+			} else if (type === "original_sentence_was_correct") {
 				// Insert originalSentenceWasCorrect into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, originalSentenceWasCorrect == "Correct", userID]
+					[sentenceId, true, userID]
 				);
-			} else if (selectedSuggestionId && userID) {
+			} else if (type === "suggestion_selected" && selectedSuggestionId) {
 				// Insert selectedSuggestion into user_interactions table
 				await db.query(
 					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
 					[sentenceId, selectedSuggestionId, userID]
 				);
+			} else {
+				res.status(422).json({ message: "Unprocessable Entry" });
+				return;
 			}
 			res.status(201).json({ message: "Suggestions saved successfully" });
 		} else {

@@ -35,8 +35,7 @@ const NextSentence = (props) => {
 			<button
 				className="Next"
 				onClick={() => {
-					let randomNumber = Math.random() * 1000;
-					props.setNextOriginalText(randomNumber);
+					props.loadNextSentence();
 				}}
 			>
 				Next

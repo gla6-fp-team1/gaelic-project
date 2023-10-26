@@ -28,11 +28,10 @@ export default function PopUpAlert(props) {
 			<Button
 				color="success"
 				variant="contained"
-				disabled={props.enableDisable}
+				disabled={props.selectedSuggestion == null}
 				onClick={() => {
 					props.submitButton();
 					handleClick();
-					props.setEnableDisable(true);
 					props.handleNonAuthSubmitClick();
 				}}
 			>

@@ -12,7 +12,9 @@ const SuggestionSentence = (props) => {
 		});
 		return result.trim();
 	};
-	const innerText = diff(props.randomText, props.suggestionText);
+	const originalSentence = props.sentence ? props.sentence.sentence : "";
+
+	const innerText = diff(originalSentence, props.suggestion);
 	return (
 		<div>
 			<button
@@ -24,7 +26,6 @@ const SuggestionSentence = (props) => {
 					);
 					const finalText = text.replace(/<[/]u>/g, "");
 					props.setSelectedSuggestion(finalText);
-					props.setEnableDisable(false);
 				}}
 			>
 				<b>Suggestion {props.number}:</b>

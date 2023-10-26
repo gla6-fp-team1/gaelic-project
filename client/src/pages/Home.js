@@ -16,81 +16,74 @@ import IsOriginalSentenceCorrect from "../components/IsOriginalSentenceCorrect";
 import LoginDialog from "../components/LoginDialog";
 
 export function Home({ user }) {
-	const [randomText, setRandomText] = useState("Loading...");
-	const [randomTextId, setRandomTextId] = useState(1);
-	const [suggestionsText, setSuggestionsText] = useState([
-		"Loading...",
-		"Loading...",
-		"Loading...",
-	]);
-	const [selectedSuggestion, setSelectedSuggestion] = useState("");
-	const [nextOriginalText, setNextOriginalText] = useState(1);
-	const [loading, setLoading] = useState(1);
+	const [sentence, setSentence] = useState(null);
+	const [suggestions, setSuggestions] = useState([]);
 
-	const [enableDisable, setEnableDisable] = useState(true); // submit button is disabled
+	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+	const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+
+	const [nextSentenceCounter, setNextSentenceCounter] = useState(0); // counter for triggering useEffect
+	const [nextSuggestionCounter, setNextSuggestionCounter] = useState(0); // counter for triggering useEffect
 	const [submitClickCounter, setSubmitClickCounter] = useState(4);
-	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
 	const handleNonAuthSubmitClick = () => {
 		if (!user) {
 			setSubmitClickCounter(submitClickCounter - 1);
 			if (submitClickCounter < 1) {
-				setLoginDialogOpen(true);
+				setIsLoginDialogOpen(true);
 				setSubmitClickCounter(4);
-				setEnableDisable(true);
+				setSelectedSuggestion(null);
 			}
 		}
 	};
 
-	//
-	//
-	useEffect(() => {
-		const loadRandomSentenceFromFile = async () => {
-			const response = await fetch("/api/sentences/random");
-			const text = await response.json();
-			setRandomText(text.sentence);
-			setRandomTextId(text.id);
-			setLoading(1);
-		};
-		loadRandomSentenceFromFile();
-	}, [nextOriginalText]);
+	const loadNextSentence = () => {
+		setSentence(null);
+		setSelectedSuggestion(null);
+		setSuggestions([]);
+		setNextSentenceCounter(nextSentenceCounter + 1);
+	};
 
-	//
+	useEffect(() => {
+		const obtainRandomSentence = async () => {
+			const response = await fetch("/api/sentences/random");
+			const responseData = await response.json();
+			setSentence(responseData);
+			setNextSuggestionCounter((n) => n + 1);
+		};
+		obtainRandomSentence();
+	}, [nextSentenceCounter]);
+
 	useEffect(() => {
 		const getSuggestionsFromApi = async (text) => {
 			const response = await fetch(
 				`https://angocair.garg.ed.ac.uk/best/?text=${encodeURIComponent(text)}`
 			);
 			const data = await response.json();
-			setSuggestionsText(data.data);
-			if (text !== "Loading...") {
-				setLoading(0);
-			} else {
-				setLoading(1);
-			}
+			setSuggestions(data.data);
 		};
-		getSuggestionsFromApi(randomText);
-	}, [randomText]);
+		if (sentence) {
+			getSuggestionsFromApi(sentence.sentence);
+		}
+	}, [sentence, nextSuggestionCounter]);
 
-	//
-	const suggestions = suggestionsText.map((text, i) => {
+	const suggestionComponents = suggestions.map((text, i) => {
 		return (
 			<SuggestionSentence
 				key={i}
-				suggestionText={text}
-				randomText={randomText}
 				number={i + 1}
+				sentence={sentence}
+				suggestion={text}
 				setSelectedSuggestion={setSelectedSuggestion}
-				setEnableDisable={setEnableDisable}
 			/>
 		);
 	});
-	//
+
 	return (
 		<>
 			<LoginDialog
-				open={loginDialogOpen}
-				onClose={() => setLoginDialogOpen(false)}
+				open={isLoginDialogOpen}
+				onClose={() => setIsLoginDialogOpen(false)}
 			/>
 			<Navbar user={user} />
 
@@ -102,57 +95,46 @@ export function Home({ user }) {
 				</header>
 				<main role="main" className="flex">
 					<div>
-						<NextSentence setNextOriginalText={setNextOriginalText} />
+						<NextSentence loadNextSentence={loadNextSentence} />
 					</div>
 					<div className="center paddingBottom">
-						<OriginalSentence text={randomText} />
+						<OriginalSentence sentence={sentence} />
 					</div>
 					<div className="isOriginalDiv">
 						<IsOriginalSentenceCorrect
-							randomText={randomText}
-							randomTextId={randomTextId}
-							suggestionsText={suggestionsText}
+							sentence={sentence}
+							suggestions={suggestions}
 							selectedSuggestion={selectedSuggestion}
-							setNextOriginalText={setNextOriginalText}
-							user={user}
+							loadNextSentence={loadNextSentence}
 						/>
 					</div>
 					<div className="paddingBottom">
 						<h3>Suggestions :</h3>
-						{loading ? (
+						{suggestionComponents.length == 0 ? (
 							<LoadingSuggestions />
 						) : (
 							<div className="grid">
-								{suggestions}
+								{suggestionComponents}
 								<SubmitSuggestion
-									randomText={randomText}
-									randomTextId={randomTextId}
-									suggestionsText={suggestionsText}
+									sentence={sentence}
+									suggestions={suggestions}
 									selectedSuggestion={selectedSuggestion}
-									setNextOriginalText={setNextOriginalText}
-									enableDisable={enableDisable}
-									setEnableDisable={setEnableDisable}
+									loadNextSentence={loadNextSentence}
 									handleNonAuthSubmitClick={handleNonAuthSubmitClick}
-									user={user}
 								/>
 							</div>
 						)}
 					</div>
 
 					<div>
-						<NoneOfTheSuggestions
-							setNextOriginalText={setNextOriginalText}
-							user={user}
-						/>
+						<NoneOfTheSuggestions loadNextSentence={loadNextSentence} />
 					</div>
 					<div>
 						<UserSuggestion
-							randomText={randomText}
-							randomTextId={randomTextId}
-							suggestionsText={suggestionsText}
+							sentence={sentence}
+							suggestions={suggestions}
 							selectedSuggestion={selectedSuggestion}
-							setNextOriginalText={setNextOriginalText}
-							user={user}
+							loadNextSentence={loadNextSentence}
 						/>
 					</div>
 				</main>

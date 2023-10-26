@@ -4,8 +4,7 @@ const NoneOfTheSuggestions = (props) => {
 			<button
 				className="NoneSuggestions"
 				onClick={() => {
-					let randomNumber = Math.random() * 1000;
-					props.setNextOriginalText(randomNumber);
+					props.loadNextSentence();
 				}}
 			>
 				None of the suggestions are helpful

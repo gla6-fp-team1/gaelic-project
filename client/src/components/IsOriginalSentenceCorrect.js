@@ -4,18 +4,13 @@ const IsOriginalSentenceCorrect = (props) => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if (selectedOption !== "Correct") {
-			event.preventDefault();
 			alert("Are you sure the sentence correct? select Correct.");
+			return;
 		}
-		const sentence = props.randomText;
-		const sentenceId = props.randomTextId;
-		const suggestions = props.suggestionsText;
-		const originalSentenceWasCorrect = selectedOption;
 		const formData = {
-			sentence,
-			sentenceId,
-			suggestions,
-			originalSentenceWasCorrect,
+			sentence: props.sentence,
+			suggestions: props.suggestions,
+			type: "original_sentence_was_correct",
 		};
 
 		try {
@@ -29,6 +24,7 @@ const IsOriginalSentenceCorrect = (props) => {
 			if (response.ok) {
 				console.log("Form data submitted successfully");
 				setSelectedOption("");
+				props.loadNextSentence();
 			} else {
 				console.error("Form data submission failed");
 			}
@@ -52,19 +48,7 @@ const IsOriginalSentenceCorrect = (props) => {
 					<option value="empty field"></option>
 					<option value="Correct">Correct</option>
 				</select>
-				<button
-					type="submit"
-					className="isOriginSubmit"
-					onClick={() => {
-						setTimeout(() => {
-							if (selectedOption === "Correct") {
-								window.location.reload();
-							} else {
-								setSelectedOption("");
-							}
-						}, 1000);
-					}}
-				>
+				<button type="submit" className="isOriginSubmit">
 					Submit
 				</button>
 			</form>
