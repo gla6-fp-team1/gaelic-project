@@ -14,6 +14,7 @@ import LoadingSuggestions from "../components/LoadingSuggestions";
 import UserSuggestion from "../components/UserSuggestion";
 import IsOriginalSentenceCorrect from "../components/IsOriginalSentenceCorrect";
 import LoginDialog from "../components/LoginDialog";
+import PopUpAlert from "../components/PopUpAlert";
 
 export function Home({ user }) {
 	const [sentence, setSentence] = useState(null);
@@ -21,6 +22,8 @@ export function Home({ user }) {
 
 	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 	const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+
+	const [alertMessage, setAlertMessage] = useState(null);
 
 	const [nextSentenceCounter, setNextSentenceCounter] = useState(0); // counter for triggering useEffect
 	const [nextSuggestionCounter, setNextSuggestionCounter] = useState(0); // counter for triggering useEffect
@@ -61,6 +64,7 @@ export function Home({ user }) {
 			);
 			const data = await response.json();
 			setSuggestions(data.data);
+			setAlertMessage(null);
 		};
 		if (sentence) {
 			getSuggestionsFromApi(sentence.sentence);
@@ -121,6 +125,7 @@ export function Home({ user }) {
 									selectedSuggestion={selectedSuggestion}
 									loadNextSentence={loadNextSentence}
 									handleNonAuthSubmitClick={handleNonAuthSubmitClick}
+									setAlertMessage={setAlertMessage}
 								/>
 							</div>
 						)}
@@ -137,6 +142,12 @@ export function Home({ user }) {
 							loadNextSentence={loadNextSentence}
 						/>
 					</div>
+					{alertMessage && (
+						<PopUpAlert
+							setAlertMessage={setAlertMessage}
+							message={alertMessage}
+						/>
+					)}
 				</main>
 			</div>
 		</>

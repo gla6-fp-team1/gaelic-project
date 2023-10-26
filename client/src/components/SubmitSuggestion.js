@@ -1,7 +1,6 @@
-import PopUpAlert from "./PopUpAlert";
-import { useState } from "react";
+import SubmitButton from "./SubmitButton";
+
 const SubmitSuggestion = (props) => {
-	const [messageAfterPost, setMessageAfterPost] = useState("");
 	const submitButton = () => {
 		const jsonData = {
 			sentence: props.sentence,
@@ -20,18 +19,16 @@ const SubmitSuggestion = (props) => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				setMessageAfterPost(data.message);
-				console.log(data.message);
+				props.setAlertMessage(data);
 			});
 		props.loadNextSentence();
 	};
 	return (
 		<div className="flex-end">
-			<PopUpAlert
+			<SubmitButton
 				text={"Submit Suggestion"}
 				className="width submit"
 				submitButton={submitButton}
-				message={messageAfterPost}
 				selectedSuggestion={props.selectedSuggestion}
 				handleNonAuthSubmitClick={props.handleNonAuthSubmitClick}
 			/>

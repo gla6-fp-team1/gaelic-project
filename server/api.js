@@ -34,7 +34,7 @@ router.get("/sentences/random", async (_, res) => {
 		res.status(200).json({ sentence: randomSentence, id: randomSentenceId });
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "Internal Server Error" });
+		res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 });
 
@@ -85,18 +85,23 @@ router.post("/user_interactions", async (req, res) => {
 					[sentenceId, selectedSuggestionId, userID]
 				);
 			} else {
-				res.status(422).json({ message: "Unprocessable Entry" });
+				res
+					.status(422)
+					.json({ success: false, message: "Unprocessable Entry" });
 				return;
 			}
-			res.status(201).json({ message: "Suggestions saved successfully" });
+			res
+				.status(201)
+				.json({ success: true, message: "Suggestions saved successfully" });
 		} else {
-			res.status(422).json({ message: "Unprocessable Entry" });
+			res.status(422).json({ success: false, message: "Unprocessable Entry" });
 		}
 	} catch (error) {
 		logger.error("%0", error);
-		res
-			.status(500)
-			.json({ message: "An error occurred while saving suggestions" });
+		res.status(500).json({
+			success: false,
+			message: "An error occurred while saving suggestions",
+		});
 	}
 });
 
@@ -126,11 +131,11 @@ router.get("/sentences/export", async (req, res) => {
 			//Send the file as a response for download
 			res.status(200).json(data);
 		} else {
-			res.status(401).json({ message: "Unauthorized" });
+			res.status(401).json({ success: false, message: "Unauthorized" });
 		}
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "Internal Server Error" });
+		res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 });
 
@@ -143,7 +148,7 @@ router.get("/users/current", async (req, res) => {
 		});
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "Internal Server Error" });
+		res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 });
 
@@ -164,11 +169,11 @@ router.post("/sentences/upload", upload.single("file"), async (req, res) => {
 			}
 			res.redirect("/");
 		} else {
-			res.status(401).json({ message: "Unauthorized" });
+			res.status(401).json({ success: false, message: "Unauthorized" });
 		}
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "Internal Server Error" });
+		res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 });
 
