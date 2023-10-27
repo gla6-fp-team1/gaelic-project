@@ -1,13 +1,26 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Admin from "./pages/Admin";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import PopUpAlert from "./components/common/PopUpAlert";
 
 const App = () => {
 	const [user, setUser] = useState(null);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const [alertMessage, setAlertMessage] = useState(null);
 
 	useEffect(() => {
+		const successMessage = searchParams.get("message");
+		const failureMessage = searchParams.get("fail");
+		if (successMessage) {
+			setAlertMessage({ success: true, message: successMessage });
+		} else if (failureMessage) {
+			setAlertMessage({ success: false, message: failureMessage });
+		}
+
+		setSearchParams({});
 		const getUser = () => {
 			fetch("/api/auth/login/success", {
 				method: "GET",
@@ -32,14 +45,26 @@ const App = () => {
 				});
 		};
 		getUser();
-	}, []);
+	}, [searchParams, setSearchParams]);
 
 	return (
-		<Routes>
-			<Route path="/" element={<Home user={user} />} />
-			<Route path="/about/this/site" element={<About />} />
-			<Route path="/login" element={<Login />} />
-		</Routes>
+		<>
+			<Routes>
+				<Route
+					path="/"
+					element={<Home setAlertMessage={setAlertMessage} user={user} />}
+				/>
+				<Route path="/about" element={<About user={user} />} />
+				<Route path="/login" element={<Login />} />
+				<Route
+					path="/admin"
+					element={<Admin setAlertMessage={setAlertMessage} user={user} />}
+				/>
+			</Routes>
+			{alertMessage && (
+				<PopUpAlert setAlertMessage={setAlertMessage} message={alertMessage} />
+			)}
+		</>
 	);
 };
 

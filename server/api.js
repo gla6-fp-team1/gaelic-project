@@ -8,129 +8,282 @@ const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const ITEMS_PER_PAGE = 25;
+
 router.use("/auth", authRouter);
 
-router.get("/", async (_, res) => {
-	logger.debug("Welcoming everyone...");
+// Submit user interaction information
+router.post("/user_interactions", async (req, res) => {
+	const body = req.body;
 
-	// Select a random sentence from sentences table
-	const oneRow = await db.query(
-		"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
-	);
-	const randomSentence = oneRow.rows[0].sentence;
-	const randomSentenceId = oneRow.rows[0].id;
-	// Send randomSentence to frontend;
-	res.json({ sentence: randomSentence, id: randomSentenceId });
-});
-router.post("/save-suggestions", async (req, res) => {
-	const gaelicData = req.body;
-	const sentenceId = gaelicData.sentenceId;
-	const suggestions = gaelicData.suggestions;
-	const userSuggestion = gaelicData.userSuggestion;
-	const originalSentenceWasCorrect = gaelicData.originalSentenceWasCorrect;
-	const selectedSuggestion = gaelicData.selectedSuggestion;
+	const sentence = body.sentence;
+	const suggestions = body.suggestions;
+	const type = body.type;
+
+	const selectedSuggestion = body.selected_suggestion;
+	const userSuggestion = body.user_suggestion;
+
+	const sentenceId = sentence ? sentence.id : null;
+
 	const userID = req.user ? req.user.id : "0";
 	try {
 		// Variable to store selected suggestion id
-		let selectedSuggestionId;
+		let selectedSuggestionId = null;
 		// data validation
-		if (sentenceId && suggestions) {
+		if (sentenceId && suggestions && type) {
 			// Insert the suggestions into the suggestions table
 			for (const suggestion of suggestions) {
-				const insertSuggestions = await db.query(
-					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) RETURNING id, suggestion",
+				await db.query(
+					"INSERT INTO suggestions (sentence_id, suggestion) VALUES ($1, $2) ON CONFLICT DO NOTHING",
 					[sentenceId, suggestion]
 				);
-				if (insertSuggestions.rows[0].suggestion === selectedSuggestion) {
-					selectedSuggestionId = insertSuggestions.rows[0].id;
+			}
+			const suggestionSearch = await db.query(
+				"SELECT id FROM suggestions WHERE sentence_id = $1 AND suggestion = $2 LIMIT 1",
+				[sentenceId, selectedSuggestion]
+			);
+			if (suggestionSearch.rows[0]) {
+				selectedSuggestionId = suggestionSearch.rows[0].id;
+			}
+
+			if (type === "user" && userSuggestion) {
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, type, user_suggestion, user_id) VALUES ($1, $2, $3, $4)",
+					[sentenceId, type, userSuggestion, userID]
+				);
+			} else if (type === "original") {
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, type, user_id) VALUES ($1, $2, $3)",
+					[sentenceId, type, userID]
+				);
+			} else if (type === "none") {
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, type, user_id) VALUES ($1, $2, $3)",
+					[sentenceId, type, userID]
+				);
+			} else if (type === "suggestion" && selectedSuggestionId) {
+				await db.query(
+					"INSERT INTO user_interactions (sentence_id, type, suggestion_id, user_id) VALUES ($1, $2, $3, $4)",
+					[sentenceId, type, selectedSuggestionId, userID]
+				);
+			} else {
+				res.status(422).json({
+					success: false,
+					message: "Missing user interaction data in input",
+				});
+				return;
+			}
+			res
+				.status(201)
+				.json({ success: true, message: "Suggestions saved successfully" });
+		} else {
+			res.status(422).json({
+				success: false,
+				message: "Missing sentence and suggestion information in input",
+			});
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({
+			success: false,
+			message: "An error occurred while saving suggestions",
+		});
+	}
+});
+
+// List of sentences
+router.get("/sentences", async (req, res) => {
+	try {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const page = parseInt(req.query.page) || 0;
+			const sentences = await db.query(
+				"SELECT * FROM sentences ORDER BY id ASC LIMIT $1 OFFSET $2",
+				[ITEMS_PER_PAGE, page * ITEMS_PER_PAGE]
+			);
+			const count = await db.query("SELECT COUNT(*) FROM sentences");
+			res.status(200).json({
+				success: true,
+				total: parseInt(count.rows[0].count),
+				page_size: ITEMS_PER_PAGE,
+				data: sentences.rows,
+			});
+		} else {
+			res.status(401).json({ success: false, message: "Unauthorized" });
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ success: false, message: "Internal Server Error" });
+	}
+});
+
+// Obtain random sentence
+router.get("/sentences/random", async (_, res) => {
+	try {
+		// Select a random sentence from sentences table
+		const oneRow = await db.query(
+			"SELECT id, sentence FROM sentences ORDER BY random() LIMIT 1"
+		);
+		if (oneRow.rows[0]) {
+			res.status(200).json({ success: true, data: oneRow.rows[0] });
+		} else {
+			res.status(404).json({
+				success: false,
+				message: "No sentence information in database",
+			});
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ success: false, message: "Internal Server Error" });
+	}
+});
+
+// Export database to file
+router.get("/sentences/export", async (req, res) => {
+	try {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const querySentences = "SELECT * FROM sentences";
+			const querySuggestions = "SELECT * FROM suggestions";
+			const queryUser_interactions = "SELECT * FROM user_interactions";
+
+			const data = {};
+
+			const gaelicSentences = await db.query(querySentences);
+			const gaelicSuggestions = await db.query(querySuggestions);
+			const gaelicUser_interactions = await db.query(queryUser_interactions);
+
+			data.sentences = gaelicSentences.rows;
+			data.suggestions = gaelicSuggestions.rows;
+			data.user_interactions = gaelicUser_interactions.rows;
+
+			res.set({
+				"Content-Type": "application/json",
+				"Content-Disposition": 'attachment; filename="exportData.json"',
+			});
+
+			//Send the file as a response for download
+			res.status(200).json(data);
+		} else {
+			res.status(401).json({ success: false, message: "Unauthorized" });
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ success: false, message: "Internal Server Error" });
+	}
+});
+
+// Upload sentence information
+// Note: not an AJAX call, relies on redirects
+router.post("/sentences/upload", upload.single("file"), async (req, res) => {
+	try {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const fileContent = req.file.buffer.toString();
+			const fileName = req.file.originalname;
+			const sentencesArray = fileContent.split(/(?<=[.?!\n])/);
+			for (let i = 0; i < sentencesArray.length; i++) {
+				if (sentencesArray[i].trim().length > 0) {
+					await db.query(
+						"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
+						[sentencesArray[i].trim(), fileName, i]
+					);
 				}
 			}
-			if (userSuggestion && userID) {
-				// Insert user suggestion to user_interactions table
-				await db.query(
-					"INSERT INTO user_interactions (sentence_id, user_provided_suggestion, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, userSuggestion, userID]
-				);
-			} else if (originalSentenceWasCorrect && userID) {
-				// Insert originalSentenceWasCorrect into user_interactions table
-				await db.query(
-					"INSERT INTO user_interactions (sentence_id, original_sentence_was_correct, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, originalSentenceWasCorrect == "Correct", userID]
-				);
-			} else if (selectedSuggestionId && userID) {
-				// Insert selectedSuggestion into user_interactions table
-				await db.query(
-					"INSERT INTO user_interactions (sentence_id, selected_suggestion, user_google_id) VALUES ($1, $2, $3)",
-					[sentenceId, selectedSuggestionId, userID]
-				);
-			}
-			res.status(201).json({ message: "Suggestions saved successfully" });
+			res.redirect("/admin?message=Successful%20upload");
 		} else {
-			res.status(422).json({ message: "Unprocessable Entry" });
+			res.redirect("/admin?fail=Unauthorized");
 		}
 	} catch (error) {
-		logger.error("%0", error);
-		res
-			.status(500)
-			.json({ message: "An error occurred while saving suggestions" });
+		res.redirect("/admin?fail=Internal%20Server%20Error");
 	}
 });
 
-router.get("/exportGaelicData", async (req, res) => {
+router.get("/sentences/:id", async (req, res) => {
 	try {
-		const querySentences = "SELECT * FROM sentences";
-		const querySuggestions = "SELECT * FROM suggestions";
-		const queryUser_interactions = "SELECT * FROM user_interactions";
-		const data = {};
-		const gaelicSentences = await db.query(querySentences);
-		const gaelicSuggestions = await db.query(querySuggestions);
-		const gaelicUser_interactions = await db.query(queryUser_interactions);
-		data.Sentences = gaelicSentences.rows;
-		data.Suggestions = gaelicSuggestions.rows;
-		data.User_interactions = gaelicUser_interactions.rows;
-		const jsonData = JSON.stringify(data, null, 0);
-		res.set({
-			"Content-Type": "application/json",
-			"Content-Disposition": 'attachment; filename="exportData.json"',
-		});
-		//Send the file as a response for download
-		res.send(jsonData);
-	} catch (error) {
-		res.status(500).send("Internal server error");
-	}
-});
-router.get("/getUser", async (req, res) => {
-	try {
-		const userGoogleID = req.user.id;
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const sentenceId = parseInt(req.params.id) || 0;
 
-		const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE admin_google_id = '${userGoogleID}'`;
-
-		const result = await db.query(queryGoogleID);
-
-		const isAdmin = result.rows[0].count > 0;
-		res.send(isAdmin);
-	} catch (error) {
-		res.status(500).send("Internal server error");
-	}
-});
-
-router.post("/saveFile", upload.single("file"), async (req, res) => {
-	try {
-		const fileContent = req.file.buffer.toString();
-		const fileName = req.file.originalname;
-		const sentencesArray = fileContent.split(".");
-		for (let i = 0; i < sentencesArray.length; i++) {
-			if (sentencesArray[i].trim().length > 0) {
-				await db.query(
-					"INSERT INTO sentences(sentence, source, count) VALUES ($1, $2, $3)",
-					[sentencesArray[i].trim(), fileName, i]
+			const sentence = await db.query("SELECT * FROM sentences where id = $1", [
+				sentenceId,
+			]);
+			if (sentence.rows[0]) {
+				const suggestions = await db.query(
+					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 AND user_id != '0' GROUP BY suggestion",
+					[sentenceId]
 				);
+
+				const types = await db.query(
+					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 AND user_id != '0' GROUP BY type ",
+					[sentenceId]
+				);
+
+				const suggestionsAnonymous = await db.query(
+					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 and user_id = '0' GROUP BY suggestion ",
+					[sentenceId]
+				);
+
+				const typesAnonymous = await db.query(
+					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 and user_id = '0' GROUP BY type ",
+					[sentenceId]
+				);
+
+				const sentenceData = sentence.rows[0];
+				sentenceData.stats = {
+					logged: {
+						suggestions: suggestions.rows,
+						types: types.rows,
+					},
+					anonymous: {
+						suggestions: suggestionsAnonymous.rows,
+						types: typesAnonymous.rows,
+					},
+				};
+
+				res.status(200).json({
+					success: true,
+					data: sentenceData,
+				});
+			} else {
+				res.status(404).json({
+					success: false,
+					message: "Sentence doesn't exist",
+				});
 			}
+		} else {
+			res.status(401).json({ success: false, message: "Unauthorized" });
 		}
-		res.redirect("/");
 	} catch (error) {
 		logger.error("%0", error);
-		res.status(500).json({ message: "An error occurred while saving a file" });
+		res.status(500).json({ success: false, message: "Internal Server Error" });
+	}
+});
+
+router.get("/sentences/:id/user_suggestions", async (req, res) => {
+	try {
+		if (req.user && req.user.permissions && req.user.permissions.isAdmin) {
+			const sentenceId = parseInt(req.params.id) || 0;
+			const page = parseInt(req.query.page) || 0;
+
+			const result = await db.query(
+				"SELECT id, CASE WHEN user_id = '0' THEN 'Anonymous' ELSE 'Logged In' END user_type, user_suggestion FROM user_interactions where sentence_id = $1 and type = $2 LIMIT $3 OFFSET $4",
+				[sentenceId, "user", ITEMS_PER_PAGE, page]
+			);
+
+			const count = await db.query(
+				"SELECT COUNT(*) FROM user_interactions where sentence_id = $1 and type = $2",
+				[sentenceId, "user"]
+			);
+
+			res.status(200).json({
+				success: true,
+				total: parseInt(count.rows[0].count),
+				page_size: ITEMS_PER_PAGE,
+				data: result.rows,
+			});
+		} else {
+			res.status(401).json({ success: false, message: "Unauthorized" });
+		}
+	} catch (error) {
+		logger.error("%0", error);
+		res.status(500).json({ success: false, message: "Internal Server Error" });
 	}
 });
 

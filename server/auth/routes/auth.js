@@ -3,6 +3,7 @@ import "dotenv/config";
 import { Router } from "express";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import db from "../../db";
 
 const router = Router();
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -16,17 +17,20 @@ passport.use(
 		},
 		function (accessToken, refreshToken, profile, cb) {
 			return cb(null, profile);
-
-			/* Find or create user in database
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-    */
 		}
 	)
 );
 
-passport.serializeUser((user, done) => {
+passport.serializeUser(async (user, done) => {
+	const userGoogleID = user ? user.id : "0";
+	const queryGoogleID = `SELECT COUNT(*) FROM admin WHERE user_id = '${userGoogleID}'`;
+	const result = await db.query(queryGoogleID);
+	const isAdmin = result.rows[0].count > 0;
+
+	user.permissions = {
+		isAdmin: isAdmin,
+	};
+
 	done(null, user);
 });
 
@@ -47,7 +51,6 @@ router.get("/login/success", (req, res) => {
 			success: true,
 			message: "User has been successfully authenticated.",
 			user: req.user,
-			// cookies: req.cookies,
 		});
 	} else {
 		res.status(401);

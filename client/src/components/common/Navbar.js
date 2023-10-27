@@ -17,23 +17,26 @@ const Navbar = ({ user }) => {
 					RLHF
 				</Link>
 			</span>
-			{user ? (
+			{user && (
 				<ul className="user-info">
 					<li className="avatar">
 						<img src={user.photos[0].value} alt="avatar" />
 					</li>
 					<li className="username">{user.displayName}</li>
 				</ul>
-			) : (
-				<></>
 			)}
 			<ul className="controls">
 				<li>
 					<Link to="/">Home</Link>
 				</li>
 				<li>
-					<Link to="/about/this/site">About</Link>
+					<Link to="/about">About</Link>
 				</li>
+				{user && user.permissions && user.permissions.isAdmin && (
+					<li>
+						<Link to="/admin">Admin</Link>
+					</li>
+				)}
 				<li>
 					{user ? (
 						<Button variant="contained" color="primary" onClick={logout}>
