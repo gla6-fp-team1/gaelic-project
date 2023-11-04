@@ -27,6 +27,19 @@ describe("/api", () => {
 					expect(response.body.data.sentence).toMatch(/.?/);
 				});
 			});
+
+			describe("Empty database", () => {
+				let response;
+
+				beforeEach(async () => {
+					await db.query("DELETE FROM sentences");
+					response = await request(app).get("/api/sentences/random");
+				});
+
+				test("It returns a 404 response", () => {
+					expect(response.statusCode).toBe(404);
+				});
+			});
 		});
 	});
 
@@ -76,6 +89,8 @@ describe("/api", () => {
 
 				test("it returns a successful response", () => {
 					expect(response.statusCode).toBe(201);
+					expect(response.body.success).toBe(true);
+					expect(response.body.message).toBe("Suggestions saved successfully");
 				});
 
 				test("it links the selection to the logged in user", async () => {
@@ -118,6 +133,20 @@ describe("/api", () => {
 					const interaction = await db.query("SELECT * from user_interactions");
 					expect(interaction.rows[0].suggestion_id).toBe(selection.rows[0].id);
 				});
+
+				describe("Missing suggestion", () => {
+					beforeAll(() => {
+						selectedSuggestion = null;
+					});
+
+					test("the response is a 422", () => {
+						expect(response.statusCode).toBe(422);
+						expect(response.body.success).toBe(false);
+						expect(response.body.message).toBe(
+							"Missing user interaction data in input"
+						);
+					});
+				});
 			});
 
 			describe("User provided a new suggestion", () => {
@@ -131,6 +160,20 @@ describe("/api", () => {
 				test("the interaction created will add the appropriate user suggestion", async () => {
 					const interaction = await db.query("SELECT * from user_interactions");
 					expect(interaction.rows[0].user_suggestion).toBe(userSuggestion);
+				});
+
+				describe("Missing suggestion", () => {
+					beforeAll(() => {
+						userSuggestion = null;
+					});
+
+					test("the response is a 422", () => {
+						expect(response.statusCode).toBe(422);
+						expect(response.body.success).toBe(false);
+						expect(response.body.message).toBe(
+							"Missing user interaction data in input"
+						);
+					});
 				});
 			});
 
@@ -148,6 +191,48 @@ describe("/api", () => {
 				});
 
 				commonUserInteractionTests();
+			});
+
+			describe("Missing type", () => {
+				beforeAll(() => {
+					type = null;
+				});
+
+				test("the response is a 422", () => {
+					expect(response.statusCode).toBe(422);
+					expect(response.body.success).toBe(false);
+					expect(response.body.message).toBe(
+						"Missing sentence and suggestion information in input"
+					);
+				});
+			});
+
+			describe("Missing sentence", () => {
+				beforeAll(() => {
+					sentenceId = null;
+				});
+
+				test("the response is a 422", () => {
+					expect(response.statusCode).toBe(422);
+					expect(response.body.success).toBe(false);
+					expect(response.body.message).toBe(
+						"Missing sentence and suggestion information in input"
+					);
+				});
+			});
+
+			describe("Missing suggestion list", () => {
+				beforeAll(() => {
+					suggestions = [];
+				});
+
+				test("the response is a 422", () => {
+					expect(response.statusCode).toBe(422);
+					expect(response.body.success).toBe(false);
+					expect(response.body.message).toBe(
+						"Missing sentence and suggestion information in input"
+					);
+				});
 			});
 		});
 	});
