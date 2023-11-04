@@ -227,6 +227,46 @@ describe("/api", () => {
 		});
 
 		describe("/:id", () => {
+			describe("/user_suggestions", () => {
+				describe("GET", () => {
+					beforeEach(async () => {
+						await db.query(
+							"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion 1')"
+						);
+						await db.query(
+							"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('0',1,'user','User Suggestion 2')"
+						);
+
+						let agent = request.agent(app);
+						if (loginUserId) {
+							await agent.get("/api/mock/login");
+						}
+						response = await agent.get("/api/sentences/1/user_suggestions");
+					});
+
+					test("It should return a successful response", () => {
+						expect(response.statusCode).toBe(200);
+						expect(response.body.success).toBe(true);
+					});
+
+					test("it returns the user provided suggestions", () => {
+						expect(response.body.total).toBe(2);
+						expect(response.body.page_size).toBe(25);
+						expect(response.body.data[0].user_type).toBe("Logged In");
+						expect(response.body.data[0].user_suggestion).toBe(
+							"User Suggestion 1"
+						);
+
+						expect(response.body.data[1].user_type).toBe("Anonymous");
+						expect(response.body.data[1].user_suggestion).toBe(
+							"User Suggestion 2"
+						);
+					});
+
+					unauthenticatedTests();
+				});
+			});
+
 			describe("GET", () => {
 				let sentenceId = 1;
 

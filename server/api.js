@@ -263,7 +263,7 @@ router.get("/sentences/:id/user_suggestions", async (req, res) => {
 			const page = parseInt(req.query.page) || 0;
 
 			const result = await db.query(
-				"SELECT id, CASE WHEN user_id = '0' THEN 'Anonymous' ELSE 'Logged In' END user_type, user_suggestion FROM user_interactions where sentence_id = $1 and type = $2 LIMIT $3 OFFSET $4",
+				"SELECT id, CASE WHEN user_id = '0' THEN 'Anonymous' ELSE 'Logged In' END user_type, user_suggestion FROM user_interactions where sentence_id = $1 and type = $2 ORDER by id LIMIT $3 OFFSET $4",
 				[sentenceId, "user", ITEMS_PER_PAGE, page]
 			);
 
