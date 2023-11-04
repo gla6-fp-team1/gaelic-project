@@ -9,11 +9,45 @@ let loginUserId = REGULAR_USER_ID;
 mockLogin(app, () => loginUserId);
 
 describe("/api", () => {
+	let response = null;
+
+	const unauthenticatedTests = () => {
+		describe("Non-admin user", () => {
+			beforeAll(() => {
+				loginUserId = REGULAR_USER_ID;
+			});
+
+			test("It returns an unauthorized error", () => {
+				expect(response.statusCode).toBe(401);
+				expect(response.body.success).toBe(false);
+				expect(response.body.message).toBe("Unauthorized");
+			});
+
+			afterAll(() => {
+				loginUserId = ADMIN_USER_ID;
+			});
+		});
+
+		describe("Anonymous user", () => {
+			beforeAll(() => {
+				loginUserId = null;
+			});
+
+			test("It returns an unauthorized error", () => {
+				expect(response.statusCode).toBe(401);
+				expect(response.body.success).toBe(false);
+				expect(response.body.message).toBe("Unauthorized");
+			});
+
+			afterAll(() => {
+				loginUserId = ADMIN_USER_ID;
+			});
+		});
+	};
+
 	describe("/sentences", () => {
 		describe("/random", () => {
 			describe("GET", () => {
-				let response;
-
 				beforeEach(async () => {
 					response = await request(app).get("/api/sentences/random");
 				});
@@ -31,8 +65,6 @@ describe("/api", () => {
 			});
 
 			describe("Empty database", () => {
-				let response;
-
 				beforeEach(async () => {
 					await db.query("DELETE FROM sentences");
 					response = await request(app).get("/api/sentences/random");
@@ -44,8 +76,56 @@ describe("/api", () => {
 			});
 		});
 
+		describe("/export", () => {
+			describe("GET", () => {
+				beforeAll(() => {
+					loginUserId = ADMIN_USER_ID;
+				});
+
+				beforeEach(async () => {
+					await db.query(
+						"INSERT INTO suggestions (sentence_id, suggestion) VALUES (1, 'Suggestion')"
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion')"
+					);
+
+					let agent = request.agent(app);
+					if (loginUserId) {
+						await agent.get("/api/mock/login");
+					}
+					response = await agent.get("/api/sentences/export");
+				});
+
+				test("It should return a successful response", () => {
+					expect(response.statusCode).toBe(200);
+				});
+
+				test("It should return the database in the export", () => {
+					expect(response.body.sentences.length).toBe(11);
+					expect(response.body.sentences[0].id).toBe(1);
+					expect(response.body.sentences[0].sentence).toBe(
+						"Bhiodh iad a' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn."
+					);
+
+					expect(response.body.suggestions.length).toBe(1);
+					expect(response.body.suggestions[0].sentence_id).toBe(1);
+					expect(response.body.suggestions[0].suggestion).toBe("Suggestion");
+
+					expect(response.body.user_interactions.length).toBe(1);
+					expect(response.body.user_interactions[0].sentence_id).toBe(1);
+					expect(response.body.user_interactions[0].type).toBe("user");
+					expect(response.body.user_interactions[0].user_suggestion).toBe(
+						"User Suggestion"
+					);
+					expect(response.body.user_interactions[0].user_id).toBe("1");
+				});
+
+				unauthenticatedTests();
+			});
+		});
+
 		describe("GET", () => {
-			let response = null;
 			let page = null;
 			let extraSentence = null;
 
@@ -123,43 +203,12 @@ describe("/api", () => {
 				});
 			});
 
-			describe("Non-admin user", () => {
-				beforeAll(() => {
-					loginUserId = REGULAR_USER_ID;
-				});
-
-				test("It returns an unauthorized error", () => {
-					expect(response.statusCode).toBe(401);
-					expect(response.body.success).toBe(false);
-					expect(response.body.message).toBe("Unauthorized");
-				});
-
-				afterAll(() => {
-					loginUserId = ADMIN_USER_ID;
-				});
-			});
-
-			describe("Anonymous user", () => {
-				beforeAll(() => {
-					loginUserId = null;
-				});
-
-				test("It returns an unauthorized error", () => {
-					expect(response.statusCode).toBe(401);
-					expect(response.body.success).toBe(false);
-					expect(response.body.message).toBe("Unauthorized");
-				});
-
-				afterAll(() => {
-					loginUserId = ADMIN_USER_ID;
-				});
-			});
+			unauthenticatedTests();
 		});
 	});
 
 	describe("/user_interactions", () => {
 		describe("POST", () => {
-			let response;
 			let selectedSuggestion = null;
 			let userSuggestion = null;
 			let type = null;
