@@ -125,6 +125,107 @@ describe("/api", () => {
 			});
 		});
 
+		describe("/upload", () => {
+			describe("POST", () => {
+				let inputData = "Test Input";
+
+				beforeAll(() => {
+					loginUserId = ADMIN_USER_ID;
+				});
+
+				beforeEach(async () => {
+					const buffer = Buffer.from(inputData);
+
+					let agent = request.agent(app);
+					if (loginUserId) {
+						await agent.get("/api/mock/login");
+					}
+					response = await agent
+						.post("/api/sentences/upload")
+						.attach("file", buffer, "filename.txt");
+				});
+
+				test("It should return a successful response through redirection", () => {
+					expect(response.statusCode).toBe(302);
+
+					expect(response.headers.location).toBe(
+						"/admin?message=Successful%20upload"
+					);
+				});
+
+				test("It should upload a new sentence", async () => {
+					let latestSentence = await db.query(
+						"SELECT * FROM sentences ORDER BY id DESC LIMIT 1"
+					);
+
+					expect(latestSentence.rows[0].sentence).toBe("Test Input");
+					expect(latestSentence.rows[0].source).toBe("filename.txt");
+					expect(latestSentence.rows[0].count).toBe(0);
+				});
+
+				describe("Sentence splitting", () => {
+					beforeAll(() => {
+						inputData = "Input 1. Input 2! Input 3\nInput 4? Input 5.";
+					});
+
+					test("It splits the example into 5 sentences", async () => {
+						let sentences = await db.query(
+							"SELECT * FROM sentences ORDER BY id DESC LIMIT 5"
+						);
+						expect(sentences.rows[0].sentence).toBe("Input 5.");
+						expect(sentences.rows[1].sentence).toBe("Input 4?");
+						expect(sentences.rows[2].sentence).toBe("Input 3");
+						expect(sentences.rows[3].sentence).toBe("Input 2!");
+						expect(sentences.rows[4].sentence).toBe("Input 1.");
+					});
+				});
+
+				describe("Duplicate skipping", () => {
+					beforeAll(() => {
+						inputData = "Input 1. Input 1. Input 1.";
+					});
+
+					test("It splits the example into only a single sentence", async () => {
+						let sentences = await db.query(
+							"SELECT * FROM sentences ORDER BY id DESC LIMIT 2"
+						);
+						expect(sentences.rows[0].sentence).toBe("Input 1.");
+						expect(sentences.rows[1].sentence).not.toBe("Input 1.");
+					});
+				});
+
+				describe("Non-admin user", () => {
+					beforeAll(() => {
+						loginUserId = REGULAR_USER_ID;
+					});
+
+					test("It returns an unauthorized error through redirection", () => {
+						expect(response.statusCode).toBe(302);
+						expect(response.headers.location).toBe("/admin?fail=Unauthorized");
+					});
+
+					afterAll(() => {
+						loginUserId = ADMIN_USER_ID;
+					});
+				});
+
+				describe("Anonymous user", () => {
+					beforeAll(() => {
+						loginUserId = null;
+					});
+
+					test("It returns an unauthorized error through redirection", () => {
+						expect(response.statusCode).toBe(302);
+						expect(response.headers.location).toBe("/admin?fail=Unauthorized");
+					});
+
+					afterAll(() => {
+						loginUserId = ADMIN_USER_ID;
+					});
+				});
+			});
+		});
+
 		describe("GET", () => {
 			let page = null;
 			let extraSentence = null;
@@ -195,7 +296,6 @@ describe("/api", () => {
 						expect(response.body.data.length).toBe(1);
 						expect(response.body.total).toBe(26);
 						expect(response.body.page_size).toBe(25);
-						expect(response.body.data[0].id).toBe(26);
 						expect(response.body.data[0].sentence).toBe("Extra Sentence 14");
 						expect(response.body.data[0].source).toBe("new");
 						expect(response.body.data[0].count).toBe(14);
