@@ -41,7 +41,9 @@ describe("/api", () => {
 
 			beforeEach(async () => {
 				let agent = request.agent(app);
-				await agent.get("/api/mock/login");
+				if (loginUserId) {
+					await agent.get("/api/mock/login");
+				}
 				response = await agent.post("/api/user_interactions").send({
 					sentence: { id: sentenceId },
 					suggestions: suggestions,
@@ -51,12 +53,7 @@ describe("/api", () => {
 				});
 			});
 
-			describe("User selected a suggestion", () => {
-				beforeAll(() => {
-					selectedSuggestion = suggestions[0];
-					type = "suggestion";
-				});
-
+			const commonUserInteractionTests = () => {
 				test("it creates three suggestions in the database", async () => {
 					const suggestionCount = await db.query(
 						"SELECT COUNT(*) FROM suggestions"
@@ -71,13 +68,10 @@ describe("/api", () => {
 					expect(parseInt(interactionCount.rows[0].count)).toBe(1);
 				});
 
-				test("the interaction created will mark the appropriate selection", async () => {
+				test("the interaction created will have the proper type", async () => {
 					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].type).toBe("suggestion");
+					expect(interaction.rows[0].type).toBe(type);
 					expect(parseInt(interaction.rows[0].sentence_id)).toBe(sentenceId);
-					expect(
-						parseInt(interaction.rows[0].suggestion_id)
-					).toBeGreaterThanOrEqual(1);
 				});
 
 				test("it returns a successful response", () => {
@@ -87,6 +81,42 @@ describe("/api", () => {
 				test("it links the selection to the logged in user", async () => {
 					const interaction = await db.query("SELECT * from user_interactions");
 					expect(interaction.rows[0].user_id).toBe(loginUserId);
+				});
+
+				describe("Logged out user", () => {
+					beforeAll(() => {
+						loginUserId = null;
+					});
+
+					test("it links the selection to the anonymous user", async () => {
+						const interaction = await db.query(
+							"SELECT * from user_interactions"
+						);
+						expect(interaction.rows[0].user_id).toBe("0");
+					});
+
+					afterAll(() => {
+						loginUserId = "1";
+					});
+				});
+			};
+
+			describe("User selected a suggestion", () => {
+				beforeAll(() => {
+					selectedSuggestion = suggestions[0];
+					type = "suggestion";
+				});
+
+				commonUserInteractionTests();
+
+				test("the interaction created will mark the appropriate selection", async () => {
+					const selection = await db.query(
+						"SELECT * FROM suggestions WHERE suggestion = $1",
+						[suggestions[0]]
+					);
+
+					const interaction = await db.query("SELECT * from user_interactions");
+					expect(interaction.rows[0].suggestion_id).toBe(selection.rows[0].id);
 				});
 			});
 
@@ -96,34 +126,11 @@ describe("/api", () => {
 					type = "user";
 				});
 
-				test("it creates three suggestions in the database", async () => {
-					const suggestionCount = await db.query(
-						"SELECT COUNT(*) FROM suggestions"
-					);
-					expect(parseInt(suggestionCount.rows[0].count)).toBe(3);
-				});
-
-				test("it creates a user interaction in the database", async () => {
-					const interactionCount = await db.query(
-						"SELECT COUNT(*) FROM user_interactions"
-					);
-					expect(parseInt(interactionCount.rows[0].count)).toBe(1);
-				});
+				commonUserInteractionTests();
 
 				test("the interaction created will add the appropriate user suggestion", async () => {
 					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].type).toBe("user");
-					expect(parseInt(interaction.rows[0].sentence_id)).toBe(sentenceId);
 					expect(interaction.rows[0].user_suggestion).toBe(userSuggestion);
-				});
-
-				test("it returns a successful response", () => {
-					expect(response.statusCode).toBe(201);
-				});
-
-				test("it links the selection to the logged in user", async () => {
-					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].user_id).toBe(loginUserId);
 				});
 			});
 
@@ -132,34 +139,7 @@ describe("/api", () => {
 					type = "none";
 				});
 
-				test("it creates three suggestions in the database", async () => {
-					const suggestionCount = await db.query(
-						"SELECT COUNT(*) FROM suggestions"
-					);
-					expect(parseInt(suggestionCount.rows[0].count)).toBe(3);
-				});
-
-				test("it creates a user interaction in the database", async () => {
-					const interactionCount = await db.query(
-						"SELECT COUNT(*) FROM user_interactions"
-					);
-					expect(parseInt(interactionCount.rows[0].count)).toBe(1);
-				});
-
-				test("the interaction created will set the proper details", async () => {
-					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].type).toBe("none");
-					expect(parseInt(interaction.rows[0].sentence_id)).toBe(sentenceId);
-				});
-
-				test("it returns a successful response", () => {
-					expect(response.statusCode).toBe(201);
-				});
-
-				test("it links the selection to the logged in user", async () => {
-					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].user_id).toBe(loginUserId);
-				});
+				commonUserInteractionTests();
 			});
 
 			describe("User said the sentence is correct", () => {
@@ -167,34 +147,7 @@ describe("/api", () => {
 					type = "original";
 				});
 
-				test("it creates three suggestions in the database", async () => {
-					const suggestionCount = await db.query(
-						"SELECT COUNT(*) FROM suggestions"
-					);
-					expect(parseInt(suggestionCount.rows[0].count)).toBe(3);
-				});
-
-				test("it creates a user interaction in the database", async () => {
-					const interactionCount = await db.query(
-						"SELECT COUNT(*) FROM user_interactions"
-					);
-					expect(parseInt(interactionCount.rows[0].count)).toBe(1);
-				});
-
-				test("the interaction created will set the proper details", async () => {
-					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].type).toBe("original");
-					expect(parseInt(interaction.rows[0].sentence_id)).toBe(sentenceId);
-				});
-
-				test("it returns a successful response", () => {
-					expect(response.statusCode).toBe(201);
-				});
-
-				test("it links the selection to the logged in user", async () => {
-					const interaction = await db.query("SELECT * from user_interactions");
-					expect(interaction.rows[0].user_id).toBe(loginUserId);
-				});
+				commonUserInteractionTests();
 			});
 		});
 	});
