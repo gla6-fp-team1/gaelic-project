@@ -63,11 +63,11 @@ Save your changes.
 
 ## Database Setup
 
-The project relies on a PostgreSQL database to store the Gaelic sentences. The schema for the database can be created if necessary to store the sentences and user interaction. More information about the database schema is in the [Database Schema File](./server/db-schema.sql)
+The project relies on a PostgreSQL database to store the Gaelic sentences. The schema for the database can be created if necessary to store the sentences and user interaction. More information about the database schema is in the [Database Schema File](./db/schema.sql)
 file. Here's a schema if you want to create the database terminal:
 
 ```bash
-psql -U your_username -d your_database_name < ./server/db-schema.sql
+psql -U your_username -d your_database_name < ./db/schema.sql
 ```
 
 You can run these SQL statements using a PostgreSQL database management tool.
