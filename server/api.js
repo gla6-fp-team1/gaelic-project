@@ -206,22 +206,22 @@ router.get("/sentences/:id", async (req, res) => {
 			]);
 			if (sentence.rows[0]) {
 				const suggestions = await db.query(
-					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 AND user_id != '0' GROUP BY suggestion",
+					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 AND user_id != '0' GROUP BY suggestion ORDER by suggestion",
 					[sentenceId]
 				);
 
 				const types = await db.query(
-					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 AND user_id != '0' GROUP BY type ",
+					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 AND user_id != '0' GROUP BY type ORDER by type",
 					[sentenceId]
 				);
 
 				const suggestionsAnonymous = await db.query(
-					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 and user_id = '0' GROUP BY suggestion ",
+					"SELECT suggestion, COUNT(*) FROM user_interactions JOIN suggestions ON user_interactions.suggestion_id = suggestions.id WHERE user_interactions.sentence_id = $1 and user_id = '0' GROUP BY suggestion ORDER by suggestion",
 					[sentenceId]
 				);
 
 				const typesAnonymous = await db.query(
-					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 and user_id = '0' GROUP BY type ",
+					"SELECT type, COUNT(*) from user_interactions WHERE sentence_id = $1 and user_id = '0' GROUP BY type ORDER by type",
 					[sentenceId]
 				);
 

@@ -226,6 +226,98 @@ describe("/api", () => {
 			});
 		});
 
+		describe("/:id", () => {
+			describe("GET", () => {
+				let sentenceId = 1;
+
+				beforeEach(async () => {
+					let suggestion = await db.query(
+						"INSERT INTO suggestions (sentence_id, suggestion) VALUES (1, 'Suggestion') RETURNING id"
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion')"
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type, suggestion_id) VALUES ('1',1,'suggestion',$1)",
+						[suggestion.rows[0].id]
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type) VALUES ('1',1,'none')"
+					);
+
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('0',1,'user','User Suggestion')"
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type, suggestion_id) VALUES ('0',1,'suggestion',$1)",
+						[suggestion.rows[0].id]
+					);
+					await db.query(
+						"INSERT INTO user_interactions (user_id, sentence_id, type) VALUES ('0',1,'original')"
+					);
+
+					let agent = request.agent(app);
+					if (loginUserId) {
+						await agent.get("/api/mock/login");
+					}
+					response = await agent.get(`/api/sentences/${sentenceId}`);
+				});
+
+				test("It should return a successful response", () => {
+					expect(response.statusCode).toBe(200);
+					expect(response.body.success).toBe(true);
+				});
+
+				test("it returns the sentence", () => {
+					expect(response.body.data.id).toBe(1);
+					expect(response.body.data.sentence).toBe(
+						"Bhiodh iad a' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn."
+					);
+				});
+
+				test("it returns statistics related to the sentence", () => {
+					let stats = response.body.data.stats;
+					expect(stats.logged.suggestions[0].count).toBe("1");
+					expect(stats.logged.suggestions[0].suggestion).toBe("Suggestion");
+
+					expect(stats.logged.types[0].count).toBe("1");
+					expect(stats.logged.types[0].type).toBe("none");
+					expect(stats.logged.types[1].count).toBe("1");
+					expect(stats.logged.types[1].type).toBe("suggestion");
+					expect(stats.logged.types[2].count).toBe("1");
+					expect(stats.logged.types[2].type).toBe("user");
+
+					expect(stats.anonymous.suggestions[0].count).toBe("1");
+					expect(stats.anonymous.suggestions[0].suggestion).toBe("Suggestion");
+
+					expect(stats.anonymous.types[0].count).toBe("1");
+					expect(stats.anonymous.types[0].type).toBe("original");
+					expect(stats.anonymous.types[1].count).toBe("1");
+					expect(stats.anonymous.types[1].type).toBe("suggestion");
+					expect(stats.anonymous.types[2].count).toBe("1");
+					expect(stats.anonymous.types[2].type).toBe("user");
+				});
+
+				describe("Invalid ID", () => {
+					beforeAll(() => {
+						sentenceId = 0;
+					});
+
+					afterAll(() => {
+						sentenceId = 1;
+					});
+
+					test("It returns a not found response", () => {
+						expect(response.statusCode).toBe(404);
+						expect(response.body.success).toBe(false);
+						expect(response.body.message).toBe("Sentence doesn't exist");
+					});
+				});
+
+				unauthenticatedTests();
+			});
+		});
+
 		describe("GET", () => {
 			let page = null;
 			let extraSentence = null;
