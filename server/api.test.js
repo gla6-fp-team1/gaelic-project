@@ -3,7 +3,9 @@ import app from "./app";
 import db from "./db";
 import mockLogin from "../test/mock-login";
 
-let loginUserId = "1";
+const ADMIN_USER_ID = "117060750196714169595";
+const REGULAR_USER_ID = "1";
+let loginUserId = REGULAR_USER_ID;
 mockLogin(app, () => loginUserId);
 
 describe("/api", () => {
@@ -38,6 +40,118 @@ describe("/api", () => {
 
 				test("It returns a 404 response", () => {
 					expect(response.statusCode).toBe(404);
+				});
+			});
+		});
+
+		describe("GET", () => {
+			let response = null;
+			let page = null;
+			let extraSentence = null;
+
+			beforeAll(() => {
+				loginUserId = ADMIN_USER_ID;
+			});
+
+			beforeEach(async () => {
+				if (extraSentence) {
+					for (let i = 0; i < extraSentence; i++) {
+						await db.query(
+							"INSERT INTO sentences (sentence, source, count) VALUES ($1, $2, $3)",
+							[`Extra Sentence ${i}`, "new", i]
+						);
+					}
+				}
+
+				let agent = request.agent(app);
+				if (loginUserId) {
+					await agent.get("/api/mock/login");
+				}
+				response = await agent.get("/api/sentences").query({ page: page });
+			});
+
+			test("It returns a successful response", () => {
+				expect(response.statusCode).toBe(200);
+				expect(response.body.success).toBe(true);
+			});
+
+			test("It returns a list of sentences", () => {
+				expect(response.body.data.length).toBe(11);
+				expect(response.body.data[0].id).toBe(1);
+				expect(response.body.data[0].sentence).toBe(
+					"Bhiodh iad a' dèanamh móran uisge-bheatha bho chionn fhada ro n a latha againn."
+				);
+				expect(response.body.data[0].source).toBe("original.txt");
+				expect(response.body.data[0].count).toBe(1);
+				expect(response.body.total).toBe(11);
+				expect(response.body.page_size).toBe(25);
+			});
+
+			describe("Pagination", () => {
+				beforeAll(() => {
+					page = 1;
+				});
+
+				afterAll(() => {
+					page = null;
+				});
+
+				test("It returns an empty list on page 2", () => {
+					expect(response.body.data.length).toBe(0);
+					expect(response.body.total).toBe(11);
+					expect(response.body.page_size).toBe(25);
+				});
+
+				describe("Filled in database with 26 sentences", () => {
+					beforeAll(() => {
+						extraSentence = 15;
+					});
+
+					afterAll(() => {
+						extraSentence = null;
+					});
+
+					test("It returns a single sentence on page 2", () => {
+						expect(response.body.data.length).toBe(1);
+						expect(response.body.total).toBe(26);
+						expect(response.body.page_size).toBe(25);
+						expect(response.body.data[0].id).toBe(26);
+						expect(response.body.data[0].sentence).toBe("Extra Sentence 14");
+						expect(response.body.data[0].source).toBe("new");
+						expect(response.body.data[0].count).toBe(14);
+					});
+				});
+			});
+
+			describe("Non-admin user", () => {
+				beforeAll(() => {
+					loginUserId = REGULAR_USER_ID;
+				});
+
+				test("It returns an unauthorized error", () => {
+					expect(response.statusCode).toBe(401);
+					expect(response.body.success).toBe(false);
+					expect(response.body.message).toBe("Unauthorized");
+				});
+
+				afterAll(() => {
+					loginUserId = ADMIN_USER_ID;
+				});
+			});
+
+			describe("Anonymous user", () => {
+				beforeAll(() => {
+					loginUserId = null;
+				});
+
+				test("It returns an unauthorized error", () => {
+					expect(response.statusCode).toBe(401);
+					expect(response.body.success).toBe(false);
+					expect(response.body.message).toBe("Unauthorized");
+				});
+
+				afterAll(() => {
+					loginUserId = ADMIN_USER_ID;
 				});
 			});
 		});
@@ -111,7 +225,7 @@ describe("/api", () => {
 					});
 
 					afterAll(() => {
-						loginUserId = "1";
+						loginUserId = REGULAR_USER_ID;
 					});
 				});
 			};
