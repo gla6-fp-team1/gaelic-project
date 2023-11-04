@@ -1,6 +1,10 @@
 import request from "supertest";
 import app from "./app";
 import db from "./db";
+import mockLogin from "../test/mock-login";
+
+let loginUserId = "1";
+mockLogin(app, () => loginUserId);
 
 describe("/api", () => {
 	describe("/sentences", () => {
@@ -37,7 +41,7 @@ describe("/api", () => {
 
 			beforeEach(async () => {
 				let agent = request.agent(app);
-
+				await agent.get("/api/mock/login");
 				response = await agent.post("/api/user_interactions").send({
 					sentence: { id: sentenceId },
 					suggestions: suggestions,
@@ -79,6 +83,11 @@ describe("/api", () => {
 				test("it returns a successful response", () => {
 					expect(response.statusCode).toBe(201);
 				});
+
+				test("it links the selection to the logged in user", async () => {
+					const interaction = await db.query("SELECT * from user_interactions");
+					expect(interaction.rows[0].user_id).toBe(loginUserId);
+				});
 			});
 
 			describe("User provided a new suggestion", () => {
@@ -111,6 +120,11 @@ describe("/api", () => {
 				test("it returns a successful response", () => {
 					expect(response.statusCode).toBe(201);
 				});
+
+				test("it links the selection to the logged in user", async () => {
+					const interaction = await db.query("SELECT * from user_interactions");
+					expect(interaction.rows[0].user_id).toBe(loginUserId);
+				});
 			});
 
 			describe("User said none are good", () => {
@@ -141,6 +155,11 @@ describe("/api", () => {
 				test("it returns a successful response", () => {
 					expect(response.statusCode).toBe(201);
 				});
+
+				test("it links the selection to the logged in user", async () => {
+					const interaction = await db.query("SELECT * from user_interactions");
+					expect(interaction.rows[0].user_id).toBe(loginUserId);
+				});
 			});
 
 			describe("User said the sentence is correct", () => {
@@ -170,6 +189,11 @@ describe("/api", () => {
 
 				test("it returns a successful response", () => {
 					expect(response.statusCode).toBe(201);
+				});
+
+				test("it links the selection to the logged in user", async () => {
+					const interaction = await db.query("SELECT * from user_interactions");
+					expect(interaction.rows[0].user_id).toBe(loginUserId);
 				});
 			});
 		});
