@@ -45,16 +45,47 @@ describe("/api", () => {
 		});
 	};
 
+	const successfulResponse = (hasMessage) => {
+		test("It should return a successful response", () => {
+			expect(response.statusCode).toBe(200);
+
+			if (hasMessage) {
+				expect(response.body.success).toBe(true);
+			}
+		});
+	};
+
+	const generateSuggestion = async () => {
+		let result = await db.query(
+			"INSERT INTO suggestions (sentence_id, suggestion) VALUES (1, 'Suggestion') RETURNING id"
+		);
+		return result.rows[0].id;
+	};
+
+	const generateUserInteraction = async (user, type, extraParameter) => {
+		if (type === "user") {
+			await db.query(
+				"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ($1,1,$2,$3)",
+				[user, type, extraParameter]
+			);
+		} else if (type === "suggestion") {
+			await db.query(
+				"INSERT INTO user_interactions (user_id, sentence_id, type, suggestion_id) VALUES ($1,1,$2,$3)",
+				[user, type, extraParameter]
+			);
+		} else {
+			await db.query(
+				"INSERT INTO user_interactions (user_id, sentence_id, type) VALUES ($1,1,$2)",
+				[user, type]
+			);
+		}
+	};
+
 	describe("/sentences", () => {
 		describe("/random", () => {
 			describe("GET", () => {
 				beforeEach(async () => {
 					response = await request(app).get("/api/sentences/random");
-				});
-
-				test("It should return a successful response", () => {
-					expect(response.statusCode).toBe(200);
-					expect(response.body.success).toBe(true);
 				});
 
 				test("It should return a non-empty sentence data", () => {
@@ -83,12 +114,8 @@ describe("/api", () => {
 				});
 
 				beforeEach(async () => {
-					await db.query(
-						"INSERT INTO suggestions (sentence_id, suggestion) VALUES (1, 'Suggestion')"
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion')"
-					);
+					await generateSuggestion();
+					await generateUserInteraction("1", "user", "User Suggestion");
 
 					let agent = request.agent(app);
 					if (loginUserId) {
@@ -97,9 +124,7 @@ describe("/api", () => {
 					response = await agent.get("/api/sentences/export");
 				});
 
-				test("It should return a successful response", () => {
-					expect(response.statusCode).toBe(200);
-				});
+				successfulResponse(false);
 
 				test("It should return the database in the export", () => {
 					expect(response.body.sentences.length).toBe(11);
@@ -230,12 +255,8 @@ describe("/api", () => {
 			describe("/user_suggestions", () => {
 				describe("GET", () => {
 					beforeEach(async () => {
-						await db.query(
-							"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion 1')"
-						);
-						await db.query(
-							"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('0',1,'user','User Suggestion 2')"
-						);
+						await generateUserInteraction("1", "user", "User Suggestion 1");
+						await generateUserInteraction("0", "user", "User Suggestion 2");
 
 						let agent = request.agent(app);
 						if (loginUserId) {
@@ -244,10 +265,7 @@ describe("/api", () => {
 						response = await agent.get("/api/sentences/1/user_suggestions");
 					});
 
-					test("It should return a successful response", () => {
-						expect(response.statusCode).toBe(200);
-						expect(response.body.success).toBe(true);
-					});
+					successfulResponse(true);
 
 					test("it returns the user provided suggestions", () => {
 						expect(response.body.total).toBe(2);
@@ -271,30 +289,15 @@ describe("/api", () => {
 				let sentenceId = 1;
 
 				beforeEach(async () => {
-					let suggestion = await db.query(
-						"INSERT INTO suggestions (sentence_id, suggestion) VALUES (1, 'Suggestion') RETURNING id"
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('1',1,'user','User Suggestion')"
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type, suggestion_id) VALUES ('1',1,'suggestion',$1)",
-						[suggestion.rows[0].id]
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type) VALUES ('1',1,'none')"
-					);
+					let suggestion = await generateSuggestion();
 
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type, user_suggestion) VALUES ('0',1,'user','User Suggestion')"
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type, suggestion_id) VALUES ('0',1,'suggestion',$1)",
-						[suggestion.rows[0].id]
-					);
-					await db.query(
-						"INSERT INTO user_interactions (user_id, sentence_id, type) VALUES ('0',1,'original')"
-					);
+					await generateUserInteraction("1", "user", "User Suggestion");
+					await generateUserInteraction("1", "suggestion", suggestion);
+					await generateUserInteraction("1", "none");
+
+					await generateUserInteraction("0", "user", "User Suggestion");
+					await generateUserInteraction("0", "suggestion", suggestion);
+					await generateUserInteraction("0", "original");
 
 					let agent = request.agent(app);
 					if (loginUserId) {
@@ -303,10 +306,7 @@ describe("/api", () => {
 					response = await agent.get(`/api/sentences/${sentenceId}`);
 				});
 
-				test("It should return a successful response", () => {
-					expect(response.statusCode).toBe(200);
-					expect(response.body.success).toBe(true);
-				});
+				successfulResponse(true);
 
 				test("it returns the sentence", () => {
 					expect(response.body.data.id).toBe(1);
@@ -383,10 +383,7 @@ describe("/api", () => {
 				response = await agent.get("/api/sentences").query({ page: page });
 			});
 
-			test("It returns a successful response", () => {
-				expect(response.statusCode).toBe(200);
-				expect(response.body.success).toBe(true);
-			});
+			successfulResponse(true);
 
 			test("It returns a list of sentences", () => {
 				expect(response.body.data.length).toBe(11);
