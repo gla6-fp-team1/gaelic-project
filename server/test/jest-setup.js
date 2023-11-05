@@ -8,7 +8,7 @@ import {
 import { readFile } from "fs/promises";
 import path from "path";
 
-import db, { disconnectDb } from "../server/db";
+import db, { disconnectDb } from "../db";
 
 beforeAll(async () => {
 	// Set up pg-transaction-test that make sure the database is rolled back to the start after each run.
@@ -16,7 +16,7 @@ beforeAll(async () => {
 
 	// Load the schema file at the start of the tests. This should clear out the database and re-initialize with the default set of data
 	const schemaSql = await readFile(
-		path.resolve(__dirname, "../db/schema.sql"),
+		path.resolve(__dirname, "../../db/schema.sql"),
 		"utf8"
 	);
 	await db.query(schemaSql);

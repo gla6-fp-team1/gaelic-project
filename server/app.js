@@ -21,7 +21,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(configuredHelmet());
-app.use(configuredMorgan());
+if (app.get("env") !== "test") {
+	app.use(configuredMorgan());
+}
 
 app.use(
 	cookieSession({

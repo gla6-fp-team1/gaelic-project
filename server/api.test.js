@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "./app";
 import db from "./db";
-import mockLogin from "../test/mock-login";
+import mockLogin from "./test/mock-login";
 
 const ADMIN_USER_ID = "117060750196714169595";
 const REGULAR_USER_ID = "1";
