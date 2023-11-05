@@ -45,7 +45,10 @@ const SuggestionSentence = ({
 			>
 				<b>Suggestion {number}:</b>
 				<br></br>
-				<span dangerouslySetInnerHTML={{ __html: innerText }}></span>
+				<span
+					data-testid="suggestion"
+					dangerouslySetInnerHTML={{ __html: innerText }}
+				></span>
 			</button>
 		</div>
 	);
