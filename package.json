@@ -116,7 +116,10 @@
 			{
 				"displayName": "client",
 				"rootDir": "client",
-				"testEnvironment": "jsdom"
+				"testEnvironment": "jsdom",
+				"moduleNameMapper": {
+					"^.*\\.png$": "<rootDir>/test/RelativeImageStub.js"
+				}
 			}
 		]
 	}
