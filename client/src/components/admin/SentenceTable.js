@@ -54,6 +54,7 @@ const SentenceTable = ({ setAlertMessage }) => {
 					disableColumnFilter
 					rowSelectionModel={selectionModel}
 					onRowSelectionModelChange={setSelectionModel}
+					columnBuffer={4}
 				/>
 			</div>
 			<SentenceDisplay
