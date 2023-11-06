@@ -20,20 +20,18 @@ const About = ({ user }) => (
 					selections and corrections for each sentence.
 				</p>
 				<h2>Links</h2>
-				<p>
-					<ul>
-						<li>
-							<a href="https://github.com/gla6-fp-team1/gaelic-project">
-								Source Code
-							</a>
-						</li>
-						<li>
-							<a href="https://github.com/gla6-fp-team1/gaelic-project/blob/main/PRIVACY.md">
-								Privacy Policy
-							</a>
-						</li>
-					</ul>
-				</p>
+				<ul>
+					<li>
+						<a href="https://github.com/gla6-fp-team1/gaelic-project">
+							Source Code
+						</a>
+					</li>
+					<li>
+						<a href="https://github.com/gla6-fp-team1/gaelic-project/blob/main/PRIVACY.md">
+							Privacy Policy
+						</a>
+					</li>
+				</ul>
 			</div>
 		</main>
 	</>

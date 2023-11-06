@@ -21,7 +21,8 @@
 		"lint:eslint": "eslint .",
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
 		"lint:prettier": "prettier .",
-		"test": "jest --runInBand"
+		"test": "jest",
+		"test:ci": "jest --runInBand"
 	},
 	"repository": {
 		"type": "git",
@@ -111,14 +112,16 @@
 				"setupFilesAfterEnv": [
 					"<rootDir>/test/jest-setup.js"
 				],
-				"rootDir": "server"
+				"rootDir": "server",
+				"maxWorkers": "1"
 			},
 			{
 				"displayName": "client",
 				"rootDir": "client",
 				"testEnvironment": "jsdom",
 				"moduleNameMapper": {
-					"^.*\\.png$": "<rootDir>/test/RelativeImageStub.js"
+					"^.*\\.png$": "<rootDir>/test/RelativeImageStub.js",
+					"^.*\\.css$": "<rootDir>/test/RelativeImageStub.js"
 				}
 			}
 		]

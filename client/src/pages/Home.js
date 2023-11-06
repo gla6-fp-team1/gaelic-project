@@ -31,7 +31,7 @@ export function Home({ user, setAlertMessage }) {
 		setSentence(null);
 		setSelectedInteraction(null);
 		setSuggestions([]);
-		setNextSentenceCounter(nextSentenceCounter + 1);
+		setNextSentenceCounter((counter) => counter + 1);
 	};
 
 	useEffect(() => {
