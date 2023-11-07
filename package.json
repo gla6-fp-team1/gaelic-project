@@ -22,7 +22,9 @@
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
 		"lint:prettier": "prettier .",
 		"test": "jest",
-		"test:ci": "jest --runInBand"
+		"test:ci": "jest --runInBand",
+		"cucumber": "cucumber-js",
+		"cucumber:ci": "cross-env HEADLESS=true cucumber-js"
 	},
 	"repository": {
 		"type": "git",
@@ -45,6 +47,7 @@
 		"@babel/preset-env": "^7.22.9",
 		"@babel/preset-react": "^7.22.5",
 		"@codeyourfuture/eslint-config-standard": "^4.0.3",
+		"@cucumber/cucumber": "^9.6.0",
 		"@testing-library/jest-dom": "^6.1.4",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.5.1",
@@ -72,6 +75,7 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-router-dom": "^6.14.1",
+		"selenium-webdriver": "^4.15.0",
 		"style-loader": "^3.3.3",
 		"supertest": "^6.3.3",
 		"wait-on": "^7.0.1",

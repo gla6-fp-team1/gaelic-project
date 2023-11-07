@@ -43,7 +43,7 @@ const SuggestionSentence = ({
 					});
 				}}
 			>
-				<b>Suggestion {number}:</b>
+				<b>{`Suggestion ${number}:`}</b>
 				<br></br>
 				<span
 					data-testid="suggestion"

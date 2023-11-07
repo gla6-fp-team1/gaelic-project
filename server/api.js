@@ -38,12 +38,14 @@ router.post("/user_interactions", async (req, res) => {
 					[sentenceId, suggestion]
 				);
 			}
-			const suggestionSearch = await db.query(
-				"SELECT id FROM suggestions WHERE sentence_id = $1 AND suggestion = $2 LIMIT 1",
-				[sentenceId, selectedSuggestion]
-			);
-			if (suggestionSearch.rows[0]) {
-				selectedSuggestionId = suggestionSearch.rows[0].id;
+			if (type === "suggestion") {
+				const suggestionSearch = await db.query(
+					"SELECT id FROM suggestions WHERE sentence_id = $1 AND suggestion = $2 LIMIT 1",
+					[sentenceId, selectedSuggestion]
+				);
+				if (suggestionSearch.rows[0]) {
+					selectedSuggestionId = suggestionSearch.rows[0].id;
+				}
 			}
 
 			if (type === "user" && userSuggestion) {
