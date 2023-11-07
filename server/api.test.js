@@ -1,12 +1,10 @@
 import request from "supertest";
 import app from "./app";
 import db from "./db";
-import mockLogin from "./test/mock-login";
 
 const ADMIN_USER_ID = "117060750196714169595";
 const REGULAR_USER_ID = "1";
 let loginUserId = REGULAR_USER_ID;
-mockLogin(app, () => loginUserId);
 
 describe("/api", () => {
 	let response = null;
@@ -119,7 +117,7 @@ describe("/api", () => {
 
 					let agent = request.agent(app);
 					if (loginUserId) {
-						await agent.get("/api/mock/login");
+						await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 					}
 					response = await agent.get("/api/sentences/export");
 				});
@@ -163,7 +161,7 @@ describe("/api", () => {
 
 					let agent = request.agent(app);
 					if (loginUserId) {
-						await agent.get("/api/mock/login");
+						await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 					}
 					response = await agent
 						.post("/api/sentences/upload")
@@ -260,7 +258,7 @@ describe("/api", () => {
 
 						let agent = request.agent(app);
 						if (loginUserId) {
-							await agent.get("/api/mock/login");
+							await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 						}
 						response = await agent.get("/api/sentences/1/user_suggestions");
 					});
@@ -301,7 +299,7 @@ describe("/api", () => {
 
 					let agent = request.agent(app);
 					if (loginUserId) {
-						await agent.get("/api/mock/login");
+						await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 					}
 					response = await agent.get(`/api/sentences/${sentenceId}`);
 				});
@@ -378,7 +376,7 @@ describe("/api", () => {
 
 				let agent = request.agent(app);
 				if (loginUserId) {
-					await agent.get("/api/mock/login");
+					await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 				}
 				response = await agent.get("/api/sentences").query({ page: page });
 			});
@@ -447,7 +445,7 @@ describe("/api", () => {
 			beforeEach(async () => {
 				let agent = request.agent(app);
 				if (loginUserId) {
-					await agent.get("/api/mock/login");
+					await agent.get(`/api/mock/login?user_id=${loginUserId}`);
 				}
 				response = await agent.post("/api/user_interactions").send({
 					sentence: { id: sentenceId },

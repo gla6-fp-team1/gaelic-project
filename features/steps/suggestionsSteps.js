@@ -1,8 +1,9 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import { By, until } from "selenium-webdriver";
 import db from "../../server/db";
-import getDriver from "./driverSetup";
+import getDriver from "../utils/driverSetup";
 import expect from "expect";
+import { findByText } from "../utils/textUtils";
 
 let driver = null;
 
@@ -11,14 +12,12 @@ Given("I am on the front page", async function () {
 
 	await driver.get("http://localhost:3000");
 
-	await driver.wait(until.elementLocated(By.css("h1")));
+	await findByText("RLHF");
 });
 
 async function clickButton(buttonText) {
-	let button = await driver.wait(
-		until.elementLocated(By.xpath(`//*[text()[contains(.,'${buttonText}')]]`)),
-		10000
-	);
+	let button = await findByText(buttonText);
+
 	let buttonParent = await button.findElement(By.xpath("./.."));
 	await buttonParent.click();
 
@@ -26,21 +25,14 @@ async function clickButton(buttonText) {
 }
 
 async function clickSubmit() {
-	let submitButton = await driver.wait(
-		until.elementLocated(By.xpath("//*[text()[contains(.,'Submit')]]")),
-		10000
-	);
+	let submitButton = await findByText("Submit");
+
 	await submitButton.click();
 
-	await driver.wait(
-		until.elementLocated(
-			By.xpath("//*[text()[contains(.,'Suggestions saved successfully')]]")
-		),
-		10000
-	);
+	await findByText("Suggestions saved successfully");
 }
 
-When(/I select suggestion (\d+)/, async function (suggestionId) {
+When(/I (can )?select suggestion (\d+)/, async function (_, suggestionId) {
 	let buttonText = `Suggestion ${suggestionId}:`;
 
 	let buttonParent = await clickButton(buttonText);

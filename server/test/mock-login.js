@@ -1,20 +1,21 @@
 import passport from "passport";
 
 class StrategyMock extends passport.Strategy {
-	constructor(options) {
+	constructor() {
 		super();
 		this.name = "mock";
-		this.userId = options.userId;
 		this.verify = (user, done) => {
 			done(null, user);
 		};
 	}
 
-	authenticate() {
-		let user = {
-			id:
-				(typeof this.userId === "function" ? this.userId() : this.userId) || 1,
-		};
+	authenticate(req) {
+		let user = null;
+		if (req.query.user_id) {
+			user = {
+				id: req.query.user_id,
+			};
+		}
 
 		this.verify(user, (err, resident) => {
 			if (err) {

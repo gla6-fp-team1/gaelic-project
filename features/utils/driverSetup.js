@@ -4,9 +4,10 @@ import Chrome from "selenium-webdriver/chrome";
 import db, { disconnectDb } from "../../server/db";
 import { readFile } from "fs/promises";
 import path from "path";
+import os from "os";
 
 let driver = null;
-setDefaultTimeout(15000);
+setDefaultTimeout(25000);
 
 BeforeAll(async function () {
 	if (process.env.NODE_ENV === "test") {
@@ -19,8 +20,18 @@ BeforeAll(async function () {
 
 	let builder = new Builder().forBrowser("chrome");
 
+	let prefs = {
+		"download.default_directory": os.tmpdir(),
+	};
+
 	if (process.env.HEADLESS) {
-		builder = builder.setChromeOptions(new Chrome.Options().headless());
+		builder = builder.setChromeOptions(
+			new Chrome.Options().headless().setUserPreferences(prefs)
+		);
+	} else {
+		builder = builder.setChromeOptions(
+			new Chrome.Options().setUserPreferences(prefs)
+		);
 	}
 	driver = builder.build();
 });

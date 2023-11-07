@@ -13,6 +13,7 @@ import {
 } from "./utils/middleware";
 import cookieSession from "cookie-session";
 import passport from "passport";
+import mockLogin from "./test/mock-login";
 
 const apiRoot = "/api";
 
@@ -38,6 +39,9 @@ app.use(passport.session());
 if (config.production) {
 	app.enable("trust proxy");
 	app.use(httpsOnly());
+}
+if (config.test) {
+	mockLogin(app);
 }
 
 app.use(apiRoot, apiRouter);

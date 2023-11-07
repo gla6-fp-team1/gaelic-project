@@ -23,7 +23,7 @@
 		"lint:prettier": "prettier .",
 		"test": "jest",
 		"test:ci": "jest --runInBand",
-		"cucumber": "cucumber-js",
+		"cucumber": "cross-env NODE_ENV=test cucumber-js",
 		"cucumber:ci": "cross-env HEADLESS=true cucumber-js"
 	},
 	"repository": {
