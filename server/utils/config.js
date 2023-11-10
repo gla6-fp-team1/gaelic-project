@@ -4,6 +4,7 @@ export default {
 	dbUrl: createDatabaseUrl(),
 	logLevel: process.env.LOG_LEVEL ?? "info",
 	port: parseInt(process.env.PORT ?? "3000", 10),
+	test: process.env.NODE_ENV === "test",
 	production: process.env.NODE_ENV === "production",
 };
 
@@ -12,7 +13,10 @@ function createDatabaseUrl() {
 		return process.env.DATABASE_URL;
 	}
 	const host = process.env.DB_HOST ?? "localhost";
-	const name = process.env.DB_NAME ?? "cyf";
+	const name =
+		(process.env.NODE_ENV === "test"
+			? process.env.DB_NAME_TEST
+			: process.env.DB_NAME) ?? "cyf";
 	const password = process.env.DB_PASS ?? process.env.DB_PASSWORD ?? "";
 	const port = process.env.DB_PORT ?? "5432";
 	const username = process.env.DB_USER ?? process.env.DB_USERNAME ?? "";

@@ -63,14 +63,15 @@ Save your changes.
 
 ## Database Setup
 
-The project relies on a PostgreSQL database to store the Gaelic sentences. The schema for the database can be created if necessary to store the sentences and user interaction. More information about the database schema is in the [Database Schema File](./server/db-schema.sql)
-file. Here's a schema if you want to create the database terminal:
+The project relies on a PostgreSQL database to store the Gaelic sentences. The schema for the database needs to be loaded first before the server can be run. More information about the database schema is in the [Database Schema File](./db/schema.sql) file.
+
+To set up the initial schema you can use the following command line:
 
 ```bash
-psql -U your_username -d your_database_name < ./server/db-schema.sql
+psql -U your_username -d your_database_name < ./db/schema.sql
 ```
 
-You can run these SQL statements using a PostgreSQL database management tool.
+The unit tests will install the schema automatically before starting, but will require a test database to exist including access to it. By default this test database is called `cyf_test`, but can be modified in the `.env` file under `DB_NAME_TEST`.
 
 ## Deploying to Render
 
@@ -85,6 +86,8 @@ commonly use and running, testing locally:
   the frontend is proxied to it).
 - `lint`: runs ESLint and Prettier against all the code in the project.
 - `serve`: builds and starts the app in production mode locally.
+- `test`: runs the unit tests for both the backend and the frontend
+- `cucumber`: runs the end-to-end tests against a running instance
 
 ### Debugging
 
@@ -93,6 +96,13 @@ If you're using VS Code, a debugging configuration is provided for this.
 
 There is also a VS Code debugging configuration for the Chrome debugger, which requires the recommended Chrome
 extension, for debugging the client application.
+
+### Tests
+
+There are two kind of tests included in the codebase:
+
+- Unit tests using `jest`. You can run them using `npm run test`. The backend part of the tests require access to an empty postgresql database, by default called `cyf_test`, but this can be modified using the `DB_NAME_TEST` environment variable.
+- Behavioural, end-to-end tests using `cucumber`. You need to start the server first using `npm run dev`, then start the tests afterwards using `npm run cucumber`. The tests will use Chrome, so you also need to make sure you have it installed.
 
 ## Contributions
 

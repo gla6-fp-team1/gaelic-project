@@ -50,15 +50,15 @@ const App = () => {
 	return (
 		<>
 			<Routes>
-				<Route
-					path="/"
-					element={<Home setAlertMessage={setAlertMessage} user={user} />}
-				/>
 				<Route path="/about" element={<About user={user} />} />
 				<Route path="/login" element={<Login />} />
 				<Route
 					path="/admin"
 					element={<Admin setAlertMessage={setAlertMessage} user={user} />}
+				/>
+				<Route
+					path="*"
+					element={<Home setAlertMessage={setAlertMessage} user={user} />}
 				/>
 			</Routes>
 			{alertMessage && (

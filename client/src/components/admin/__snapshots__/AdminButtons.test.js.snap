@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders the admin buttons table 1`] = `
+<DocumentFragment>
+  <div
+    class="file-upload"
+  >
+    <h2>
+      Upload sentence data:
+    </h2>
+    <form
+      action="/api/sentences/upload"
+      enctype="multipart/form-data"
+      method="POST"
+    >
+      <input
+        id="fileInput"
+        name="file"
+        type="file"
+      />
+      <input
+        type="submit"
+        value="Upload File"
+      />
+    </form>
+  </div>
+  <div
+    class="export-database"
+  >
+    <h2>
+      Export database to JSON file:
+    </h2>
+    <button>
+      Export Database
+    </button>
+  </div>
+</DocumentFragment>
+`;

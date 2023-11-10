@@ -19,10 +19,14 @@ const Navbar = ({ user }) => {
 			</span>
 			{user && (
 				<ul className="user-info">
-					<li className="avatar">
-						<img src={user.photos[0].value} alt="avatar" />
+					{user.photos && (
+						<li title="Avatar" className="avatar">
+							<img src={user.photos[0].value} alt="avatar" />
+						</li>
+					)}
+					<li title="Username" className="username">
+						{user.displayName}
 					</li>
-					<li className="username">{user.displayName}</li>
 				</ul>
 			)}
 			<ul className="controls">
