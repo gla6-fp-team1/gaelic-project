@@ -33,7 +33,7 @@ To set up the project locally, follow these steps:
    ```
 
 2. Install dependencies:
-   npm install
+   [npm](https://nodejs.org/en) install
 
 3. Create a .env file and configure it with your environment-specific settings. You might need to set environment variables, such as the database connection details. `.env.example` file content can be used for that propose.
 
