@@ -43,20 +43,28 @@ Follow the instructions to setup the Google API credentials:
 
 1. Create a Google Cloud Project
    Go to the Google Cloud Console.
-   Click the project drop-down and select "New Project."
-   Enter a name for your project and click "Create."
+   
+   Click the project drop-down and select **"New Project"**.
+   
+   Enter a name for your project and click **"Create"**.
 
-2. Enable APIs
-   In the Google Cloud Console, navigate to "APIs & Services" > "Library."
+3. Enable APIs
+   In the Google Cloud Console, navigate to **"APIs & Services"** > **"Library"**
+   
    Search for and enable the APIs you need for your project.
 
-3. Create Credentials
-   In the Google Cloud Console, navigate to "APIs & Services" > "Credentials."
-   Click "Create credentials" and select "Service Account Key."
-   Choose the role for your service account. For access to Google APIs, you can use the "Project" role or a more specific role like "Editor."
-   Select the "JSON" key type and click "Create." This will download a JSON file with your credentials. Store this file securely.
+4. Create Credentials
+   In the Google Cloud Console, navigate to **"APIs & Services" > "[Credentials](https://console.cloud.google.com/apis/credentials)"**.
+   
+   Click **"Create credentials"** and select **"Service Account Key"**
+   
+   Choose the role for your service account. For access to Google APIs, you can use the "Project" role or a more specific role like **"Editor"**.
 
-4. More helpful links
+   Nagigate to **"KEYS"** to **"ADD KEY"**.
+   
+   Select the "JSON" key type and click **"Create"** This will download a JSON file with your credentials. Store this file securely.
+
+6. More helpful links
    https://developers.google.com/workspace/guides/create-credentials
 
 Save your changes.
